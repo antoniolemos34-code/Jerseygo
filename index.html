@@ -2,86 +2,248 @@
 <html lang="en-GB">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#0B1220" />
-  <meta name="description" content="JerseyGo — useful services in Jersey: parking (live spaces), parks, GP clinics, dentists, pharmacies, transport and emergency." />
+  <meta name="description" content="JerseyGo — Parking LIVE, parks, GP clinics, dentists, pharmacies, transport and emergency." />
+
   <title>JerseyGo</title>
+
   <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./icon.svg">
+
   <style>
     :root{
-      --bg:#070A12; --card:#0E1629; --text:#E9EEF7; --muted:#A9B4C7; --line:rgba(255,255,255,.10);
-      --accent:#4DA3FF; --good:#35D07F; --warn:#FFB020; --r:18px;
+      --bg:#070A12;
+      --bg2:#0B1220;
+      --card:rgba(255,255,255,.04);
+      --card2:rgba(255,255,255,.06);
+      --line:rgba(255,255,255,.10);
+      --text:#E9EEF7;
+      --muted:#A9B4C7;
+      --accent:#4DA3FF;
+      --good:#35D07F;
+      --warn:#FFB020;
+      --danger:#FF4D5E;
+      --r:18px;
+      --r2:22px;
+      --shadow: 0 22px 50px rgba(0,0,0,.45);
     }
+
     *{box-sizing:border-box}
+    html,body{height:100%}
     body{
       margin:0;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       color:var(--text);
       background:
-        radial-gradient(900px 600px at 15% 10%, rgba(77,163,255,.18), transparent 55%),
-        radial-gradient(800px 520px at 85% 5%, rgba(53,208,127,.14), transparent 55%),
-        radial-gradient(900px 700px at 50% 92%, rgba(255,176,32,.10), transparent 55%),
-        var(--bg);
+        radial-gradient(900px 600px at 12% 12%, rgba(77,163,255,.22), transparent 58%),
+        radial-gradient(850px 520px at 88% 10%, rgba(53,208,127,.18), transparent 58%),
+        radial-gradient(920px 720px at 50% 95%, rgba(255,176,32,.12), transparent 58%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
     }
+
     a{color:inherit; text-decoration:none}
+    button{font-family:inherit}
+
+    .wrap{max-width:1180px; margin:0 auto; padding:14px}
+
+    /* Top bar */
     header{
-      position:sticky; top:0; z-index:20;
-      backdrop-filter: blur(14px);
+      position:sticky; top:0; z-index:50;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       background: rgba(7,10,18,.72);
       border-bottom:1px solid var(--line);
     }
-    .wrap{max-width:1120px; margin:0 auto; padding:14px}
-    .top{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap}
-    .brand{display:flex; align-items:center; gap:10px}
-    .logo{width:36px; height:36px; border-radius:13px; background:linear-gradient(135deg, rgba(77,163,255,.95), rgba(53,208,127,.85))}
-    .title{font-weight:900}
-    .sub{font-size:12px; color:var(--muted)}
-    .pill{
-      display:flex; align-items:center; gap:8px;
-      border:1px solid var(--line); background: rgba(255,255,255,.04);
-      padding:10px 12px; border-radius:999px;
-      width:min(92vw, 520px);
+    .top{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px; flex-wrap:wrap;
+      padding:14px;
     }
-    .pill input{border:none; outline:none; background:transparent; color:var(--text); width:100%; font-size:13px}
-    .btn{border:1px solid var(--line); background: rgba(255,255,255,.05); color:var(--text); padding:10px 12px; border-radius:14px; cursor:pointer; font-weight:800}
+    .brand{display:flex; align-items:center; gap:12px; min-width:260px}
+    .brand img{width:40px; height:40px; border-radius:14px; box-shadow: 0 12px 30px rgba(0,0,0,.35)}
+    .brand .t{line-height:1.05}
+    .brand .t .name{font-weight:900; font-size:18px}
+    .brand .t .sub{margin-top:4px; font-size:12px; color:var(--muted)}
+    .actionsTop{display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end; width:100%}
+    @media (min-width: 760px){ .actionsTop{width:auto} }
+
+    .search{
+      display:flex; align-items:center; gap:10px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      padding:12px 14px;
+      border-radius:999px;
+      width:min(94vw, 540px);
+    }
+    .search input{
+      width:100%;
+      border:none; outline:none; background:transparent;
+      color:var(--text);
+      font-size:14px;
+    }
+    .btn{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.05);
+      color:var(--text);
+      padding:12px 14px;
+      border-radius:16px;
+      cursor:pointer;
+      font-weight:900;
+      letter-spacing:.2px;
+    }
     .btn:hover{background: rgba(255,255,255,.08)}
-    .btn.accent{border-color: rgba(77,163,255,.35); background: rgba(77,163,255,.14)}
+    .btn.primary{border-color: rgba(77,163,255,.35); background: rgba(77,163,255,.14)}
     .btn.good{border-color: rgba(53,208,127,.35); background: rgba(53,208,127,.12)}
-    .grid{display:grid; grid-template-columns: 300px 1fr; gap:14px}
-    @media (max-width: 920px){ .grid{grid-template-columns:1fr} }
-    .panel{border:1px solid var(--line); background: rgba(255,255,255,.03); border-radius: var(--r); overflow:hidden}
-    .hd{padding:14px; border-bottom:1px solid var(--line); display:flex; align-items:center; justify-content:space-between}
-    .hd h2{margin:0; font-size:12px; color:var(--muted); font-weight:900; letter-spacing:.35px; text-transform:uppercase}
-    .badge{font-size:12px; color:var(--muted); border:1px solid var(--line); padding:4px 8px; border-radius:999px}
-    .cats{padding:8px}
-    .cat{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 10px; border-radius:14px; cursor:pointer}
+    .btn.ghost{background: rgba(255,255,255,.03)}
+
+    /* Layout */
+    .grid{
+      display:grid;
+      grid-template-columns: 320px 1fr;
+      gap:14px;
+    }
+    @media (max-width: 980px){
+      .grid{grid-template-columns:1fr}
+    }
+
+    .panel{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      border-radius: var(--r2);
+      overflow:hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .panelHd{
+      padding:14px 14px;
+      display:flex; align-items:center; justify-content:space-between;
+      border-bottom:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+    }
+    .panelHd h2{
+      margin:0;
+      font-size:12px;
+      color:var(--muted);
+      font-weight:900;
+      letter-spacing:.35px;
+      text-transform:uppercase;
+    }
+    .badge{
+      font-size:12px;
+      color:var(--muted);
+      border:1px solid var(--line);
+      padding:5px 10px;
+      border-radius:999px;
+      background: rgba(255,255,255,.02);
+    }
+    .badge.liveOk{border-color: rgba(53,208,127,.35); color: rgba(233,238,247,.95); background: rgba(53,208,127,.10)}
+    .badge.liveBad{border-color: rgba(255,77,94,.35); color: rgba(233,238,247,.95); background: rgba(255,77,94,.10)}
+    .badge.liveWait{border-color: rgba(255,176,32,.35); color: rgba(233,238,247,.95); background: rgba(255,176,32,.10)}
+
+    /* Categories */
+    .cats{padding:10px}
+    .cat{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:10px;
+      padding:12px 12px;
+      border-radius:16px;
+      cursor:pointer;
+      border:1px solid transparent;
+    }
     .cat:hover{background: rgba(255,255,255,.04)}
-    .cat.active{border:1px solid rgba(77,163,255,.35); background: rgba(77,163,255,.10)}
+    .cat.active{
+      background: rgba(77,163,255,.10);
+      border-color: rgba(77,163,255,.35);
+    }
+    .catLeft{display:flex; align-items:center; gap:10px}
+    .catIcon{
+      width:28px; height:28px;
+      display:grid; place-items:center;
+      border:1px solid var(--line);
+      border-radius:10px;
+      background: rgba(255,255,255,.03);
+    }
+    .catName{font-weight:900}
+    .catCount{min-width:34px; text-align:center}
+
+    /* Main */
     .content{padding:14px}
     .hero{
       border:1px solid var(--line);
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
-      border-radius: var(--r);
+      border-radius: var(--r2);
       padding:14px;
       display:flex; align-items:flex-start; justify-content:space-between; gap:14px; flex-wrap:wrap;
     }
     .hero h1{margin:0; font-size:20px}
-    .hero p{margin:6px 0 0; color:var(--muted); line-height:1.35}
-    .mini{font-size:12px; color:var(--muted); margin-top:8px}
-    .quick{display:flex; gap:10px; flex-wrap:wrap}
-    .chip{display:inline-flex; align-items:center; gap:8px; border:1px solid var(--line); background: rgba(255,255,255,.04); padding:9px 11px; border-radius:14px; font-size:13px; cursor:pointer}
+    .hero p{margin:7px 0 0; color:var(--muted); line-height:1.35}
+    .mini{font-size:12px; color:var(--muted); margin-top:10px}
+
+    .quick{
+      display:flex; gap:10px; flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .chip{
+      display:inline-flex; align-items:center; gap:8px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      padding:10px 12px;
+      border-radius:16px;
+      font-size:13px;
+      cursor:pointer;
+      user-select:none;
+    }
     .chip:hover{background: rgba(255,255,255,.08)}
-    .cards{display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:12px; margin-top:12px}
-    @media (max-width: 760px){ .cards{grid-template-columns:1fr} }
-    .card{border:1px solid var(--line); background: rgba(255,255,255,.03); border-radius: var(--r); padding:14px; display:flex; flex-direction:column; gap:10px}
+    .chip.primary{border-color: rgba(77,163,255,.35); background: rgba(77,163,255,.12)}
+    .chip.good{border-color: rgba(53,208,127,.35); background: rgba(53,208,127,.10)}
+
+    .cards{
+      margin-top:12px;
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap:12px;
+    }
+    @media (max-width: 820px){ .cards{grid-template-columns:1fr} }
+
+    .card{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      border-radius: var(--r2);
+      padding:14px;
+      display:flex; flex-direction:column; gap:10px;
+    }
     .row{display:flex; align-items:flex-start; justify-content:space-between; gap:10px}
-    .name{font-weight:900}
+    .name{font-weight:950; letter-spacing:.2px}
     .meta{font-size:12px; color:var(--muted); line-height:1.35}
     .tags{display:flex; gap:8px; flex-wrap:wrap}
-    .tag{font-size:12px; border:1px solid var(--line); padding:5px 9px; border-radius:999px; color:var(--muted)}
+    .tag{
+      font-size:12px;
+      border:1px solid var(--line);
+      padding:6px 10px;
+      border-radius:999px;
+      color:var(--muted);
+      background: rgba(255,255,255,.02);
+    }
     .actions{display:flex; gap:8px; flex-wrap:wrap; margin-top:auto}
+
+    .favBtn{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      padding:10px 12px;
+      border-radius:14px;
+      cursor:pointer;
+      font-weight:900;
+    }
+    .favBtn.on{border-color: rgba(77,163,255,.35); background: rgba(77,163,255,.14)}
+    .favBtn:hover{background: rgba(255,255,255,.08)}
+
+    /* Toast */
     .toast{
-      position:fixed; left:50%; bottom:18px; transform:translateX(-50%);
+      position:fixed; left:50%; bottom:16px; transform:translateX(-50%);
       background: rgba(14,22,41,.92);
       border:1px solid var(--line);
       padding:10px 12px;
@@ -89,48 +251,57 @@
       color:var(--text);
       display:none;
       max-width: min(92vw, 560px);
+      box-shadow: 0 18px 45px rgba(0,0,0,.45);
+      z-index:200;
     }
     .toast.show{display:block}
+
+    footer{
+      color:rgba(169,180,199,.8);
+      font-size:12px;
+      text-align:center;
+      padding:14px 0 2px;
+    }
   </style>
 </head>
 
 <body>
 <header>
-  <div class="wrap top" style="padding:14px;">
+  <div class="wrap top">
     <div class="brand">
-      <div class="logo"></div>
-      <div>
-        <div class="title">JerseyGo</div>
+      <img src="./icon.svg" alt="JerseyGo icon">
+      <div class="t">
+        <div class="name">JerseyGo</div>
         <div class="sub">Parking LIVE • Parks • GP Clinics • Dentists • Pharmacies • Transport • Emergency</div>
       </div>
     </div>
 
-    <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end;">
-      <div class="pill">
-        <span style="opacity:.85">🔎</span>
-        <input id="q" placeholder="Search: car park, spaces, GP, dentist, pharmacy..." autocomplete="off" />
+    <div class="actionsTop">
+      <div class="search">
+        <span style="opacity:.9">🔎</span>
+        <input id="q" placeholder="Search: car park, spaces, GP, dentist, pharmacy…" autocomplete="off" />
       </div>
       <button id="favToggle" class="btn good">★ Favourites</button>
-      <button id="resetBtn" class="btn">Reset</button>
+      <button id="nearMeBtn" class="btn primary">📍 Near me</button>
+      <button id="resetBtn" class="btn ghost">Reset</button>
     </div>
   </div>
 </header>
 
 <div class="wrap grid">
   <aside class="panel">
-    <div class="hd">
+    <div class="panelHd">
       <h2>Categories</h2>
       <span id="countVisible" class="badge">0</span>
     </div>
     <div id="cats" class="cats"></div>
 
-    <div class="hd" style="border-top:1px solid var(--line);">
-      <h2>Live</h2>
-      <span class="badge" id="liveStatus">LIVE</span>
+    <div class="panelHd" style="border-top:1px solid var(--line);">
+      <h2>Live status</h2>
+      <span id="liveStatus" class="badge liveWait">LIVE…</span>
     </div>
-    <div style="padding:12px; color:var(--muted); font-size:12px; line-height:1.4;">
-      Car park spaces update automatically (multi-storey).<br/>
-      Tip: open “GP Clinics” and “Dentists” for direct Call/Email/Maps.
+    <div style="padding:12px 14px; color:var(--muted); font-size:12px; line-height:1.45;">
+      Live car park spaces update automatically. If “LIVE ✕” appears, the app will still show fallback car parks.
     </div>
   </aside>
 
@@ -139,23 +310,23 @@
       <div class="hero">
         <div>
           <h1 id="viewTitle">All services</h1>
-          <p id="viewDesc">Direct links + live car park spaces + GP clinics + dentist practices.</p>
-          <div class="mini" id="statsLine">Loading…</div>
+          <p id="viewDesc">Direct actions: Call • Email • Maps • Official pages.</p>
+          <div id="statsLine" class="mini">Loading…</div>
         </div>
 
         <div class="quick">
-          <a class="chip" href="https://www.gov.je/Travel/Motoring/Parking/pages/carparkspaces.aspx" target="_blank" rel="noopener">🅿️ Live spaces (gov.je)</a>
-          <a class="chip" href="https://www.gov.je/Health/DoctorDentist/Doctors/pages/gpsurgerylist.aspx" target="_blank" rel="noopener">🏥 Full GP list (gov.je)</a>
+          <a class="chip primary" href="https://www.gov.je/Travel/Motoring/Parking/pages/carparkspaces.aspx" target="_blank" rel="noopener">🅿️ Official Live</a>
+          <a class="chip" href="https://www.gov.je/Health/DoctorDentist/Doctors/pages/gpsurgerylist.aspx" target="_blank" rel="noopener">🏥 GP list</a>
+          <a class="chip" href="https://www.gov.je/Leisure/ParksGardens/pages/index.aspx" target="_blank" rel="noopener">🌳 Parks</a>
           <a class="chip" href="https://www.gov.je/Health/DoctorDentist/PharmacistsChemists/pages/pharmacyopeninghours.aspx" target="_blank" rel="noopener">💊 Pharmacy hours</a>
-          <button class="chip" id="nearMeBtn" type="button">📍 Near me</button>
         </div>
       </div>
 
       <div id="cards" class="cards"></div>
 
-      <div style="margin-top:14px; color:var(--muted); font-size:12px; line-height:1.45;">
-        Emergency: call <b>999</b> or <b>112</b>. Do not use while driving.
-      </div>
+      <footer>
+        Emergency: call <b>999</b> or <b>112</b> • JerseyGo (unofficial directory; uses official sources when possible)
+      </footer>
     </div>
   </main>
 </div>
@@ -163,11 +334,33 @@
 <div id="toast" class="toast"></div>
 
 <script>
-/* =========================
-   DATA
-   ========================= */
-const CATEGORY_ORDER = ["Emergency","Parking","Parks","GP Clinics","Dentists","Pharmacies","Transport"];
-const LS_FAVS = "jerseygo:favs:v4";
+/* =========================================================
+   JerseyGo — Single-file PWA (GitHub Pages)
+   ========================================================= */
+
+const $ = (id)=>document.getElementById(id);
+const norm = (s)=> (s||"").toLowerCase().trim();
+const escapeHtml = (s)=> (s||"")
+  .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+  .replaceAll('"',"&quot;").replaceAll("'","&#039;");
+
+const toast = (msg)=>{
+  const t = $("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(window.__toast);
+  window.__toast = setTimeout(()=>t.classList.remove("show"), 1600);
+};
+
+const telHref = (phone)=>{
+  const cleaned = (phone||"").replace(/[^\d+]/g,"");
+  return cleaned ? ("tel:" + cleaned) : "#";
+};
+const mailHref = (email)=> email ? ("mailto:" + email) : "#";
+const mapsUrl = (query)=> `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query || "Jersey")}`;
+
+const CATEGORY_ORDER = ["Emergency","Parking","Parks","GP Clinics","Dentists","Pharmacies","Transport","Utilities"];
+const LS_FAVS = "jerseygo:favs:v1";
 
 const state = {
   q: "",
@@ -175,20 +368,6 @@ const state = {
   showFavs: false,
   favs: new Set(JSON.parse(localStorage.getItem(LS_FAVS) || "[]"))
 };
-
-const $ = (id)=>document.getElementById(id);
-const toast = (msg)=>{
-  const t = $("toast");
-  t.textContent = msg;
-  t.classList.add("show");
-  clearTimeout(window.__t);
-  window.__t = setTimeout(()=>t.classList.remove("show"), 1600);
-};
-const norm = (s)=> (s||"").toLowerCase().trim();
-function escapeHtml(s){ return (s||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;"); }
-function mapsUrl(query){ return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query || "Jersey")}`; }
-function telHref(phone){ const cleaned = (phone||"").replace(/[^\d+]/g,""); return cleaned ? ("tel:" + cleaned) : "#"; }
-function mailHref(email){ return email ? ("mailto:" + email) : "#"; }
 
 function catIcon(cat){
   switch(cat){
@@ -200,113 +379,198 @@ function catIcon(cat){
     case "Dentists": return "🦷";
     case "Pharmacies": return "💊";
     case "Transport": return "🚌";
+    case "Utilities": return "⚡";
     default: return "•";
   }
 }
 
 /* -------------------------
-   GP CLINICS (in-app list)
-   Source: gov.je GP surgery list
+   Static directories (editable)
+   ------------------------- */
+
+const SERVICES_STATIC = [
+  {
+    id:"emergency-999",
+    category:"Emergency",
+    name:"Emergency services",
+    desc:"Police • Fire • Ambulance — for emergencies call 999 or 112.",
+    tags:["999","112"],
+    phone:"999",
+    links:[{label:"gov.je contacts", url:"https://www.gov.je/pages/contacts.aspx"}],
+    mapsQuery:"Police Jersey"
+  },
+
+  // Parking official hubs
+  {
+    id:"parking-hub",
+    category:"Parking",
+    name:"Parking (official hub)",
+    desc:"Rules, permits, EV, car parks and more.",
+    tags:["parking","rules"],
+    links:[{label:"Parking hub (gov.je)", url:"https://www.gov.je/Travel/Motoring/Parking/pages/index.aspx"}],
+    mapsQuery:"Parking St Helier"
+  },
+  {
+    id:"parking-paybyphone",
+    category:"Parking",
+    name:"PayByPhone Parking",
+    desc:"Pay parking by phone — official info + locations.",
+    tags:["PayByPhone","payment"],
+    links:[
+      {label:"Info (gov.je)", url:"https://www.gov.je/Travel/Motoring/Parking/PayForParking/pages/paybyphoneapp.aspx"},
+      {label:"Locations", url:"https://www.paybyphone.co.uk/locations/states-of-jersey"}
+    ],
+    mapsQuery:"PayByPhone Jersey"
+  },
+
+  // Parks
+  {
+    id:"parks-index",
+    category:"Parks",
+    name:"Parks & gardens (official index)",
+    desc:"Official list of public parks and gardens.",
+    tags:["official"],
+    links:[{label:"gov.je", url:"https://www.gov.je/Leisure/ParksGardens/pages/index.aspx"}],
+    mapsQuery:"Parks Jersey"
+  },
+  {
+    id:"parks-howard",
+    category:"Parks",
+    name:"Howard Davis Park",
+    desc:"Public park & gardens (official info).",
+    tags:["St Saviour"],
+    links:[{label:"Info", url:"https://www.gov.je/Leisure/ParksGardens/pages/howarddavispark.aspx"}],
+    mapsQuery:"Howard Davis Park Jersey"
+  },
+  {
+    id:"parks-millennium",
+    category:"Parks",
+    name:"Millennium Town Park",
+    desc:"Public town park (official info).",
+    tags:["St Helier"],
+    links:[{label:"Info", url:"https://www.gov.je/Leisure/ParksGardens/pages/millenniumtownpark.aspx"}],
+    mapsQuery:"Millennium Town Park Jersey"
+  },
+  {
+    id:"parks-coronation",
+    category:"Parks",
+    name:"Coronation Park",
+    desc:"Millbrook park area (official info).",
+    tags:["Millbrook","St Lawrence"],
+    links:[{label:"Info", url:"https://www.gov.je/Leisure/ParksGardens/pages/coronationpark.aspx"}],
+    mapsQuery:"Coronation Park Jersey"
+  },
+
+  // Pharmacies
+  {
+    id:"pharm-hours",
+    category:"Pharmacies",
+    name:"Pharmacy opening hours",
+    desc:"Official list of pharmacy opening hours.",
+    tags:["official","opening hours"],
+    links:[{label:"gov.je", url:"https://www.gov.je/Health/DoctorDentist/PharmacistsChemists/pages/pharmacyopeninghours.aspx"}],
+    mapsQuery:"Pharmacy St Helier"
+  },
+
+  // Transport
+  {
+    id:"transport-liberty",
+    category:"Transport",
+    name:"LibertyBus",
+    desc:"Routes, timetables and tickets.",
+    tags:["bus","timetable"],
+    links:[{label:"Website", url:"https://libertybus.je/"}],
+    mapsQuery:"Liberation Station Jersey"
+  },
+  {
+    id:"transport-airport",
+    category:"Transport",
+    name:"Jersey Airport",
+    desc:"Flights, departures and contact.",
+    tags:["airport"],
+    links:[{label:"Website", url:"https://www.jerseyairport.com/"}],
+    mapsQuery:"Jersey Airport"
+  },
+
+  // Utilities
+  {
+    id:"util-electricity",
+    category:"Utilities",
+    name:"Jersey Electricity",
+    desc:"Electricity provider.",
+    tags:["utilities"],
+    links:[{label:"Website", url:"https://www.jec.co.uk/"}],
+    mapsQuery:"Jersey Electricity"
+  },
+  {
+    id:"util-water",
+    category:"Utilities",
+    name:"Jersey Water",
+    desc:"Water services.",
+    tags:["utilities"],
+    links:[{label:"Website", url:"https://www.jerseywater.je/"}],
+    mapsQuery:"Jersey Water"
+  }
+];
+
+/* -------------------------
+   GP Clinics (in-app list)
    ------------------------- */
 const GP_CLINICS = [
-  { id:"gp-clifden", name:"Clifden Surgery", address:"7 Nelson Street, St Helier, JE2 4TL", phone:"+44 (0)1534 726705", email:"reception@clifden.gpnet.je", maps:"Clifden Surgery 7 Nelson Street St Helier Jersey" },
-  { id:"gp-7david", name:"7 David Place", address:"7 David Place, St Helier, JE2 4TD", phone:"+44 (0)1534 736666", email:"practice@7davidplace.gpnet.je", maps:"7 David Place St Helier Jersey" },
-  { id:"gp-windsor", name:"Windsor Medical Practice", address:"Suite 3.05, The Lido Medical Centre, St Saviours Road, St Saviour, JE2 7LA", phone:"+44 (0)1534 732341", email:"practice@windsor.gpnet.je", maps:"Windsor Medical Practice Lido Medical Centre Jersey" },
-  { id:"gp-lister-town", name:"Lister Surgery (Town)", address:"Number 8 The Parade, St Helier, JE2 3QP", phone:"+44 (0)1534 736336", email:"admin@listersurgery.gpnet.je", maps:"Lister Surgery 8 The Parade St Helier Jersey" },
-  { id:"gp-lister-quennevais", name:"Lister Surgery (Quennevais)", address:"Quennevais Parade, St Brelade, JE3 8FX", phone:"+44 (0)1534 741641", email:"admin@listersurgery.gpnet.je", maps:"Lister Surgery Quennevais Parade Jersey" },
-  { id:"gp-routedufort", name:"Route du Fort Surgery", address:"Lido Medical Centre, St Saviours Road, St Saviour, JE2 7LA", phone:"+44 (0)1534 731421", email:"routedufort@rdf.gpnet.je", maps:"Route du Fort Surgery Lido Medical Centre Jersey" },
-  { id:"gp-healthplus", name:"Health Plus", address:"Queens Road Health Centre, Queens Road, St Helier, JE2 4HY", phone:"+44 (0)1534 733322", email:"healthplus@healthplus.gpnet.je", maps:"Queens Road Health Centre Jersey" },
-  { id:"gp-indigo-town", name:"Indigo Medical (Town)", address:"Indigo House, 2-8 Oxford Road, St Helier, JE1 4HB", phone:"+44 (0)1534 730541", email:"indigomedical@indigo.gpnet.je", maps:"Indigo House Oxford Road St Helier Jersey" },
-  { id:"gp-indigo-leodis", name:"Indigo Medical (Leodis)", address:"Leodis, Route de Quennevais, St Brelade, JE3 8LL", phone:"+44 (0)1534 498775", email:"indigomedical@indigo.gpnet.je", maps:"Leodis Route de Quennevais St Brelade Jersey" },
-  { id:"gp-cleveland-town", name:"Cleveland Clinic (Town)", address:"12 Cleveland Road, St Helier, JE1 4HD", phone:"+44 (0)1534 722381", email:"town@clevelandclinic.gpnet.je", maps:"Cleveland Clinic 12 Cleveland Road St Helier Jersey" },
-  { id:"gp-cleveland-redhouses", name:"Cleveland Clinic (Red Houses)", address:"Unit B, Millennium Properties Arcade, Red Houses, JE3 8GP", phone:"+44 (0)1534 745511", email:"accounts@clevelandclinic.gpnet.je", maps:"Cleveland Clinic Millennium Properties Arcade Red Houses Jersey" },
-  { id:"gp-imc-gloucester", name:"Island Medical Centre (St Helier)", address:"14 Gloucester Street, St Helier, JE2 3QR", phone:"+44 (0)1534 516151", email:"info@imc.je", maps:"Island Medical Centre 14 Gloucester Street Jersey" },
-  { id:"gp-imc-redhouses", name:"Island Medical Centre (Red Houses)", address:"Unit 2 Centre Point, Red Houses, St Brelade, JE3 8LB", phone:"+44 (0)1534 516152", email:"info@imc.je", maps:"Island Medical Centre Centre Point Red Houses Jersey" },
-  { id:"gp-imc-stjohn", name:"Island Medical Centre (St John)", address:"Temple Court, St John, JE3 4BJ", phone:"+44 (0)1534 516153", email:"info@imc.je", maps:"Temple Court St John Jersey" },
-  { id:"gp-imc-grouville", name:"Island Medical Centre (Grouville)", address:"Fernlea, La Grande Route des Sablons, Grouville, JE3 9FR", phone:"+44 (0)1534 516154", email:"info@imc.je", maps:"Fernlea La Grande Route des Sablons Grouville Jersey" },
-  { id:"gp-castlequay", name:"Castle Quay Medical Practice", address:"La Rue De L'Etau, St Helier, JE2 3EH", phone:"+44 (0)1534 833833", email:"accounts@castlequay.gpnet.je", maps:"Castle Quay Medical Practice La Rue De L'Etau Jersey" },
-  { id:"gp-firstmedical-bath", name:"First Medical (Bath Street)", address:"Bath Street Medical Centre, 87-91 Bath Street, St Helier, JE2 4SU", phone:"+44 (0)1534 723318", email:"admin@firstmedical.gpnet.je", maps:"Bath Street Medical Centre Jersey" },
-  { id:"gp-firstmedical-stpeter", name:"First Medical (St Peter)", address:"Rue De L'Eglise, St Peter, JE3 7AG", phone:"+44 (0)1534 723318", email:"admin@firstmedical.gpnet.je", maps:"Rue De L'Eglise St Peter Jersey" },
-  { id:"gp-firstmedical-newera", name:"First Medical (New Era)", address:"New Era, Georgetown", phone:"+44 (0)1534 723318", email:"admin@firstmedical.gpnet.je", maps:"New Era Health Centre Victoria Road St Clement Jersey" },
-  { id:"gp-stmartin", name:"St Martin Surgery", address:"La Vielle Ecole, La Rue de la Croix Au Maitre, St Martin, JE3 6HW", phone:"+44 (0)1534 500090", email:"Practice@stmartinsurgery.gpnet.je", maps:"St Martin Surgery La Rue de la Croix Au Maitre Jersey" },
-  { id:"gp-comovilla", name:"Como Villa Surgery", address:"7 Clarendon Road, St Helier, JE2 3YS", phone:"+44 (0)1534 870151", email:"reception@atlantic.gpnet.je", maps:"Como Villa Surgery 7 Clarendon Road Jersey" },
-  { id:"gp-lido", name:"Lido Medical Practice", address:"The Lido Medical Centre, St Saviours Road, St Saviour, JE1 7XP", phone:"+44 (0)1534 723892", email:"lidomedicalpractice@lmp.gpnet.je", maps:"Lido Medical Centre St Saviours Road Jersey" }
+  { id:"gp-clifden", name:"Clifden Surgery", address:"7 Nelson Street, St Helier, JE2 4TL", phone:"+44 1534 726705", email:"reception@clifden.gpnet.je", maps:"Clifden Surgery 7 Nelson Street St Helier Jersey" },
+  { id:"gp-7david", name:"7 David Place", address:"7 David Place, St Helier, JE2 4TD", phone:"+44 1534 736666", email:"practice@7davidplace.gpnet.je", maps:"7 David Place St Helier Jersey" },
+  { id:"gp-windsor", name:"Windsor Medical Practice", address:"Suite 3.05, The Lido Medical Centre, St Saviours Road, St Saviour, JE2 7LA", phone:"+44 1534 732341", email:"practice@windsor.gpnet.je", maps:"Windsor Medical Practice Lido Medical Centre Jersey" },
+  { id:"gp-lister-town", name:"Lister Surgery (Town)", address:"8 The Parade, St Helier, JE2 3QP", phone:"+44 1534 736336", email:"admin@listersurgery.gpnet.je", maps:"Lister Surgery 8 The Parade St Helier Jersey" },
+  { id:"gp-lister-quennevais", name:"Lister Surgery (Quennevais)", address:"Quennevais Parade, St Brelade, JE3 8FX", phone:"+44 1534 741641", email:"admin@listersurgery.gpnet.je", maps:"Lister Surgery Quennevais Parade Jersey" },
+  { id:"gp-routedufort", name:"Route du Fort Surgery", address:"Lido Medical Centre, St Saviours Road, St Saviour, JE2 7LA", phone:"+44 1534 731421", email:"routedufort@rdf.gpnet.je", maps:"Route du Fort Surgery Lido Medical Centre Jersey" },
+  { id:"gp-healthplus", name:"Health Plus", address:"Queens Road Health Centre, Queens Road, St Helier, JE2 4HY", phone:"+44 1534 733322", email:"healthplus@healthplus.gpnet.je", maps:"Queens Road Health Centre Jersey" },
+  { id:"gp-indigo-town", name:"Indigo Medical (Town)", address:"Indigo House, 2-8 Oxford Road, St Helier, JE1 4HB", phone:"+44 1534 730541", email:"indigomedical@indigo.gpnet.je", maps:"Indigo House Oxford Road St Helier Jersey" },
+  { id:"gp-indigo-leodis", name:"Indigo Medical (Leodis)", address:"Leodis, Route de Quennevais, St Brelade, JE3 8LL", phone:"+44 1534 498775", email:"indigomedical@indigo.gpnet.je", maps:"Leodis Route de Quennevais St Brelade Jersey" },
+  { id:"gp-cleveland-town", name:"Cleveland Clinic (Town)", address:"12 Cleveland Road, St Helier, JE1 4HD", phone:"+44 1534 722381", email:"town@clevelandclinic.gpnet.je", maps:"Cleveland Clinic 12 Cleveland Road St Helier Jersey" },
+  { id:"gp-cleveland-redhouses", name:"Cleveland Clinic (Red Houses)", address:"Unit B, Millennium Properties Arcade, Red Houses, JE3 8GP", phone:"+44 1534 745511", email:"accounts@clevelandclinic.gpnet.je", maps:"Cleveland Clinic Red Houses Jersey" },
+  { id:"gp-imc-gloucester", name:"Island Medical Centre (St Helier)", address:"14 Gloucester Street, St Helier, JE2 3QR", phone:"+44 1534 516151", email:"info@imc.je", maps:"Island Medical Centre 14 Gloucester Street Jersey" },
+  { id:"gp-imc-redhouses", name:"Island Medical Centre (Red Houses)", address:"Centre Point, Red Houses, St Brelade, JE3 8LB", phone:"+44 1534 516152", email:"info@imc.je", maps:"Island Medical Centre Red Houses Jersey" },
+  { id:"gp-imc-stjohn", name:"Island Medical Centre (St John)", address:"Temple Court, St John, JE3 4BJ", phone:"+44 1534 516153", email:"info@imc.je", maps:"Temple Court St John Jersey" },
+  { id:"gp-imc-grouville", name:"Island Medical Centre (Grouville)", address:"Fernlea, La Grande Route des Sablons, Grouville, JE3 9FR", phone:"+44 1534 516154", email:"info@imc.je", maps:"La Grande Route des Sablons Grouville Jersey" },
+  { id:"gp-castlequay", name:"Castle Quay Medical Practice", address:"La Rue De L'Etau, St Helier, JE2 3EH", phone:"+44 1534 833833", email:"accounts@castlequay.gpnet.je", maps:"Castle Quay Medical Practice Jersey" },
+  { id:"gp-firstmedical-bath", name:"First Medical (Bath Street)", address:"87-91 Bath Street, St Helier, JE2 4SU", phone:"+44 1534 723318", email:"admin@firstmedical.gpnet.je", maps:"Bath Street Medical Centre Jersey" },
+  { id:"gp-firstmedical-stpeter", name:"First Medical (St Peter)", address:"Rue De L'Eglise, St Peter, JE3 7AG", phone:"+44 1534 723318", email:"admin@firstmedical.gpnet.je", maps:"Rue De L'Eglise St Peter Jersey" },
+  { id:"gp-firstmedical-newera", name:"First Medical (New Era)", address:"New Era (Georgetown)", phone:"+44 1534 723318", email:"admin@firstmedical.gpnet.je", maps:"New Era Georgetown Jersey" },
+  { id:"gp-stmartin", name:"St Martin Surgery", address:"La Vielle Ecole, St Martin, JE3 6HW", phone:"+44 1534 500090", email:"practice@stmartinsurgery.gpnet.je", maps:"St Martin Surgery Jersey" },
+  { id:"gp-comovilla", name:"Como Villa Surgery", address:"7 Clarendon Road, St Helier, JE2 3YS", phone:"+44 1534 870151", email:"reception@atlantic.gpnet.je", maps:"Como Villa Surgery Clarendon Road Jersey" },
+  { id:"gp-lido", name:"Lido Medical Practice", address:"The Lido Medical Centre, St Saviours Road, St Saviour", phone:"+44 1534 723892", email:"lidomedicalpractice@lmp.gpnet.je", maps:"Lido Medical Centre St Saviours Road Jersey" }
 ];
 
 /* -------------------------
-   DENTISTS (in-app list)
-   Mix: official hospital dental + major practices (websites)
+   Dentists (in-app list)
    ------------------------- */
 const DENTISTS = [
-  { id:"dent-hospital", name:"Dental Department (General Hospital)", address:"General Hospital, Newgate Street, St Helier, JE1 3QS", phone:"01534 445300", email:"dental@health.gov.je",
-    website:"https://www.gov.je/Health/DoctorDentist/Dentists/pages/hospital.aspx", maps:"Dental Department General Hospital Newgate Street Jersey" },
-
-  { id:"dent-dentalstudio", name:"The Dental Studio", address:"7 Le Capelain House, Castle Quay, Le Rue De L’Etau, St Helier, JE2 3EH", phone:"01534 731113", email:"reception.desk@dentistjersey.com",
-    website:"https://dentistjersey.je/", maps:"The Dental Studio Castle Quay St Helier Jersey" },
-
-  { id:"dent-parade", name:"Parade Dental Group", address:"24 The Parade, St Helier, JE2 3QQ", phone:"01534 725520", email:"admin@paradedentalpractice.co.uk",
-    website:"https://paradedentalpractice.co.uk/", maps:"Parade Dental Practice 24 The Parade St Helier Jersey" },
-
-  { id:"dent-smile", name:"@Smile Dental Clinic", address:"14 Gloucester Street, St Helier, JE2 3QR", phone:"01534 745467", email:"info@at-smile.co.uk",
-    website:"https://www.at-smile.co.uk/", maps:"@Smile dental clinic 14 Gloucester Street St Helier Jersey" },
-
-  { id:"dent-indigo", name:"Indigo Dental Practice", address:"Indigo House, 2-8 Oxford Road, St Helier, JE1 4HB", phone:"01534 723556", email:"info@indigodentalpractice.com",
-    website:"https://indigodentalpractice.com/", maps:"Indigo House Oxford Road St Helier Jersey" },
-
-  { id:"dent-excellence", name:"Dental Excellence", address:"1 Quennevais Parade, St Brelade, JE3 8FX", phone:"01534 747780", email:"contact@dentalexcellence.je",
-    website:"https://dentalexcellence.je/", maps:"Dental Excellence 1 Quennevais Parade St Brelade Jersey" },
-
-  { id:"dent-laretraite", name:"La Retraite Jersey Dental Care", address:"La Rue de Fosses, St Peter, JE3 7AH", phone:"01534 483838", email:"reception@lrjerseydentalcare.com",
-    website:"https://www.lrjerseydentalcare.com/", maps:"La Retraite Jersey Dental Care St Peter JE3 7AH" }
+  { id:"dent-hospital", name:"Dental Department (General Hospital)", address:"General Hospital, Newgate Street, St Helier, JE1 3QS", phone:"01534 445300", email:"dental@health.gov.je", website:"https://www.gov.je/Health/DoctorDentist/Dentists/pages/hospital.aspx", maps:"Dental Department General Hospital Jersey" },
+  { id:"dent-dentalstudio", name:"The Dental Studio", address:"Castle Quay, St Helier, JE2 3EH", phone:"01534 731113", email:"reception.desk@dentistjersey.com", website:"https://dentistjersey.je/", maps:"The Dental Studio Castle Quay Jersey" },
+  { id:"dent-parade", name:"Parade Dental Group", address:"24 The Parade, St Helier, JE2 3QQ", phone:"01534 725520", email:"admin@paradedentalpractice.co.uk", website:"https://paradedentalpractice.co.uk/", maps:"Parade Dental Practice 24 The Parade Jersey" },
+  { id:"dent-smile", name:"@Smile Dental Clinic", address:"14 Gloucester Street, St Helier, JE2 3QR", phone:"01534 745467", email:"info@at-smile.co.uk", website:"https://www.at-smile.co.uk/", maps:"@Smile dental clinic Gloucester Street Jersey" },
+  { id:"dent-indigo", name:"Indigo Dental Practice", address:"Indigo House, Oxford Road, St Helier, JE1 4HB", phone:"01534 723556", email:"info@indigodentalpractice.com", website:"https://indigodentalpractice.com/", maps:"Indigo Dental Practice Oxford Road Jersey" },
+  { id:"dent-excellence", name:"Dental Excellence", address:"Quennevais Parade, St Brelade, JE3 8FX", phone:"01534 747780", email:"contact@dentalexcellence.je", website:"https://dentalexcellence.je/", maps:"Dental Excellence Quennevais Parade Jersey" },
+  { id:"dent-laretraite", name:"La Retraite Jersey Dental Care", address:"St Peter, JE3 7AH", phone:"01534 483838", email:"reception@lrjerseydentalcare.com", website:"https://www.lrjerseydentalcare.com/", maps:"La Retraite Jersey Dental Care St Peter" }
 ];
 
 /* -------------------------
-   Static services
+   Live Parking (per car park)
    ------------------------- */
-const SERVICES = [
-  { id:"emergency", category:"Emergency", name:"Emergency services (Police / Fire / Ambulance)", desc:"Call 999 or 112 for emergencies.", tags:["999","112"], phone:"999",
-    links:[{label:"gov.je contacts", url:"https://www.gov.je/pages/contacts.aspx"}], mapsQuery:"Police Jersey" },
+const GOVJE_LIVE_URL = "https://www.gov.je/Travel/Motoring/Parking/pages/carparkspaces.aspx";
 
-  // PARKING hubs
-  { id:"parking-hub", category:"Parking", name:"Parking (official hub)", desc:"Rules, permits, EV, car parks and more.", tags:["parking","rules"],
-    links:[{label:"Parking hub (gov.je)", url:"https://www.gov.je/Travel/Motoring/Parking/pages/index.aspx"}], mapsQuery:"Parking St Helier" },
-
-  { id:"parking-carparks", category:"Parking", name:"Car parks (long & short stay)", desc:"Official list + rules (short/long stay).", tags:["short stay","long stay"],
-    links:[{label:"Car parks (gov.je)", url:"https://www.gov.je/Travel/Motoring/Parking/pages/carparks.aspx"}], mapsQuery:"Car parks St Helier" },
-
-  { id:"parking-paybyphone", category:"Parking", name:"PayByPhone (States of Jersey)", desc:"Official PayByPhone info + locations.", tags:["PayByPhone","payment"],
-    links:[
-      {label:"PayByPhone info (gov.je)", url:"https://www.gov.je/Travel/Motoring/Parking/PayForParking/pages/paybyphoneapp.aspx"},
-      {label:"PayByPhone locations", url:"https://www.paybyphone.co.uk/locations/states-of-jersey"}
-    ], mapsQuery:"PayByPhone Jersey" },
-
-  // PARKS
-  { id:"parks-index", category:"Parks", name:"Parks & gardens (official index)", desc:"Official list of parks and gardens.", tags:["parks","official"],
-    links:[{label:"Parks & gardens (gov.je)", url:"https://www.gov.je/Leisure/ParksGardens/pages/index.aspx"}], mapsQuery:"Parks Jersey" },
-
-  { id:"parks-howard", category:"Parks", name:"Howard Davis Park", desc:"Official page with facilities and rules.", tags:["St Saviour","park"],
-    links:[{label:"Howard Davis Park (gov.je)", url:"https://www.gov.je/Leisure/ParksGardens/pages/howarddavispark.aspx"}], mapsQuery:"Howard Davis Park Jersey" },
-
-  { id:"parks-millennium", category:"Parks", name:"Millennium Town Park", desc:"Official page with entrances and facilities.", tags:["St Helier","park"],
-    links:[{label:"Millennium Town Park (gov.je)", url:"https://www.gov.je/Leisure/ParksGardens/pages/millenniumtownpark.aspx"}], mapsQuery:"Millennium Town Park Jersey" },
-
-  { id:"parks-coronation", category:"Parks", name:"Coronation Park (Millbrook)", desc:"Official park info.", tags:["St Lawrence","park"],
-    links:[{label:"Coronation Park (gov.je)", url:"https://www.gov.je/Leisure/ParksGardens/pages/coronationpark.aspx"}], mapsQuery:"Coronation Park Jersey" },
-
-  // PHARMACIES
-  { id:"pharm-hours", category:"Pharmacies", name:"Pharmacy opening hours (official)", desc:"Official pharmacy opening hours list.", tags:["pharmacy","opening hours"],
-    links:[{label:"Pharmacy opening hours (gov.je)", url:"https://www.gov.je/Health/DoctorDentist/PharmacistsChemists/pages/pharmacyopeninghours.aspx"}], mapsQuery:"Pharmacy St Helier" },
-
-  // TRANSPORT
-  { id:"libertybus", category:"Transport", name:"LibertyBus", desc:"Routes, timetables and tickets.", tags:["bus","timetable"],
-    links:[{label:"LibertyBus", url:"https://libertybus.je/"}], mapsQuery:"Liberation Station Jersey" },
-
-  { id:"airport", category:"Transport", name:"Jersey Airport", desc:"Flights, departures and contact.", tags:["airport","flights"],
-    links:[{label:"Jersey Airport", url:"https://www.jerseyairport.com/"}], mapsQuery:"Jersey Airport" }
+// Multi-storey live counters (fallback list always shown)
+const LIVE_FALLBACK = [
+  { code:"charles", name:"Charles Street", mapsQuery:"Charles Street car park St Helier Jersey" },
+  { code:"green", name:"Green Street", mapsQuery:"Green Street car park St Helier Jersey" },
+  { code:"lesjardin", name:"Les Jardin", mapsQuery:"Les Jardin car park St Helier Jersey" },
+  { code:"minden", name:"Minden Place", mapsQuery:"Minden Place car park St Helier Jersey" },
+  { code:"patriotic", name:"Patriotic Street", mapsQuery:"Patriotic Street car park St Helier Jersey" },
+  { code:"pier", name:"Pier Road", mapsQuery:"Pier Road car park St Helier Jersey" },
+  { code:"sand", name:"Sand Street", mapsQuery:"Sand Street car park St Helier Jersey" }
 ];
 
-/* Live parking injected into Parking category */
-let LIVE_SPACES = [];
+let LIVE_SPACES = LIVE_FALLBACK.map(x => ({...x, spaces:"—", open:true, status:"LIVE"}));
 
 function buildLiveParkingServices(){
   return LIVE_SPACES.map(x => ({
@@ -314,22 +578,27 @@ function buildLiveParkingServices(){
     category: "Parking",
     name: `LIVE: ${x.name}`,
     desc: `${x.open ? "Open" : "Closed"} • Spaces available: ${x.spaces}`,
-    tags: ["live spaces", x.status || "status", (x.payByPhoneCode ? ("PayByPhone " + x.payByPhoneCode) : "PayByPhone")],
-    links: [{ label:"Open live page (gov.je)", url:"https://www.gov.je/Travel/Motoring/Parking/pages/carparkspaces.aspx" }],
-    mapsQuery: x.mapsQuery || (x.name + " car park Jersey")
+    tags: ["live spaces","multi-storey"],
+    links: [
+      { label:"Official LIVE (gov.je)", url: GOVJE_LIVE_URL }
+    ],
+    mapsQuery: x.mapsQuery
   }));
 }
 
+/* -------------------------
+   Build services
+   ------------------------- */
 function buildGPServices(){
   return GP_CLINICS.map(g => ({
     id: g.id,
     category: "GP Clinics",
     name: g.name,
     desc: g.address,
-    tags: ["GP", "clinic"],
+    tags: ["GP","clinic"],
     phone: g.phone,
     email: g.email,
-    links: [{ label:"Full GP list (gov.je)", url:"https://www.gov.je/Health/DoctorDentist/Doctors/pages/gpsurgerylist.aspx" }],
+    links: [{ label:"Official GP list (gov.je)", url:"https://www.gov.je/Health/DoctorDentist/Doctors/pages/gpsurgerylist.aspx" }],
     mapsQuery: g.maps
   }));
 }
@@ -340,23 +609,26 @@ function buildDentistServices(){
     category: "Dentists",
     name: d.name,
     desc: d.address,
-    tags: ["dentist", "dental"],
+    tags: ["dentist","dental"],
     phone: d.phone,
     email: d.email,
-    links: d.website ? [{ label:"Website", url: d.website }] : [],
+    links: d.website ? [{ label:"Website", url:d.website }] : [],
     mapsQuery: d.maps
   }));
 }
 
-function allServicesMerged(){
+function allServices(){
   return [
     ...buildLiveParkingServices(),
-    ...SERVICES,
+    ...SERVICES_STATIC,
     ...buildGPServices(),
     ...buildDentistServices()
   ];
 }
 
+/* -------------------------
+   Search/filter
+   ------------------------- */
 function matchesQuery(svc, q){
   if(!q) return true;
   const hay = [
@@ -371,39 +643,37 @@ function matchesQuery(svc, q){
 }
 
 function visibleServices(){
-  return allServicesMerged()
-    .filter(svc => (state.category === "All" ? true : svc.category === state.category))
-    .filter(svc => state.showFavs ? state.favs.has(svc.id) : true)
-    .filter(svc => matchesQuery(svc, state.q));
+  return allServices()
+    .filter(s => state.category === "All" ? true : s.category === state.category)
+    .filter(s => state.showFavs ? state.favs.has(s.id) : true)
+    .filter(s => matchesQuery(s, state.q));
 }
 
-/* =========================
-   RENDER
-   ========================= */
+/* -------------------------
+   Render
+   ------------------------- */
 function renderCats(){
-  const catsEl = $("cats");
-  const merged = allServicesMerged();
+  const merged = allServices();
   const counts = merged.reduce((acc, s)=>{ acc[s.category]=(acc[s.category]||0)+1; return acc; },{});
-  const allCount = merged.length;
+  const cats = ["All", ...CATEGORY_ORDER.filter(c => counts[c])];
 
-  const cats = ["All", ...CATEGORY_ORDER.filter(c=>counts[c])];
-  catsEl.innerHTML = cats.map(cat=>{
-    const count = cat==="All" ? allCount : (counts[cat]||0);
+  $("cats").innerHTML = cats.map(cat=>{
+    const count = cat==="All" ? merged.length : (counts[cat]||0);
     const active = (state.category===cat) ? "active" : "";
     return `
-      <div class="cat ${active}" data-cat="${cat}">
-        <div style="display:flex; align-items:center; gap:10px;">
-          <span style="opacity:.92">${catIcon(cat)}</span>
-          <div style="font-weight:900">${escapeHtml(cat)}</div>
+      <div class="cat ${active}" data-cat="${escapeHtml(cat)}">
+        <div class="catLeft">
+          <div class="catIcon">${catIcon(cat)}</div>
+          <div class="catName">${escapeHtml(cat)}</div>
         </div>
-        <span class="badge">${count}</span>
+        <div class="badge catCount">${count}</div>
       </div>
     `;
   }).join("");
 
-  [...catsEl.querySelectorAll(".cat")].forEach(el=>{
+  [...document.querySelectorAll(".cat[data-cat]")].forEach(el=>{
     el.addEventListener("click", ()=>{
-      state.category = el.dataset.cat;
+      state.category = el.getAttribute("data-cat");
       renderAll(false);
     });
   });
@@ -411,56 +681,56 @@ function renderCats(){
 
 function renderHeader(){
   const list = visibleServices();
-  const catTxt = (state.category==="All") ? "All services" : state.category;
-  $("viewTitle").textContent = `${catTxt} (${list.length})`;
+  const title = (state.category==="All") ? "All services" : state.category;
+  $("viewTitle").textContent = `${title} (${list.length})`;
 
-  if(state.category === "GP Clinics"){
-    $("viewDesc").textContent = "GP clinics with direct Call/Email/Maps + official gov.je backup link.";
+  if(state.category === "Parking"){
+    $("viewDesc").textContent = "Live multi-storey spaces + official parking links.";
+  } else if(state.category === "GP Clinics"){
+    $("viewDesc").textContent = "GP clinics with direct Call / Email / Maps + official list link.";
   } else if(state.category === "Dentists"){
-    $("viewDesc").textContent = "Dentist practices with direct Call/Email/Maps + hospital dental department.";
-  } else if(state.category === "Parking"){
-    $("viewDesc").textContent = "Live multi-storey spaces + parking rules and PayByPhone links.";
+    $("viewDesc").textContent = "Dentists with direct Call / Email / Maps + websites.";
+  } else if(state.showFavs){
+    $("viewDesc").textContent = "Your saved services for one-tap access.";
   } else {
-    $("viewDesc").textContent = state.showFavs ? "Saved services for one-tap access." : "Direct links + live spaces + clinics.";
+    $("viewDesc").textContent = "Direct actions: Call • Email • Maps • Official pages.";
   }
 
-  $("statsLine").textContent = `${list.length} showing • Live spaces refresh every ~2 min`;
+  $("statsLine").textContent = `Showing ${list.length} • Live spaces refresh every ~2 minutes`;
   $("countVisible").textContent = list.length;
 }
 
 function renderCards(){
-  const cardsEl = $("cards");
   const list = visibleServices();
+  const el = $("cards");
 
   if(!list.length){
-    cardsEl.innerHTML = `
+    el.innerHTML = `
       <div class="card" style="grid-column:1/-1;">
         <div class="name">No results</div>
-        <div class="meta">Try: “spaces”, “GP”, “Clifden”, “dentist”, “pharmacy”.</div>
+        <div class="meta">Try: “spaces”, “Charles”, “GP”, “dentist”, “pharmacy”.</div>
       </div>
     `;
     return;
   }
 
-  cardsEl.innerHTML = list.map(svc=>{
-    const isFav = state.favs.has(svc.id);
-    const tags = (svc.tags||[]).slice(0,8).map(t=>`<span class="tag">${escapeHtml(String(t))}</span>`).join("");
+  el.innerHTML = list.map(s=>{
+    const isFav = state.favs.has(s.id);
+    const tags = (s.tags||[]).slice(0,9).map(t=>`<span class="tag">${escapeHtml(String(t))}</span>`).join("");
 
-    const phoneBtn = svc.phone ? `<a class="chip" href="${telHref(svc.phone)}">📞 Call</a>` : "";
-    const emailBtn = svc.email ? `<a class="chip" href="${mailHref(svc.email)}">✉️ Email</a>` : "";
-    const mapsBtn = `<a class="chip" href="${mapsUrl(svc.mapsQuery || (svc.name + " Jersey"))}" target="_blank" rel="noopener">🗺️ Maps</a>`;
-    const links = (svc.links||[]).slice(0,4).map(l=>`<a class="chip" href="${l.url}" target="_blank" rel="noopener">↗ ${escapeHtml(l.label)}</a>`).join("");
+    const phoneBtn = s.phone ? `<a class="chip" href="${telHref(s.phone)}">📞 Call</a>` : "";
+    const emailBtn = s.email ? `<a class="chip" href="${mailHref(s.email)}">✉️ Email</a>` : "";
+    const mapsBtn = `<a class="chip" href="${mapsUrl(s.mapsQuery || (s.name + " Jersey"))}" target="_blank" rel="noopener">🗺️ Maps</a>`;
+    const links = (s.links||[]).slice(0,3).map(l=>`<a class="chip primary" href="${l.url}" target="_blank" rel="noopener">↗ ${escapeHtml(l.label)}</a>`).join("");
 
     return `
       <div class="card">
         <div class="row">
           <div>
-            <div class="name">${escapeHtml(svc.name)}</div>
-            <div class="meta">${escapeHtml(svc.desc || "")}</div>
+            <div class="name">${escapeHtml(s.name)}</div>
+            <div class="meta">${escapeHtml(s.desc || "")}</div>
           </div>
-          <button class="btn ${isFav ? "accent" : ""}" data-fav="${escapeHtml(svc.id)}" style="padding:8px 10px;">
-            ${isFav ? "★" : "☆"}
-          </button>
+          <button class="favBtn ${isFav ? "on" : ""}" data-fav="${escapeHtml(s.id)}">${isFav ? "★" : "☆"}</button>
         </div>
 
         <div class="tags">${tags}</div>
@@ -470,30 +740,33 @@ function renderCards(){
           ${emailBtn}
           ${mapsBtn}
           ${links}
-          <button class="chip" type="button" data-copy="${escapeHtml(svc.id)}">📋 Copy</button>
+          <button class="chip" type="button" data-copy="${escapeHtml(s.id)}">📋 Copy</button>
         </div>
       </div>
     `;
   }).join("");
 
-  [...cardsEl.querySelectorAll("[data-fav]")].forEach(btn=>{
+  [...document.querySelectorAll("[data-fav]")].forEach(btn=>{
     btn.addEventListener("click", ()=>{
       const id = btn.getAttribute("data-fav");
       if(state.favs.has(id)){
-        state.favs.delete(id); toast("Removed from favourites");
+        state.favs.delete(id);
+        toast("Removed from favourites");
       }else{
-        state.favs.add(id); toast("Saved to favourites");
+        state.favs.add(id);
+        toast("Saved to favourites");
       }
       localStorage.setItem(LS_FAVS, JSON.stringify([...state.favs]));
       renderAll(false);
     });
   });
 
-  [...cardsEl.querySelectorAll("[data-copy]")].forEach(btn=>{
+  [...document.querySelectorAll("[data-copy]")].forEach(btn=>{
     btn.addEventListener("click", async ()=>{
       const id = btn.getAttribute("data-copy");
-      const svc = allServicesMerged().find(s=>s.id===id);
+      const svc = allServices().find(x=>x.id===id);
       if(!svc) return;
+
       const firstLink = (svc.links && svc.links[0]) ? svc.links[0].url : "";
       const text = [
         svc.name,
@@ -502,8 +775,13 @@ function renderCards(){
         svc.email ? ("Email: " + svc.email) : "",
         firstLink
       ].filter(Boolean).join("\n");
-      try{ await navigator.clipboard.writeText(text); toast("Copied"); }
-      catch{ toast("Copy not supported"); }
+
+      try{
+        await navigator.clipboard.writeText(text);
+        toast("Copied");
+      }catch{
+        toast("Copy not supported");
+      }
     });
   });
 }
@@ -514,9 +792,9 @@ function renderAll(rerenderCats=true){
   renderCards();
 }
 
-/* =========================
-   ACTIONS
-   ========================= */
+/* -------------------------
+   UI actions
+   ------------------------- */
 $("q").addEventListener("input", ()=>{
   state.q = $("q").value;
   renderAll(false);
@@ -528,9 +806,9 @@ $("favToggle").addEventListener("click", ()=>{
 });
 
 $("resetBtn").addEventListener("click", ()=>{
-  state.q = ""; $("q").value = "";
-  state.category = "All";
-  state.showFavs = false;
+  state.q=""; $("q").value="";
+  state.category="All";
+  state.showFavs=false;
   renderAll(true);
 });
 
@@ -540,7 +818,7 @@ $("nearMeBtn").addEventListener("click", ()=>{
   navigator.geolocation.getCurrentPosition(
     (pos)=>{
       const { latitude, longitude } = pos.coords;
-      const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent("near me")}&center=${latitude},${longitude}`;
+      const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent("car park")}&center=${latitude},${longitude}`;
       window.open(url, "_blank");
     },
     ()=> toast("Location blocked in browser settings"),
@@ -548,44 +826,51 @@ $("nearMeBtn").addEventListener("click", ()=>{
   );
 });
 
-/* =========================
-   LIVE PARKING (Jersey Open Data)
-   GET /v1/carparks/spaces?includeCarparkInfo=true
-   ========================= */
+/* -------------------------
+   LIVE parking fetch (OpenData)
+   ------------------------- */
 async function loadLiveSpaces(){
   try{
     $("liveStatus").textContent = "LIVE…";
-    const res = await fetch("https://api.opendata.je/v1/carparks/spaces?includeCarparkInfo=true");
+    $("liveStatus").className = "badge liveWait";
+
+    const res = await fetch("https://api.opendata.je/v1/carparks/spaces?includeCarparkInfo=true", { cache:"no-store" });
     if(!res.ok) throw new Error("Bad response");
     const data = await res.json();
-
     const results = (data && data.results) ? data.results : [];
-    LIVE_SPACES = results.map(x => ({
-      name: x.name,
-      code: x.code,
-      spaces: x.spaces,
-      status: x.status || "",
-      open: !!x.open,
-      payByPhoneCode: x.carparkInfo ? x.carparkInfo.payByPhoneCode : null,
-      mapsQuery: (x.carparkInfo && x.carparkInfo.latitude && x.carparkInfo.longitude)
-        ? `${x.carparkInfo.latitude},${x.carparkInfo.longitude}`
-        : (x.name + " car park Jersey")
-    }));
+
+    // Create a name->record map
+    const list = results.map(r => ({...r, _key: String(r.name||"").toLowerCase()}));
+
+    LIVE_SPACES = LIVE_FALLBACK.map(fb=>{
+      const key = fb.name.toLowerCase();
+      const r = list.find(x => x._key.includes(key)) || null;
+      return {
+        ...fb,
+        spaces: r ? r.spaces : "—",
+        open: r ? !!r.open : true,
+        status: r ? (r.status || "LIVE") : "LIVE"
+      };
+    });
 
     $("liveStatus").textContent = "LIVE ✓";
+    $("liveStatus").className = "badge liveOk";
     renderAll(true);
   }catch(e){
     $("liveStatus").textContent = "LIVE ✕";
+    $("liveStatus").className = "badge liveBad";
+    // Keep fallback list; just re-render
     console.log("Live parking failed:", e);
+    renderAll(true);
   }
 }
 
 loadLiveSpaces();
 setInterval(loadLiveSpaces, 120000);
 
-/* =========================
-   SERVICE WORKER
-   ========================= */
+/* -------------------------
+   Service worker
+   ------------------------- */
 if("serviceWorker" in navigator){
   window.addEventListener("load", ()=>{
     navigator.serviceWorker.register("./sw.js").catch(()=>{});
