@@ -1,4 +1,4 @@
-const CACHE = "jerseygo-v420";
+const CACHE = "jerseygo-v600";
 
 const ASSETS = [
   "./",
