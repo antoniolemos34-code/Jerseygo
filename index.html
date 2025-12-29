@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#0B1220" />
-  <meta name="description" content="JerseyGo — Parking LIVE, pharmacies, activities, ports & airport, buses & taxis, emergency." />
+  <meta name="description" content="JerseyGo — Parking LIVE, museums, activities, ports & airport, buses & taxis, pharmacies, emergency." />
 
   <title>JerseyGo</title>
 
@@ -273,14 +273,14 @@
       <img src="./icon.svg" alt="JerseyGo icon">
       <div class="t">
         <div class="name">JerseyGo</div>
-        <div class="sub">Parking LIVE • Pharmacies • Activities • Ports & Airport • Bus & Taxis • Emergency</div>
+        <div class="sub">Parking LIVE • Museums • Activities • Ports & Airport • Bus & Taxis • Pharmacies • Emergency</div>
       </div>
     </div>
 
     <div class="actionsTop">
       <div class="search">
         <span style="opacity:.9">🔎</span>
-        <input id="q" placeholder="Search: spaces, pharmacy, taxi, airport, harbour…" autocomplete="off" />
+        <input id="q" placeholder="Search: spaces, museum, castle, taxi, airport…" autocomplete="off" />
       </div>
       <button id="favToggle" class="btn good">★ Favourites</button>
       <button id="nearMeBtn" class="btn primary">📍 Near me</button>
@@ -298,11 +298,11 @@
     <div id="cats" class="cats"></div>
 
     <div class="panelHd" style="border-top:1px solid var(--line);">
-      <h2>Live status</h2>
+      <h2>Live parking</h2>
       <span id="liveStatus" class="badge liveWait">LIVE…</span>
     </div>
     <div style="padding:12px 14px; color:var(--muted); font-size:12px; line-height:1.45;">
-      Live parking spaces update automatically (OpenData). If “LIVE ✕” appears, the app still works (fallback list).
+      Parking LIVE uses the official government JSON feed. Auto-refresh ~2 minutes.
     </div>
   </aside>
 
@@ -317,16 +317,16 @@
 
         <div class="quick">
           <a class="chip primary" href="https://www.gov.je/Travel/Motoring/Parking/pages/carparkspaces.aspx" target="_blank" rel="noopener">🅿️ Official Live</a>
-          <a class="chip" href="https://www.gov.je/Health/DoctorDentist/PharmacistsChemists/pages/pharmacyopeninghours.aspx" target="_blank" rel="noopener">💊 Pharmacy hours</a>
-          <a class="chip" href="https://www.ports.je/about-us/contact/" target="_blank" rel="noopener">⚓ Ports contact</a>
-          <a class="chip" href="https://www.jersey.com/things-to-do/" target="_blank" rel="noopener">✨ Things to do</a>
+          <a class="chip" href="https://www.jerseyheritage.org/visit/places-to-visit/" target="_blank" rel="noopener">🏛️ Museums list</a>
+          <a class="chip" href="https://www.jersey.com/things-to-do/attractions/" target="_blank" rel="noopener">✨ Attractions</a>
+          <a class="chip" href="https://www.jersey.com/things-to-do/events/" target="_blank" rel="noopener">📅 Events</a>
         </div>
       </div>
 
       <div id="cards" class="cards"></div>
 
       <footer>
-        Emergency: call <b>999</b> / <b>112</b> • JerseyGo (unofficial directory; public sources)
+        Emergency: call <b>999</b> / <b>112</b> • JerseyGo (unofficial directory; uses public sources)
       </footer>
     </div>
   </main>
@@ -336,7 +336,7 @@
 
 <script>
 /* =========================================================
-   JerseyGo — PWA directory + Parking LIVE
+   JerseyGo — PWA directory + TRUE Parking LIVE (gov feed)
    ========================================================= */
 const $ = (id)=>document.getElementById(id);
 const norm = (s)=> (s||"").toLowerCase().trim();
@@ -362,13 +362,14 @@ const mapsUrl = (query)=> `https://www.google.com/maps/search/?api=1&query=${enc
 const CATEGORY_ORDER = [
   "Emergency",
   "Parking LIVE",
-  "Pharmacies",
+  "Museums & Heritage",
   "Activities",
   "Ports & Airport",
-  "Bus & Taxis"
+  "Bus & Taxis",
+  "Pharmacies"
 ];
 
-const LS_FAVS = "jerseygo:favs:v2";
+const LS_FAVS = "jerseygo:favs:v3";
 
 const state = {
   q: "",
@@ -382,39 +383,46 @@ function catIcon(cat){
     case "All": return "🧭";
     case "Emergency": return "🚨";
     case "Parking LIVE": return "🅿️";
-    case "Pharmacies": return "💊";
+    case "Museums & Heritage": return "🏛️";
     case "Activities": return "✨";
     case "Ports & Airport": return "✈️";
     case "Bus & Taxis": return "🚌";
+    case "Pharmacies": return "💊";
     default: return "•";
   }
 }
 
 /* -------------------------
-   SOURCES / LINKS (public)
+   LINKS (public, official)
    ------------------------- */
 const LINKS = {
-  parkingOfficialLive: "https://www.gov.je/Travel/Motoring/Parking/pages/carparkspaces.aspx",
+  govLivePage: "https://www.gov.je/Travel/Motoring/Parking/pages/carparkspaces.aspx",
+  payByPhone: "https://www.gov.je/Travel/Motoring/Parking/PayForParking/pages/paybyphoneapp.aspx",
+
+  heritageHome: "https://www.jerseyheritage.org/",
+  heritagePlaces: "https://www.jerseyheritage.org/visit/places-to-visit/",
+  jerseyMuseum: "https://www.jerseyheritage.org/visit/places-to-visit/jersey-museum/",
+  maritimeMuseum: "https://www.jerseyheritage.org/visit/places-to-visit/maritime-museum-occupation-tapestry/",
+  hamptonne: "https://www.jerseyheritage.org/visit/places-to-visit/hamptonne-country-life-museum/",
+  heritageWhatsOn: "https://www.jerseyheritage.org/visit/whats-on/",
+
+  visitThings: "https://www.jersey.com/things-to-do/",
+  visitAttractions: "https://www.jersey.com/things-to-do/attractions/",
+  visitEvents: "https://www.jersey.com/things-to-do/events/",
+  visitEventsListings: "https://www.jersey.com/things-to-do/events/listings/",
+
+  nationalTrust: "https://www.nationaltrust.je/",
+  nationalTrustBuildings: "https://www.nationaltrust.je/our-work/historic-buildings/",
+  ntHamptonne: "https://www.nationaltrust.je/our-work/historic-buildings/hamptonne-country-life-museum/",
+
   portsContact: "https://www.ports.je/about-us/contact/",
-  jerseyAirportContact: "https://www.jerseyairport.com/contact/contact-us/",
-  jerseyHarboursContact: "https://www.gov.je/pages/contacts.aspx?contactId=40",
-  libertyBusContactGov: "https://www.gov.je/pages/contacts.aspx?contactId=187",
-  busRoutesGov: "https://www.gov.je/Travel/Buses/Pages/RoutesTimetables.aspx",
-  pharmacyHoursGov: "https://www.gov.je/Health/DoctorDentist/PharmacistsChemists/pages/pharmacyopeninghours.aspx",
-  hospitalPharmacyContactGov: "https://www.gov.je/pages/contacts.aspx?contactId=116",
-  hospitalPharmacyInfoGov: "https://www.gov.je/Health/DoctorDentist/PharmacistsChemists/pages/hospitalpharmacy.aspx",
-  emergencyGov: "https://www.gov.je/LifeEvents/MovingToJersey/WhenYouArrive/pages/contactemergencyservices.aspx",
-  policeContact: "https://www.jersey.police.je/s/contact-us",
-  thingsToDo: "https://www.jersey.com/things-to-do/",
-  activitiesListings: "https://www.jersey.com/things-to-do/activities/listings/",
-  events: "https://www.jersey.com/things-to-do/events/",
-  taxisInfoVisitJersey: "https://www.jersey.com/plan-your-break/getting-around-jersey/public-transport-taxis/",
-  taxiRanksJTDA: "https://www.jerseytaxidriversassociation.co/taxi-ranks--maps.html",
-  taxiNumbersFOI: "https://www.gov.je/Freedom%20of%20Information%20library/ID%20FOI%20Jersey%20Taxicabs%20and%20Associations%20June%202018%2020180705.pdf"
+  airportContact: "https://www.jerseyairport.com/contact/contact-us/",
+
+  libertyBus: "https://libertybus.je/"
 };
 
 /* -------------------------
-   DIRECTORY (static items)
+   STATIC DIRECTORY
    ------------------------- */
 const DIRECTORY_STATIC = [
   // Emergency
@@ -422,39 +430,13 @@ const DIRECTORY_STATIC = [
     id:"emg-999",
     category:"Emergency",
     name:"Emergency services (999 / 112)",
-    desc:"Ambulance, Police, Fire. Use 999 or 112 for emergencies.",
+    desc:"Police, Fire & Ambulance (life-threatening emergencies).",
     tags:["999","112","emergency"],
     phone:"999",
     links:[
-      {label:"Official info (gov.je)", url: LINKS.emergencyGov},
-      {label:"999 guidance (gov.je)", url: "https://www.gov.je/Health/Hospitals/EmergencyOutHours/pages/999.aspx"}
+      {label:"Official info (gov.je)", url:"https://www.gov.je/LifeEvents/MovingToJersey/WhenYouArrive/pages/contactemergencyservices.aspx"}
     ],
     mapsQuery:"Jersey General Hospital Emergency Department"
-  },
-  {
-    id:"emg-police-nonemg",
-    category:"Emergency",
-    name:"Police (non-emergency)",
-    desc:"Report non-emergency crime / advice.",
-    tags:["police","non emergency"],
-    phone:"+44 1534 612612",
-    links:[
-      {label:"Police contact", url: LINKS.policeContact},
-      {label:"Official guidance (gov.je)", url: LINKS.emergencyGov}
-    ],
-    mapsQuery:"Police Headquarters St Helier Jersey"
-  },
-  {
-    id:"emg-coastguard",
-    category:"Emergency",
-    name:"Jersey Coastguard (non-emergency contact)",
-    desc:"Sea safety. For emergencies dial 999 and ask for Coastguard.",
-    tags:["coastguard","sea"],
-    phone:"01534 447705",
-    links:[
-      {label:"Ports contact page", url: LINKS.portsContact}
-    ],
-    mapsQuery:"Maritime House St Helier Jersey"
   },
 
   // Pharmacies
@@ -464,173 +446,157 @@ const DIRECTORY_STATIC = [
     name:"Pharmacy opening hours (official list)",
     desc:"Search opening hours by pharmacy.",
     tags:["opening hours","official"],
-    links:[{label:"gov.je", url: LINKS.pharmacyHoursGov}],
+    links:[{label:"gov.je list", url:"https://www.gov.je/Health/DoctorDentist/PharmacistsChemists/pages/pharmacyopeninghours.aspx"}],
     mapsQuery:"Pharmacy St Helier Jersey"
-  },
-  {
-    id:"pharm-hospital",
-    category:"Pharmacies",
-    name:"General Hospital Pharmacy",
-    desc:"Contact + opening hours (weekdays).",
-    tags:["hospital pharmacy"],
-    phone:"01534 442627",
-    links:[
-      {label:"Contact (gov.je)", url: LINKS.hospitalPharmacyContactGov},
-      {label:"Medicines helpline (gov.je)", url: LINKS.hospitalPharmacyInfoGov}
-    ],
-    mapsQuery:"General Hospital Pharmacy Jersey"
-  },
-  {
-    id:"pharm-meds-helpline",
-    category:"Pharmacies",
-    name:"Medicines Helpline (advice)",
-    desc:"Confidential medicines advice (not for emergencies).",
-    tags:["medicines","advice"],
-    phone:"+44 1534 442605",
-    links:[{label:"Info (gov.je)", url: LINKS.hospitalPharmacyInfoGov}],
-    mapsQuery:"General Hospital Jersey"
-  },
-
-  // Activities
-  {
-    id:"act-things",
-    category:"Activities",
-    name:"Things to do in Jersey",
-    desc:"Top experiences and attractions (official tourism site).",
-    tags:["visit","things to do"],
-    links:[{label:"jersey.com", url: LINKS.thingsToDo}],
-    mapsQuery:"Jersey attractions"
-  },
-  {
-    id:"act-activities",
-    category:"Activities",
-    name:"Activities listings (all)",
-    desc:"Browse activities: sea sports, tours, museums, etc.",
-    tags:["activities","listings"],
-    links:[{label:"Listings", url: LINKS.activitiesListings}],
-    mapsQuery:"Jersey activities"
-  },
-  {
-    id:"act-events",
-    category:"Activities",
-    name:"Events (what’s on)",
-    desc:"Upcoming events and festivals.",
-    tags:["events","what's on"],
-    links:[{label:"Events", url: LINKS.events}],
-    mapsQuery:"St Helier events"
   },
 
   // Ports & Airport
   {
-    id:"port-contact",
+    id:"ports-contact",
     category:"Ports & Airport",
-    name:"Ports of Jersey (Airport & Harbours)",
-    desc:"General enquiries + customer relations.",
+    name:"Ports of Jersey — contact",
+    desc:"Airport & Harbours general enquiries.",
     tags:["ports","airport","harbour"],
     phone:"+44 1534 446000",
     email:"customerrelations@ports.je",
-    links:[{label:"Contact (ports.je)", url: LINKS.portsContact}],
-    mapsQuery:"Ports of Jersey St Peter JE1 1BY"
+    links:[{label:"ports.je contact", url: LINKS.portsContact}],
+    mapsQuery:"Ports of Jersey"
   },
   {
-    id:"port-harbours",
+    id:"airport-contact",
     category:"Ports & Airport",
-    name:"Jersey Harbours (contact)",
-    desc:"Harbours office contact + email.",
-    tags:["harbours","ferry terminal"],
-    phone:"01534 447788",
-    email:"jerseyharbours@ports.je",
-    links:[
-      {label:"Contact (gov.je)", url: LINKS.jerseyHarboursContact},
-      {label:"Ports website", url: "https://www.ports.je/"}
-    ],
-    mapsQuery:"Maritime House La Route du Port Elizabeth St Helier"
-  },
-  {
-    id:"port-airport",
-    category:"Ports & Airport",
-    name:"Jersey Airport (contact)",
-    desc:"Airport enquiries + info email.",
+    name:"Jersey Airport — contact",
+    desc:"Airport contact page (official).",
     tags:["airport"],
-    phone:"01534 446000",
-    email:"airportInformation@ports.je",
-    links:[
-      {label:"Airport contact", url: LINKS.jerseyAirportContact},
-      {label:"Airport website", url: "https://www.jerseyairport.com/"}
-    ],
+    links:[{label:"Airport contact", url: LINKS.airportContact}],
     mapsQuery:"Jersey Airport"
   },
 
   // Bus & Taxis
   {
-    id:"bus-liberty",
+    id:"libertybus",
     category:"Bus & Taxis",
-    name:"LibertyBus (contact)",
-    desc:"Bus routes, timetables, tickets.",
+    name:"LibertyBus",
+    desc:"Routes, timetables, tickets (official).",
     tags:["bus","timetable"],
-    phone:"01534 828555",
-    email:"info@libertybus.je",
+    phone:"01534 828F? (check website)",
     links:[
-      {label:"Website", url:"https://libertybus.je/"},
-      {label:"Contact (gov.je)", url: LINKS.libertyBusContactGov},
-      {label:"Routes & timetables (gov.je)", url: LINKS.busRoutesGov}
+      {label:"libertybus.je", url: LINKS.libertyBus},
+      {label:"Routes & timetables (gov.je)", url:"https://www.gov.je/Travel/Buses/Pages/RoutesTimetables.aspx"}
     ],
-    mapsQuery:"Liberation Station St Helier JE1 3AS"
+    mapsQuery:"Liberation Station St Helier"
+  },
+
+  // Museums & Heritage (Jersey Heritage + National Trust)
+  {
+    id:"heritage-places",
+    category:"Museums & Heritage",
+    name:"Jersey Heritage — places to visit",
+    desc:"Official list of museums, castles and heritage sites.",
+    tags:["heritage","museums","castles"],
+    links:[{label:"Places list", url: LINKS.heritagePlaces}],
+    mapsQuery:"Jersey Museum St Helier"
   },
   {
-    id:"taxi-info",
-    category:"Bus & Taxis",
-    name:"Taxis in Jersey (info)",
-    desc:"Taxi ranks, fares, general guidance.",
-    tags:["taxis","fares"],
-    links:[{label:"Visit Jersey (taxis)", url: LINKS.taxisInfoVisitJersey}],
-    mapsQuery:"Taxi rank St Helier"
+    id:"museum-jersey",
+    category:"Museums & Heritage",
+    name:"Jersey Museum, Art Gallery & Victorian House",
+    desc:"Jersey Heritage — entry and info page.",
+    tags:["museum","art","victorian house"],
+    links:[{label:"Jersey Museum page", url: LINKS.jerseyMuseum}],
+    mapsQuery:"Jersey Museum St Helier"
   },
   {
-    id:"taxi-ranks",
-    category:"Bus & Taxis",
-    name:"Taxi ranks & maps (JTDA)",
-    desc:"Rank locations (airport, harbour, town).",
-    tags:["taxi ranks","maps"],
-    links:[{label:"JTDA ranks", url: LINKS.taxiRanksJTDA}],
-    mapsQuery:"Taxi rank Jersey Airport"
+    id:"museum-maritime",
+    category:"Museums & Heritage",
+    name:"Maritime Museum & Occupation Tapestry Gallery",
+    desc:"Jersey Heritage — museum page + tickets.",
+    tags:["maritime","occupation tapestry"],
+    links:[{label:"Maritime Museum page", url: LINKS.maritimeMuseum}],
+    mapsQuery:"Maritime Museum St Helier"
   },
   {
-    id:"taxi-libertycabs",
-    category:"Bus & Taxis",
-    name:"Liberty Cabs (booked taxis)",
-    desc:"Popular taxi booking number (verify if changed).",
-    tags:["taxi","book"],
-    phone:"01534 767700",
-    links:[{label:"Numbers source (gov.je PDF)", url: LINKS.taxiNumbersFOI}],
-    mapsQuery:"27 Lewis Street St Helier Jersey"
+    id:"heritage-hamptonne",
+    category:"Museums & Heritage",
+    name:"Hamptonne Country Life Museum",
+    desc:"Historic farm estate and rural life museum.",
+    tags:["hamptonne","country life"],
+    links:[
+      {label:"Jersey Heritage page", url: LINKS.hamptonne},
+      {label:"National Trust page", url: LINKS.ntHamptonne}
+    ],
+    mapsQuery:"Hamptonne Country Life Museum"
   },
   {
-    id:"taxi-yellowcabs",
-    category:"Bus & Taxis",
-    name:"Yellow Cabs (booked taxis)",
-    desc:"Popular taxi booking number (verify if changed).",
-    tags:["taxi","book"],
-    phone:"01534 888888",
-    links:[{label:"Numbers source (gov.je PDF)", url: LINKS.taxiNumbersFOI}],
-    mapsQuery:"St Helier Jersey"
+    id:"heritage-whats-on",
+    category:"Museums & Heritage",
+    name:"Jersey Heritage — what’s on",
+    desc:"Tours, exhibitions and heritage events.",
+    tags:["events","exhibitions"],
+    links:[{label:"What’s on", url: LINKS.heritageWhatsOn}],
+    mapsQuery:"Mont Orgueil Castle"
+  },
+  {
+    id:"nt-sites",
+    category:"Museums & Heritage",
+    name:"National Trust for Jersey — historic buildings",
+    desc:"Historic houses, mills, landscapes and more.",
+    tags:["national trust","historic buildings"],
+    links:[
+      {label:"National Trust", url: LINKS.nationalTrust},
+      {label:"Historic buildings", url: LINKS.nationalTrustBuildings}
+    ],
+    mapsQuery:"The Elms Jersey"
+  },
+
+  // Activities (Visit Jersey)
+  {
+    id:"visit-things",
+    category:"Activities",
+    name:"Things to do (Visit Jersey)",
+    desc:"Official tourism guide: inspiration, indoor/outdoor ideas.",
+    tags:["things to do","guide"],
+    links:[{label:"Things to do", url: LINKS.visitThings}],
+    mapsQuery:"Jersey things to do"
+  },
+  {
+    id:"visit-attractions",
+    category:"Activities",
+    name:"Top attractions (Visit Jersey)",
+    desc:"Attractions list: family, gardens, animals, tunnels, etc.",
+    tags:["attractions","family"],
+    links:[{label:"Attractions", url: LINKS.visitAttractions}],
+    mapsQuery:"Jersey attractions"
+  },
+  {
+    id:"visit-events",
+    category:"Activities",
+    name:"What’s on / Events (Visit Jersey)",
+    desc:"Events overview + listings.",
+    tags:["events","festivals"],
+    links:[
+      {label:"Events", url: LINKS.visitEvents},
+      {label:"Event listings", url: LINKS.visitEventsListings}
+    ],
+    mapsQuery:"St Helier events"
   }
 ];
 
 /* -------------------------
-   Parking LIVE (OpenData + per car park)
+   TRUE Parking LIVE (gov JSON)
    ------------------------- */
 const LIVE_FALLBACK = [
-  { code:"charles", name:"Charles Street", mapsQuery:"Charles Street car park St Helier Jersey" },
-  { code:"green", name:"Green Street", mapsQuery:"Green Street car park St Helier Jersey" },
-  { code:"lesjardin", name:"Les Jardin", mapsQuery:"Les Jardin car park St Helier Jersey" },
-  { code:"minden", name:"Minden Place", mapsQuery:"Minden Place car park St Helier Jersey" },
-  { code:"patriotic", name:"Patriotic Street", mapsQuery:"Patriotic Street car park St Helier Jersey" },
-  { code:"pier", name:"Pier Road", mapsQuery:"Pier Road car park St Helier Jersey" },
-  { code:"sand", name:"Sand Street", mapsQuery:"Sand Street car park St Helier Jersey" }
+  { code:"CHARLESSTREET", name:"Charles Street", type:"Short stay", mapsQuery:"Charles Street car park St Helier Jersey" },
+  { code:"GREENST", name:"Green Street", type:"Long stay", mapsQuery:"Green Street car park St Helier Jersey" },
+  { code:"LESJARDIN", name:"Les Jardin", type:"Long stay", mapsQuery:"Les Jardin car park St Helier Jersey" },
+  { code:"MINDENPL", name:"Minden Place", type:"Short stay", mapsQuery:"Minden Place car park St Helier Jersey" },
+  { code:"PATRIOTICST", name:"Patriotic Street", type:"Long stay", mapsQuery:"Patriotic Street car park St Helier Jersey" },
+  { code:"PIERRD", name:"Pier Road", type:"Long stay", mapsQuery:"Pier Road car park St Helier Jersey" },
+  { code:"SANDST", name:"Sand Street", type:"Short stay", mapsQuery:"Sand Street car park St Helier Jersey" }
 ];
 
-let LIVE_SPACES = LIVE_FALLBACK.map(x => ({...x, spaces:"—", open:true, status:"LIVE"}));
+let LIVE_SPACES = LIVE_FALLBACK.map(x => ({...x, spaces:"—", open:true, status:"good"}));
+let LIVE_TIMESTAMP = "";
 
 function spacesNum(x){
   const n = Number(String(x.spaces).replace(/[^\d]/g,""));
@@ -647,16 +613,18 @@ function buildLiveParkingServices(){
   const sorted = [...LIVE_SPACES].sort((a,b)=> spacesNum(b) - spacesNum(a));
   return sorted.map(x => {
     const n = spacesNum(x);
+    const openText = x.open ? "Open" : "Closed";
+    const typeText = x.type ? ` • ${x.type}` : "";
     return ({
       id: "live-" + x.code,
       category: "Parking LIVE",
-      name: `LIVE: ${x.name}`,
-      desc: `${x.open ? "Open" : "Closed"} • Spaces available: ${x.spaces}`,
-      tags: ["live spaces","multi-storey", (n>=0 ? `spaces:${n}` : "spaces:unknown")],
+      name: `${x.name}`,
+      desc: `${openText}${typeText} • ${x.spaces} spaces`,
+      tags: ["live", "spaces", x.type || ""].filter(Boolean),
       pillHTML: spacesBadgeHTML(n),
       links: [
-        { label:"Official Live (gov.je)", url: LINKS.parkingOfficialLive },
-        { label:"PayByPhone info", url: "https://www.gov.je/Travel/Motoring/Parking/PayForParking/pages/paybyphoneapp.aspx" }
+        { label:"Official LIVE page (gov.je)", url: LINKS.govLivePage },
+        { label:"PayByPhone info (gov.je)", url: LINKS.payByPhone }
       ],
       mapsQuery: x.mapsQuery
     });
@@ -664,7 +632,7 @@ function buildLiveParkingServices(){
 }
 
 /* -------------------------
-   Build all services
+   All services
    ------------------------- */
 function allServices(){
   return [
@@ -731,25 +699,20 @@ function renderHeader(){
   const title = (state.category==="All") ? "All services" : state.category;
   $("viewTitle").textContent = `${title} (${list.length})`;
 
-  if(state.category === "Parking LIVE"){
-    $("viewDesc").textContent = "Live multi-storey spaces (sorted) + official links.";
-  } else if(state.category === "Emergency"){
-    $("viewDesc").textContent = "Emergency numbers + official pages. In danger, call 999/112.";
-  } else if(state.category === "Pharmacies"){
-    $("viewDesc").textContent = "Pharmacy opening hours + hospital pharmacy contacts.";
-  } else if(state.category === "Ports & Airport"){
-    $("viewDesc").textContent = "Ports, harbours and airport contacts + maps.";
-  } else if(state.category === "Bus & Taxis"){
-    $("viewDesc").textContent = "LibertyBus + taxi info/ranks + booking numbers.";
-  } else if(state.category === "Activities"){
-    $("viewDesc").textContent = "Things to do + activities + events.";
-  } else if(state.showFavs){
-    $("viewDesc").textContent = "Your saved services for one-tap access.";
-  } else {
-    $("viewDesc").textContent = "One-tap actions: Call • Email • Maps • Official pages.";
-  }
+  const descByCat = {
+    "Parking LIVE": "Official live spaces (auto-refresh). Tap each car park for maps + official links.",
+    "Museums & Heritage": "Museums, castles and heritage sites (official sources).",
+    "Activities": "Top attractions and what’s on (official tourism site).",
+    "Ports & Airport": "Ports, harbours and airport contacts.",
+    "Bus & Taxis": "Buses and taxi info.",
+    "Pharmacies": "Official pharmacy opening hours + contacts.",
+    "Emergency": "Emergency numbers and guidance."
+  };
+  $("viewDesc").textContent = state.showFavs ? "Your saved services for one-tap access." : (descByCat[state.category] || "One-tap actions: Call • Email • Maps • Official pages.");
 
-  $("statsLine").textContent = `Showing ${list.length} • Live spaces refresh every ~2 minutes`;
+  const liveText = LIVE_TIMESTAMP ? ` • Updated: ${LIVE_TIMESTAMP}` : "";
+  $("statsLine").textContent = `Showing ${list.length} • Live refresh ~2 minutes${liveText}`;
+
   $("countVisible").textContent = list.length;
 }
 
@@ -761,7 +724,7 @@ function renderCards(){
     el.innerHTML = `
       <div class="card" style="grid-column:1/-1;">
         <div class="name">No results</div>
-        <div class="meta">Try: “spaces”, “pharmacy”, “taxi”, “airport”, “ports”.</div>
+        <div class="meta">Try: “spaces”, “museum”, “castle”, “events”, “taxi”, “airport”.</div>
       </div>
     `;
     return;
@@ -771,10 +734,10 @@ function renderCards(){
     const isFav = state.favs.has(s.id);
     const tags = (s.tags||[]).slice(0,10).map(t=>`<span class="tag">${escapeHtml(String(t))}</span>`).join("");
 
-    const phoneBtn = s.phone ? `<a class="chip" href="${telHref(s.phone)}">📞 Call</a>` : "";
+    const phoneBtn = s.phone && String(s.phone).includes("check") ? "" : (s.phone ? `<a class="chip" href="${telHref(s.phone)}">📞 Call</a>` : "");
     const emailBtn = s.email ? `<a class="chip" href="${mailHref(s.email)}">✉️ Email</a>` : "";
     const mapsBtn = `<a class="chip" href="${mapsUrl(s.mapsQuery || (s.name + " Jersey"))}" target="_blank" rel="noopener">🗺️ Maps</a>`;
-    const links = (s.links||[]).slice(0,3).map(l=>`<a class="chip primary" href="${l.url}" target="_blank" rel="noopener">↗ ${escapeHtml(l.label)}</a>`).join("");
+    const links = (s.links||[]).slice(0,4).map(l=>`<a class="chip primary" href="${l.url}" target="_blank" rel="noopener">↗ ${escapeHtml(l.label)}</a>`).join("");
 
     const pill = s.pillHTML ? `<div style="margin-top:6px;">${s.pillHTML}</div>` : "";
 
@@ -874,7 +837,7 @@ $("nearMeBtn").addEventListener("click", ()=>{
   navigator.geolocation.getCurrentPosition(
     (pos)=>{
       const { latitude, longitude } = pos.coords;
-      const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent("services")}&center=${latitude},${longitude}`;
+      const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent("things to do")}&center=${latitude},${longitude}`;
       window.open(url, "_blank");
     },
     ()=> toast("Location blocked in browser settings"),
@@ -883,28 +846,31 @@ $("nearMeBtn").addEventListener("click", ()=>{
 });
 
 /* -------------------------
-   LIVE parking fetch (OpenData)
+   TRUE LIVE parking fetch (same feed used by gov.je)
    ------------------------- */
 async function loadLiveSpaces(){
+  const GOV_JSON = "https://sojpublicdata.blob.core.windows.net/sojpublicdata/carpark-data.json";
+
   try{
     $("liveStatus").textContent = "LIVE…";
     $("liveStatus").className = "badge liveWait";
 
-    const res = await fetch("https://api.opendata.je/v1/carparks/spaces?includeCarparkInfo=true", { cache:"no-store" });
-    if(!res.ok) throw new Error("Bad response");
+    const res = await fetch(GOV_JSON, { cache:"no-store" });
+    if(!res.ok) throw new Error("gov json failed");
     const data = await res.json();
-    const results = (data && data.results) ? data.results : [];
 
-    const list = results.map(r => ({...r, _key: String(r.name||"").toLowerCase()}));
+    const carparks = data?.carparkData?.Jersey?.carpark || [];
+    LIVE_TIMESTAMP = data?.carparkData?.Jersey?.Timestamp || "";
+
+    const byCode = new Map(carparks.map(c => [String(c.code || "").toUpperCase(), c]));
 
     LIVE_SPACES = LIVE_FALLBACK.map(fb=>{
-      const key = fb.name.toLowerCase();
-      const r = list.find(x => x._key.includes(key)) || null;
+      const r = byCode.get(String(fb.code).toUpperCase());
       return {
         ...fb,
-        spaces: r ? r.spaces : "—",
-        open: r ? !!r.open : true,
-        status: r ? (r.status || "LIVE") : "LIVE"
+        spaces: (r && Number.isFinite(Number(r.spaces))) ? Number(r.spaces) : "—",
+        open: r ? !!r.carparkOpen : true,
+        status: r ? (r.status || "good") : "good"
       };
     });
 
@@ -912,9 +878,9 @@ async function loadLiveSpaces(){
     $("liveStatus").className = "badge liveOk";
     renderAll(true);
   }catch(e){
+    console.log("Live parking failed:", e);
     $("liveStatus").textContent = "LIVE ✕";
     $("liveStatus").className = "badge liveBad";
-    console.log("Live parking failed:", e);
     renderAll(true);
   }
 }
