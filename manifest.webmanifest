@@ -6,7 +6,7 @@
   "display": "standalone",
   "background_color": "#070A12",
   "theme_color": "#0B1220",
-  "description": "JerseyGo — Parking LIVE, pharmacies, activities, ports & airport, buses & taxis, emergency.",
+  "description": "JerseyGo — Parking LIVE, museums, activities, ports & airport, buses & taxis, pharmacies, emergency.",
   "icons": [
     { "src": "./icon.svg", "sizes": "512x512", "type": "image/svg+xml", "purpose": "any" }
   ]
