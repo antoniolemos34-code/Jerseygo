@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="320" viewBox="0 0 1200 320">
+  <defs>
+    <radialGradient id="g" cx="25%" cy="20%" r="90%">
+      <stop offset="0%" stop-color="#4DA3FF"/>
+      <stop offset="55%" stop-color="#35D07F"/>
+      <stop offset="100%" stop-color="#0B1220"/>
+    </radialGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="18" stdDeviation="20" flood-color="#000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="320" fill="#070A12"/>
+  <circle cx="190" cy="160" r="110" fill="url(#g)" filter="url(#shadow)"/>
+  <path d="M110 220c30-56 62-86 100-86s70 30 100 86" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="16" stroke-linecap="round"/>
+  <text x="190" y="190" text-anchor="middle" font-family="Arial" font-size="84" font-weight="700" fill="#fff">JG</text>
+
+  <text x="330" y="150" font-family="Arial" font-size="72" font-weight="800" fill="#ffffff">JerseyGo</text>
+  <text x="330" y="205" font-family="Arial" font-size="24" font-weight="500" fill="#A9B4C7">
+    Parking LIVE • Parks • GP Clinics • Dentists • Pharmacies • Transport • Emergency
+  </text>
+</svg>
