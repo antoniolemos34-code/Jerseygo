@@ -1,5 +1,13 @@
-const CACHE = "jerseygo-v100"; // MUDA este número sempre que fizeres update
-const ASSETS = ["./", "./index.html", "./manifest.webmanifest", "./sw.js"];
+const CACHE = "jerseygo-v301";
+
+const ASSETS = [
+  "./",
+  "./index.html",
+  "./manifest.webmanifest",
+  "./icon.svg",
+  "./logo.svg",
+  "./sw.js"
+];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -17,6 +25,7 @@ self.addEventListener("activate", (event) => {
   );
 });
 
+// Network-first: tenta sempre buscar a versão nova online
 self.addEventListener("fetch", (event) => {
   const req = event.request;
   if (req.method !== "GET") return;
@@ -24,7 +33,6 @@ self.addEventListener("fetch", (event) => {
   event.respondWith(
     fetch(req)
       .then((res) => {
-        // atualiza cache em background
         const copy = res.clone();
         caches.open(CACHE).then((c) => c.put(req, copy));
         return res;
