@@ -1,1 +1,173 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JerseyGo – Useful Services in Jersey</title>
 
+  <meta name="description" content="JerseyGo helps you find useful services in Jersey: parking, parks, transport, emergency, utilities and more." />
+  <meta name="theme-color" content="#0b1220" />
+
+  <link rel="manifest" href="./manifest.webmanifest" />
+
+  <style>
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background:#0b1220;
+      color:#ffffff;
+    }
+    header{
+      padding:16px;
+      background:#111827;
+      text-align:center;
+      font-weight:800;
+      font-size:22px;
+    }
+    .container{
+      padding:16px;
+      max-width:900px;
+      margin:auto;
+    }
+    .search{
+      width:100%;
+      padding:12px;
+      border-radius:10px;
+      border:none;
+      margin-bottom:16px;
+      font-size:16px;
+    }
+    .category{
+      margin-top:24px;
+    }
+    .category h2{
+      margin-bottom:8px;
+      font-size:18px;
+      border-bottom:1px solid #1f2937;
+      padding-bottom:4px;
+    }
+    .card{
+      background:#111827;
+      border-radius:12px;
+      padding:14px;
+      margin-bottom:10px;
+    }
+    .card h3{
+      margin:0 0 6px 0;
+      font-size:16px;
+    }
+    .card p{
+      margin:0 0 8px 0;
+      font-size:14px;
+      color:#cbd5e1;
+    }
+    .card a{
+      display:inline-block;
+      margin-right:10px;
+      color:#60a5fa;
+      text-decoration:none;
+      font-size:14px;
+    }
+    footer{
+      text-align:center;
+      font-size:12px;
+      color:#9ca3af;
+      padding:20px 10px;
+    }
+  </style>
+</head>
+
+<body>
+<header>JerseyGo</header>
+
+<div class="container">
+  <input id="search" class="search" placeholder="Search: parking, parks, hospital..." />
+
+  <div id="content"></div>
+</div>
+
+<footer>
+  Emergency: call <strong>999</strong> or <strong>112</strong><br>
+  JerseyGo – unofficial directory using official sources
+</footer>
+
+<script>
+const services = [
+  {cat:"Emergency", name:"Emergency Services", desc:"Police, Fire & Ambulance", links:[
+    {t:"Call 999 / 112", u:"tel:999"},
+    {t:"gov.je", u:"https://www.gov.je"}
+  ]},
+  {cat:"Health", name:"Jersey General Hospital", desc:"Main hospital in Jersey", links:[
+    {t:"Call", u:"tel:+441534442000"},
+    {t:"Website", u:"https://www.gov.je"}
+  ]},
+  {cat:"Transport", name:"LibertyBus", desc:"Bus routes and timetables", links:[
+    {t:"Website", u:"https://libertybus.je"}
+  ]},
+  {cat:"Transport", name:"Jersey Airport", desc:"Flights and contact", links:[
+    {t:"Website", u:"https://www.jerseyairport.com"}
+  ]},
+  {cat:"Parking", name:"PayByPhone Parking", desc:"Pay parking by phone", links:[
+    {t:"Info", u:"https://www.gov.je"}
+  ]},
+  {cat:"Parking", name:"Live Car Park Spaces", desc:"Check free spaces", links:[
+    {t:"View", u:"https://www.gov.je"}
+  ]},
+  {cat:"Parks", name:"Howard Davis Park", desc:"Public park & gardens", links:[
+    {t:"Info", u:"https://www.gov.je"}
+  ]},
+  {cat:"Parks", name:"Coronation Park", desc:"Millbrook park area", links:[
+    {t:"Info", u:"https://www.gov.je"}
+  ]},
+  {cat:"Utilities", name:"Jersey Electricity", desc:"Electricity provider", links:[
+    {t:"Website", u:"https://www.jec.co.uk"}
+  ]},
+  {cat:"Utilities", name:"Jersey Water", desc:"Water services", links:[
+    {t:"Website", u:"https://www.jerseywater.je"}
+  ]}
+];
+
+const content = document.getElementById("content");
+const search = document.getElementById("search");
+
+function render(){
+  const q = search.value.toLowerCase();
+  content.innerHTML = "";
+
+  const cats = [...new Set(services.map(s=>s.cat))];
+
+  cats.forEach(cat=>{
+    const items = services.filter(s =>
+      s.cat===cat &&
+      (s.name.toLowerCase().includes(q) || s.desc.toLowerCase().includes(q))
+    );
+    if(items.length===0) return;
+
+    const section = document.createElement("div");
+    section.className="category";
+    section.innerHTML = `<h2>${cat}</h2>`;
+
+    items.forEach(s=>{
+      const card = document.createElement("div");
+      card.className="card";
+      card.innerHTML = `
+        <h3>${s.name}</h3>
+        <p>${s.desc}</p>
+        ${s.links.map(l=>`<a href="${l.u}" target="_blank">${l.t}</a>`).join("")}
+      `;
+      section.appendChild(card);
+    });
+
+    content.appendChild(section);
+  });
+}
+
+search.addEventListener("input", render);
+render();
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("./sw.js");
+}
+</script>
+</body>
+</html>
