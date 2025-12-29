@@ -1,173 +1,910 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-GB">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>JerseyGo – Useful Services in Jersey</title>
-
-  <meta name="description" content="JerseyGo helps you find useful services in Jersey: parking, parks, transport, emergency, utilities and more." />
-  <meta name="theme-color" content="#0b1220" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#0B1220" />
+  <meta name="description" content="JerseyGo — useful services in Jersey: parking, parks, transport, emergency, utilities and more." />
+  <title>JerseyGo</title>
 
   <link rel="manifest" href="./manifest.webmanifest" />
 
   <style>
+    :root{
+      --bg:#070A12;
+      --card:#0E1629;
+      --card2:#0B1220;
+      --text:#E9EEF7;
+      --muted:#A9B4C7;
+      --line:rgba(255,255,255,.09);
+      --accent:#4DA3FF;
+      --good:#35D07F;
+      --warn:#FFB020;
+      --shadow: 0 18px 50px rgba(0,0,0,.38);
+      --r:18px;
+    }
+    *{box-sizing:border-box}
     body{
       margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
-      background:#0b1220;
-      color:#ffffff;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color:var(--text);
+      background:
+        radial-gradient(900px 600px at 15% 10%, rgba(77,163,255,.18), transparent 55%),
+        radial-gradient(800px 520px at 85% 5%, rgba(53,208,127,.14), transparent 55%),
+        radial-gradient(900px 700px at 50% 92%, rgba(255,176,32,.10), transparent 55%),
+        var(--bg);
     }
+    a{color:inherit; text-decoration:none}
+    .wrap{max-width:1120px; margin:0 auto; padding:14px 14px 34px}
     header{
-      padding:16px;
-      background:#111827;
-      text-align:center;
-      font-weight:800;
-      font-size:22px;
+      position:sticky; top:0; z-index:50;
+      backdrop-filter: blur(14px);
+      background: rgba(7,10,18,.72);
+      border-bottom:1px solid var(--line);
     }
-    .container{
-      padding:16px;
-      max-width:900px;
-      margin:auto;
+    .topbar{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px; padding:14px 14px;
     }
-    .search{
-      width:100%;
-      padding:12px;
-      border-radius:10px;
-      border:none;
-      margin-bottom:16px;
-      font-size:16px;
+    .brand{display:flex; align-items:center; gap:10px}
+    .logo{
+      width:36px; height:36px; border-radius:13px;
+      background: linear-gradient(135deg, rgba(77,163,255,.95), rgba(53,208,127,.85));
+      box-shadow: var(--shadow);
+      position:relative; overflow:hidden;
     }
-    .category{
-      margin-top:24px;
+    .logo:after{
+      content:"";
+      position:absolute; inset:-40%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.35), transparent 55%);
+      transform: rotate(18deg);
     }
-    .category h2{
-      margin-bottom:8px;
-      font-size:18px;
-      border-bottom:1px solid #1f2937;
-      padding-bottom:4px;
+    .title{font-weight:900; letter-spacing:.2px}
+    .sub{font-size:12px; color:var(--muted); margin-top:2px}
+
+    .right{display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end}
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      padding:10px 12px; border-radius:999px;
+      font-size:13px;
     }
-    .card{
-      background:#111827;
-      border-radius:12px;
+    .pill input{
+      border:none; outline:none; background:transparent; color:var(--text);
+      width:min(52vw, 380px);
+      font-size:13px;
+    }
+    .btn{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.05);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:14px;
+      cursor:pointer;
+      font-weight:750;
+    }
+    .btn:hover{background: rgba(255,255,255,.08)}
+    .btn.accent{border-color: rgba(77,163,255,.35); background: rgba(77,163,255,.14)}
+    .btn.good{border-color: rgba(53,208,127,.35); background: rgba(53,208,127,.12)}
+    .btn.warn{border-color: rgba(255,176,32,.35); background: rgba(255,176,32,.10)}
+
+    .grid{
+      display:grid;
+      grid-template-columns: 300px 1fr;
+      gap:14px;
+      margin-top:14px;
+    }
+    @media (max-width: 920px){ .grid{grid-template-columns:1fr} .pill input{width: 58vw} }
+
+    .panel{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      border-radius: var(--r);
+      overflow:hidden;
+      box-shadow: 0 16px 60px rgba(0,0,0,.18);
+    }
+    .panel .hd{
       padding:14px;
-      margin-bottom:10px;
+      border-bottom:1px solid var(--line);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
     }
-    .card h3{
-      margin:0 0 6px 0;
-      font-size:16px;
+    .panel .hd h2{margin:0; font-size:12px; color:var(--muted); font-weight:900; letter-spacing:.35px; text-transform:uppercase}
+
+    .filters{padding:12px; display:grid; gap:10px}
+    select{
+      width:100%;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      color:var(--text);
+      outline:none;
+      font-weight:700;
     }
-    .card p{
-      margin:0 0 8px 0;
-      font-size:14px;
-      color:#cbd5e1;
+    option{color:#0B1220}
+    .hint{font-size:12px; color:var(--muted); line-height:1.35}
+
+    .cats{padding:8px}
+    .cat{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding:10px 10px;
+      border-radius:14px;
+      cursor:pointer;
+      border:1px solid transparent;
     }
-    .card a{
-      display:inline-block;
-      margin-right:10px;
-      color:#60a5fa;
-      text-decoration:none;
-      font-size:14px;
+    .cat:hover{background: rgba(255,255,255,.04)}
+    .cat.active{
+      border-color: rgba(77,163,255,.35);
+      background: rgba(77,163,255,.10);
     }
-    footer{
-      text-align:center;
+    .badge{
+      font-size:12px; color:var(--muted);
+      border:1px solid var(--line);
+      padding:4px 8px;
+      border-radius:999px;
+    }
+
+    .content{padding:14px}
+    .hero{
+      border:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border-radius: var(--r);
+      padding:14px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:14px;
+    }
+    .hero h1{margin:0; font-size:20px}
+    .hero p{margin:6px 0 0; color:var(--muted); line-height:1.35}
+    .hero .mini{font-size:12px; margin-top:8px; color:var(--muted)}
+
+    .quick{
+      display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; align-items:center;
+    }
+    .chip{
+      display:inline-flex; align-items:center; gap:8px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      padding:9px 11px;
+      border-radius:14px;
+      font-size:13px;
+      cursor:pointer;
+    }
+    .chip:hover{background: rgba(255,255,255,.08)}
+
+    .cards{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap:12px;
+      margin-top:12px;
+    }
+    @media (max-width: 760px){ .cards{grid-template-columns:1fr} }
+
+    .card{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      border-radius: var(--r);
+      padding:14px;
+      min-height: 142px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .row{display:flex; align-items:flex-start; justify-content:space-between; gap:10px}
+    .name{font-weight:900}
+    .meta{font-size:12px; color:var(--muted); margin-top:2px; line-height:1.35}
+    .tags{display:flex; gap:8px; flex-wrap:wrap}
+    .tag{
       font-size:12px;
-      color:#9ca3af;
-      padding:20px 10px;
+      border:1px solid var(--line);
+      padding:5px 9px;
+      border-radius:999px;
+      color:var(--muted);
     }
+    .actions{display:flex; gap:8px; flex-wrap:wrap; margin-top:auto}
+    .favBtn{
+      display:inline-flex; align-items:center; gap:8px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      padding:8px 10px;
+      border-radius:14px;
+      cursor:pointer;
+      font-size:13px;
+      user-select:none;
+    }
+    .favBtn:hover{background: rgba(255,255,255,.08)}
+    .star{font-size:16px; line-height:0}
+
+    footer{margin-top:14px; color:var(--muted); font-size:12px; line-height:1.45}
+    .toast{
+      position:fixed; left:50%; bottom:18px; transform:translateX(-50%);
+      background: rgba(14,22,41,.92);
+      border:1px solid var(--line);
+      padding:10px 12px;
+      border-radius:14px;
+      color:var(--text);
+      display:none;
+      max-width: min(92vw, 560px);
+      box-shadow: var(--shadow);
+    }
+    .toast.show{display:block}
+    .kbd{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      font-size: 11px;
+      border: 1px solid var(--line);
+      padding: 2px 6px;
+      border-radius: 8px;
+      color: var(--muted);
+    }
+
+    /* Install banner (top inside app) */
+    .installBar{
+      display:none;
+      margin-top:12px;
+      border:1px solid rgba(77,163,255,.32);
+      background: rgba(77,163,255,.10);
+      border-radius: var(--r);
+      padding:12px;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .installBar.show{display:flex}
+    .installBar .txt{font-size:13px; color:var(--text)}
+    .installBar .txt b{color:#fff}
+    .installBar .mini2{font-size:12px; color:var(--muted); margin-top:2px}
   </style>
 </head>
 
 <body>
-<header>JerseyGo</header>
+<header>
+  <div class="topbar wrap" style="padding:14px;">
+    <div class="brand">
+      <div class="logo" aria-hidden="true"></div>
+      <div>
+        <div class="title">JerseyGo</div>
+        <div class="sub">Parking • Parks • Transport • Emergency • Utilities • Parish contacts</div>
+      </div>
+    </div>
 
-<div class="container">
-  <input id="search" class="search" placeholder="Search: parking, parks, hospital..." />
+    <div class="right">
+      <div class="pill" title="Search">
+        <span style="opacity:.85">🔎</span>
+        <input id="q" placeholder="Search: parking, parks, hospital..." autocomplete="off" />
+        <span class="kbd">/</span>
+      </div>
 
-  <div id="content"></div>
+      <button id="installBtnTop" class="btn accent" style="display:none;">Install</button>
+      <button id="favToggle" class="btn good">★ Favourites</button>
+      <button id="resetBtn" class="btn">Reset</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="grid">
+    <aside class="panel">
+      <div class="hd">
+        <h2>Filters</h2>
+        <span id="countAll" class="badge">0</span>
+      </div>
+
+      <div class="filters">
+        <select id="parishSelect" aria-label="Parish filter"></select>
+        <div class="hint">
+          Tip: press <span class="kbd">/</span> to search. Use <b>Parish</b> to narrow parks & local contacts.
+        </div>
+      </div>
+
+      <div class="hd" style="border-top:1px solid var(--line);">
+        <h2>Categories</h2>
+        <span id="countVisible" class="badge">0</span>
+      </div>
+      <div id="cats" class="cats"></div>
+    </aside>
+
+    <main class="panel">
+      <div class="content">
+        <div class="hero">
+          <div>
+            <h1 id="viewTitle">All services</h1>
+            <p id="viewDesc">Official links + quick actions (call, email, maps). Save favourites for one-tap access.</p>
+
+            <div id="installBar" class="installBar" role="region" aria-label="Install JerseyGo">
+              <div>
+                <div class="txt"><b>Install JerseyGo</b> to your home screen (works like an app).</div>
+                <div class="mini2">If the button doesn’t show, use Chrome menu → “Add to Home screen”.</div>
+              </div>
+              <button id="installBtnBar" class="btn accent">Install</button>
+            </div>
+
+            <div class="mini" id="statsLine">Loading…</div>
+          </div>
+
+          <div class="quick">
+            <a class="chip" href="https://www.gov.je/Travel/Motoring/Parking/pages/index.aspx" target="_blank" rel="noopener">🅿️ Parking (gov.je)</a>
+            <a class="chip" href="https://www.gov.je/Leisure/ParksGardens/pages/index.aspx" target="_blank" rel="noopener">🌳 Parks (gov.je)</a>
+            <button class="chip" id="nearMeBtn" type="button">📍 Near me</button>
+          </div>
+        </div>
+
+        <div id="cards" class="cards"></div>
+
+        <footer>
+          Emergency: call <b>999</b> or <b>112</b>. Do not use while driving.<br/>
+          Data is link-based (official pages) so it stays accurate. Offline mode caches the app shell.
+        </footer>
+      </div>
+    </main>
+  </div>
 </div>
 
-<footer>
-  Emergency: call <strong>999</strong> or <strong>112</strong><br>
-  JerseyGo – unofficial directory using official sources
-</footer>
+<div id="toast" class="toast"></div>
 
 <script>
-const services = [
-  {cat:"Emergency", name:"Emergency Services", desc:"Police, Fire & Ambulance", links:[
-    {t:"Call 999 / 112", u:"tel:999"},
-    {t:"gov.je", u:"https://www.gov.je"}
-  ]},
-  {cat:"Health", name:"Jersey General Hospital", desc:"Main hospital in Jersey", links:[
-    {t:"Call", u:"tel:+441534442000"},
-    {t:"Website", u:"https://www.gov.je"}
-  ]},
-  {cat:"Transport", name:"LibertyBus", desc:"Bus routes and timetables", links:[
-    {t:"Website", u:"https://libertybus.je"}
-  ]},
-  {cat:"Transport", name:"Jersey Airport", desc:"Flights and contact", links:[
-    {t:"Website", u:"https://www.jerseyairport.com"}
-  ]},
-  {cat:"Parking", name:"PayByPhone Parking", desc:"Pay parking by phone", links:[
-    {t:"Info", u:"https://www.gov.je"}
-  ]},
-  {cat:"Parking", name:"Live Car Park Spaces", desc:"Check free spaces", links:[
-    {t:"View", u:"https://www.gov.je"}
-  ]},
-  {cat:"Parks", name:"Howard Davis Park", desc:"Public park & gardens", links:[
-    {t:"Info", u:"https://www.gov.je"}
-  ]},
-  {cat:"Parks", name:"Coronation Park", desc:"Millbrook park area", links:[
-    {t:"Info", u:"https://www.gov.je"}
-  ]},
-  {cat:"Utilities", name:"Jersey Electricity", desc:"Electricity provider", links:[
-    {t:"Website", u:"https://www.jec.co.uk"}
-  ]},
-  {cat:"Utilities", name:"Jersey Water", desc:"Water services", links:[
-    {t:"Website", u:"https://www.jerseywater.je"}
-  ]}
+/** =========================
+ *  DATA (official-first)
+ *  ========================= */
+const SERVICES = [
+  // EMERGENCY
+  {
+    id:"emergency-999",
+    category:"Emergency",
+    parish:"Island-wide",
+    name:"Emergency services (Police / Fire / Ambulance)",
+    desc:"Call 999 or 112 for emergencies in Jersey.",
+    tags:["999","112","urgent"],
+    phone:"999",
+    links:[
+      { label:"gov.je (Emergency guidance)", url:"https://www.gov.je/Pages/contacts.aspx" }
+    ],
+    mapsQuery:"Police Fire Ambulance Jersey"
+  },
+
+  // HEALTH
+  {
+    id:"health-jgh",
+    category:"Health",
+    parish:"St Helier",
+    name:"Jersey General Hospital",
+    desc:"Main hospital contact (switchboard).",
+    tags:["hospital","health"],
+    phone:"+44 1534 442000",
+    links:[
+      { label:"Contacts (gov.je)", url:"https://www.gov.je/pages/contacts.aspx" }
+    ],
+    mapsQuery:"Jersey General Hospital"
+  },
+
+  // TRANSPORT
+  {
+    id:"transport-libertybus",
+    category:"Transport",
+    parish:"Island-wide",
+    name:"LibertyBus",
+    desc:"Bus routes, timetables and tickets.",
+    tags:["bus","routes","timetables"],
+    links:[
+      { label:"LibertyBus", url:"https://libertybus.je/" }
+    ],
+    mapsQuery:"Liberation Station Jersey bus station"
+  },
+  {
+    id:"transport-airport",
+    category:"Transport",
+    parish:"St Peter",
+    name:"Jersey Airport",
+    desc:"Flights, departures and contact.",
+    tags:["airport","flights"],
+    links:[
+      { label:"Jersey Airport", url:"https://www.jerseyairport.com/" }
+    ],
+    mapsQuery:"Jersey Airport"
+  },
+
+  // PARKING (gov.je)
+  {
+    id:"parking-index",
+    category:"Parking",
+    parish:"St Helier",
+    name:"Parking (official hub)",
+    desc:"Official parking pages: rules, permits, EV, car parks and more.",
+    tags:["parking","rules","permits"],
+    links:[
+      { label:"Parking hub (gov.je)", url:"https://www.gov.je/Travel/Motoring/Parking/pages/index.aspx" }
+    ],
+    mapsQuery:"St Helier Jersey parking"
+  },
+  {
+    id:"parking-live-spaces",
+    category:"Parking",
+    parish:"St Helier",
+    name:"Live available car park spaces (multi-storey)",
+    desc:"Live spaces for multi-storey car parks + Parking Control Office contact.",
+    tags:["live","spaces","multi-storey"],
+    links:[
+      { label:"Live spaces (gov.je)", url:"https://www.gov.je/Travel/Motoring/Parking/pages/carparkspaces.aspx" }
+    ],
+    mapsQuery:"Sand Street St Helier Jersey"
+  },
+  {
+    id:"parking-carparks",
+    category:"Parking",
+    parish:"St Helier",
+    name:"Car parks (long & short stay) — official",
+    desc:"Short stay rules + pay by PayByPhone or paycards.",
+    tags:["car parks","short stay","long stay"],
+    links:[
+      { label:"Car parks (gov.je)", url:"https://www.gov.je/Travel/Motoring/Parking/pages/carparks.aspx" }
+    ],
+    mapsQuery:"St Helier Jersey car park"
+  },
+  {
+    id:"parking-onstreet",
+    category:"Parking",
+    parish:"St Helier",
+    name:"On-street parking locations (St Helier)",
+    desc:"20-min spaces + location numbers and chargeable times.",
+    tags:["on-street","PayByPhone","St Helier"],
+    links:[
+      { label:"On-street parking (gov.je)", url:"https://www.gov.je/Travel/Motoring/Parking/PayForParking/pages/onstreetparking.aspx" }
+    ],
+    mapsQuery:"St Helier Jersey on-street parking"
+  },
+  {
+    id:"parking-paybyphone",
+    category:"Parking",
+    parish:"Island-wide",
+    name:"Smart parking (PayByPhone)",
+    desc:"PayByPhone available in paying public car parks and on-street parking.",
+    tags:["PayByPhone","app","payment"],
+    links:[
+      { label:"PayByPhone info (gov.je)", url:"https://www.gov.je/Travel/Motoring/Parking/PayForParking/pages/paybyphoneapp.aspx" },
+      { label:"PayByPhone locations", url:"https://www.paybyphone.co.uk/locations/states-of-jersey" }
+    ],
+    mapsQuery:"PayByPhone Jersey"
+  },
+
+  // PARKS (gov.je)
+  {
+    id:"parks-index",
+    category:"Parks",
+    parish:"Island-wide",
+    name:"Parks & gardens (official directory)",
+    desc:"Official list: Coronation Park, Howard Davis Park, Millennium Town Park and more.",
+    tags:["parks","gardens","directory"],
+    links:[
+      { label:"Parks & gardens (gov.je)", url:"https://www.gov.je/Leisure/ParksGardens/pages/index.aspx" }
+    ],
+    mapsQuery:"Parks and gardens Jersey"
+  },
+  {
+    id:"parks-howard",
+    category:"Parks",
+    parish:"St Saviour",
+    name:"Howard Davis Park",
+    desc:"Opening times + entrances + facilities (official).",
+    tags:["park","rose garden","pond"],
+    links:[
+      { label:"Howard Davis Park (gov.je)", url:"https://www.gov.je/Leisure/ParksGardens/pages/howarddavispark.aspx" }
+    ],
+    mapsQuery:"Howard Davis Park Don Road St Saviour Jersey"
+  },
+  {
+    id:"parks-coronation",
+    category:"Parks",
+    parish:"St Lawrence",
+    name:"Coronation Park (Millbrook Park)",
+    desc:"Opening times + facilities + restrictions + parking (official).",
+    tags:["park","water play","parking"],
+    links:[
+      { label:"Coronation Park (gov.je)", url:"https://www.gov.je/Leisure/ParksGardens/pages/coronationpark.aspx" }
+    ],
+    mapsQuery:"Coronation Park Millbrook Park Bel Royal Jersey"
+  },
+  {
+    id:"parks-millennium",
+    category:"Parks",
+    parish:"St Helier",
+    name:"Millennium Town Park",
+    desc:"Facilities include playground, toilets, Wi-Fi and water features (official).",
+    tags:["playground","toilets","wifi"],
+    links:[
+      { label:"Millennium Town Park (gov.je)", url:"https://www.gov.je/Leisure/ParksGardens/pages/millenniumtownpark.aspx" }
+    ],
+    mapsQuery:"Millennium Town Park St Helier Jersey"
+  },
+
+  // UTILITIES
+  {
+    id:"util-jec",
+    category:"Utilities",
+    parish:"Island-wide",
+    name:"Jersey Electricity (JEC)",
+    desc:"Electricity provider — contact and support.",
+    tags:["electricity","power"],
+    links:[{ label:"JEC contact", url:"https://www.jec.co.uk/contact/" }],
+    mapsQuery:"Jersey Electricity Company"
+  },
+  {
+    id:"util-water",
+    category:"Utilities",
+    parish:"Island-wide",
+    name:"Jersey Water",
+    desc:"Water services — contact and emergencies.",
+    tags:["water","leak"],
+    links:[{ label:"Jersey Water contact", url:"https://www.jerseywater.je/contact/" }],
+    mapsQuery:"Jersey Water"
+  },
+
+  // PARISH CONTACTS (official index)
+  {
+    id:"parishes-contacts",
+    category:"Parishes",
+    parish:"Island-wide",
+    name:"Parish contacts (official list)",
+    desc:"Official contacts A–Z for each parish (St Helier, St Saviour, etc.).",
+    tags:["parish","contacts","hall"],
+    links:[
+      { label:"Parish contacts A–Z (gov.je)", url:"https://www.gov.je/pages/contacts.aspx?group=Parishes" },
+      { label:"Comité des Connétables", url:"https://comite.je/" }
+    ],
+    mapsQuery:"Parish Hall Jersey"
+  }
 ];
 
-const content = document.getElementById("content");
-const search = document.getElementById("search");
+const CATEGORY_ORDER = ["Emergency","Health","Transport","Parking","Parks","Utilities","Parishes"];
+const PARISH_ORDER = [
+  "All parishes",
+  "Island-wide",
+  "St Helier","St Saviour","St Lawrence","St Peter","St Clement","St Brelade","St John","St Martin","St Mary","St Ouen","Trinity","Grouville"
+];
 
-function render(){
-  const q = search.value.toLowerCase();
-  content.innerHTML = "";
+/** =========================
+ *  STATE
+ *  ========================= */
+const LS_FAVS = "jerseygo:favs:v2";
+const state = {
+  q: "",
+  category: "All",
+  parish: "All parishes",
+  showFavs: false,
+  favs: new Set(JSON.parse(localStorage.getItem(LS_FAVS) || "[]")),
+  userPos: null
+};
 
-  const cats = [...new Set(services.map(s=>s.cat))];
+/** =========================
+ *  HELPERS
+ *  ========================= */
+const $ = (id)=>document.getElementById(id);
+const toast = (msg)=>{
+  const t = $("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(window.__t);
+  window.__t = setTimeout(()=>t.classList.remove("show"), 1600);
+};
+const norm = (s)=> (s||"").toLowerCase().trim();
 
-  cats.forEach(cat=>{
-    const items = services.filter(s =>
-      s.cat===cat &&
-      (s.name.toLowerCase().includes(q) || s.desc.toLowerCase().includes(q))
-    );
-    if(items.length===0) return;
+function escapeHtml(s){
+  return (s||"")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+function mapsUrl(query){
+  const q = encodeURIComponent(query || "Jersey");
+  return `https://www.google.com/maps/search/?api=1&query=${q}`;
+}
+function telHref(phone){
+  const cleaned = (phone||"").replace(/[^\d+]/g,"");
+  return cleaned ? ("tel:" + cleaned) : "#";
+}
+function matchesQuery(svc, q){
+  if(!q) return true;
+  const hay = [
+    svc.name, svc.desc, svc.category, svc.parish,
+    ...(svc.tags||[]),
+    svc.phone||"",
+    ...(svc.links||[]).map(x=>x.label+" "+x.url),
+    svc.mapsQuery||""
+  ].join(" ");
+  return norm(hay).includes(norm(q));
+}
+function matchesParish(svc){
+  if(state.parish === "All parishes") return true;
+  if(state.parish === "Island-wide") return svc.parish === "Island-wide";
+  return svc.parish === state.parish || svc.parish === "Island-wide";
+}
+function visibleServices(){
+  return SERVICES
+    .filter(svc => (state.category === "All" ? true : svc.category === state.category))
+    .filter(svc => matchesParish(svc))
+    .filter(svc => state.showFavs ? state.favs.has(svc.id) : true)
+    .filter(svc => matchesQuery(svc, state.q));
+}
 
-    const section = document.createElement("div");
-    section.className="category";
-    section.innerHTML = `<h2>${cat}</h2>`;
+/** =========================
+ *  RENDER
+ *  ========================= */
+function catIcon(cat){
+  switch(cat){
+    case "All": return "🧭";
+    case "Emergency": return "🚨";
+    case "Health": return "🏥";
+    case "Transport": return "🚌";
+    case "Parking": return "🅿️";
+    case "Parks": return "🌳";
+    case "Utilities": return "⚡";
+    case "Parishes": return "🏛️";
+    default: return "•";
+  }
+}
 
-    items.forEach(s=>{
-      const card = document.createElement("div");
-      card.className="card";
-      card.innerHTML = `
-        <h3>${s.name}</h3>
-        <p>${s.desc}</p>
-        ${s.links.map(l=>`<a href="${l.u}" target="_blank">${l.t}</a>`).join("")}
-      `;
-      section.appendChild(card);
-    });
+function renderParishSelect(){
+  const sel = $("parishSelect");
+  const options = PARISH_ORDER.map(p => `<option value="${escapeHtml(p)}">${escapeHtml(p)}</option>`).join("");
+  sel.innerHTML = options;
+  sel.value = state.parish;
 
-    content.appendChild(section);
+  sel.addEventListener("change", ()=>{
+    state.parish = sel.value;
+    renderAll();
   });
 }
 
-search.addEventListener("input", render);
-render();
+function renderCats(){
+  const catsEl = $("cats");
+  const counts = SERVICES.reduce((acc, s)=>{
+    acc[s.category] = (acc[s.category]||0)+1;
+    return acc;
+  },{});
+  const allCount = SERVICES.length;
+  $("countAll").textContent = allCount;
 
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("./sw.js");
+  const items = ["All", ...CATEGORY_ORDER.filter(c=>counts[c])].map(cat=>{
+    const count = (cat==="All") ? allCount : (counts[cat]||0);
+    const active = (state.category===cat) ? "active" : "";
+    return `
+      <div class="cat ${active}" data-cat="${cat}">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span style="opacity:.92">${catIcon(cat)}</span>
+          <div style="font-weight:850">${escapeHtml(cat)}</div>
+        </div>
+        <span class="badge">${count}</span>
+      </div>
+    `;
+  }).join("");
+
+  catsEl.innerHTML = items;
+  [...catsEl.querySelectorAll(".cat")].forEach(el=>{
+    el.addEventListener("click", ()=>{
+      state.category = el.dataset.cat;
+      renderAll();
+    });
+  });
 }
+
+function renderHeader(){
+  const title = $("viewTitle");
+  const desc = $("viewDesc");
+  const total = visibleServices().length;
+
+  const parishTxt = (state.parish==="All parishes") ? "All parishes" : state.parish;
+  const catTxt = (state.category==="All") ? "All services" : state.category;
+
+  if(state.showFavs){
+    title.textContent = `Favourites (${total})`;
+    desc.textContent = `Saved services • ${parishTxt}`;
+  }else{
+    title.textContent = `${catTxt} (${total})`;
+    desc.textContent = `Official links + quick actions • ${parishTxt}`;
+  }
+
+  $("countVisible").textContent = total;
+  $("statsLine").textContent = `${total} showing • Category: ${catTxt} • Parish: ${parishTxt}`;
+}
+
+function renderCards(){
+  const cardsEl = $("cards");
+  const list = visibleServices();
+
+  if(!list.length){
+    cardsEl.innerHTML = `
+      <div class="card" style="grid-column:1/-1;">
+        <div class="name">No results</div>
+        <div class="meta">Try “parking”, “parks”, “live spaces”, “parish”, “airport”.</div>
+      </div>
+    `;
+    return;
+  }
+
+  cardsEl.innerHTML = list.map(svc=>{
+    const isFav = state.favs.has(svc.id);
+    const tags = (svc.tags||[]).slice(0,7).map(t=>`<span class="tag">${escapeHtml(t)}</span>`).join("");
+    const phoneBtn = svc.phone ? `<a class="chip" href="${telHref(svc.phone)}">📞 Call</a>` : "";
+    const mapsBtn = `<a class="chip" href="${mapsUrl(svc.mapsQuery || (svc.name + " Jersey"))}" target="_blank" rel="noopener">🗺️ Maps</a>`;
+    const links = (svc.links||[]).slice(0,3).map(l=>`<a class="chip" href="${l.url}" target="_blank" rel="noopener">↗ ${escapeHtml(l.label)}</a>`).join("");
+
+    return `
+      <div class="card">
+        <div class="row">
+          <div>
+            <div class="name">${escapeHtml(svc.name)}</div>
+            <div class="meta">${escapeHtml(svc.desc || "")}</div>
+            <div class="meta">Parish: <b>${escapeHtml(svc.parish || "Island-wide")}</b></div>
+          </div>
+          <div class="favBtn" data-fav="${escapeHtml(svc.id)}" title="Toggle favourite">
+            <span class="star">${isFav ? "★" : "☆"}</span>
+            <span style="color:var(--muted); font-weight:800">${isFav ? "Saved" : "Save"}</span>
+          </div>
+        </div>
+
+        <div class="tags">${tags}</div>
+
+        <div class="actions">
+          ${phoneBtn}
+          ${mapsBtn}
+          ${links}
+          <button class="chip" type="button" data-copy="${escapeHtml(svc.id)}">📋 Copy</button>
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  // fav handlers
+  [...cardsEl.querySelectorAll("[data-fav]")].forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      const id = btn.getAttribute("data-fav");
+      if(state.favs.has(id)){
+        state.favs.delete(id);
+        toast("Removed from favourites");
+      }else{
+        state.favs.add(id);
+        toast("Saved to favourites");
+      }
+      localStorage.setItem(LS_FAVS, JSON.stringify([...state.favs]));
+      renderAll(false);
+    });
+  });
+
+  // copy handlers
+  [...cardsEl.querySelectorAll("[data-copy]")].forEach(btn=>{
+    btn.addEventListener("click", async ()=>{
+      const id = btn.getAttribute("data-copy");
+      const svc = SERVICES.find(s=>s.id===id);
+      if(!svc) return;
+      const firstLink = (svc.links && svc.links[0]) ? svc.links[0].url : "";
+      const text = `${svc.name} — ${svc.parish}\n${svc.desc}\n${firstLink}`.trim();
+      try{
+        await navigator.clipboard.writeText(text);
+        toast("Copied");
+      }catch{
+        toast("Copy not supported (browser)");
+      }
+    });
+  });
+}
+
+function renderAll(rerenderCats=true){
+  if(rerenderCats) renderCats();
+  renderHeader();
+  renderCards();
+}
+
+/** =========================
+ *  SEARCH / BUTTONS
+ *  ========================= */
+const q = $("q");
+q.addEventListener("input", ()=>{
+  state.q = q.value;
+  renderAll(false);
+});
+window.addEventListener("keydown", (e)=>{
+  if(e.key === "/"){
+    e.preventDefault();
+    q.focus();
+  }
+});
+
+$("favToggle").addEventListener("click", ()=>{
+  state.showFavs = !state.showFavs;
+  $("favToggle").classList.toggle("accent", state.showFavs);
+  renderAll(false);
+});
+
+$("resetBtn").addEventListener("click", ()=>{
+  state.q = "";
+  state.category = "All";
+  state.parish = "All parishes";
+  state.showFavs = false;
+  q.value = "";
+  $("parishSelect").value = state.parish;
+  $("favToggle").classList.remove("accent");
+  renderAll(true);
+});
+
+/** =========================
+ *  NEAR ME (basic)
+ *  ========================= */
+$("nearMeBtn").addEventListener("click", ()=>{
+  if(!navigator.geolocation){
+    toast("Geolocation not supported");
+    return;
+  }
+  toast("Getting location…");
+  navigator.geolocation.getCurrentPosition(
+    (pos)=>{
+      state.userPos = pos.coords;
+      const { latitude, longitude } = pos.coords;
+      const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent("parking")}+&center=${latitude},${longitude}`;
+      window.open(url, "_blank");
+    },
+    ()=> toast("Location blocked in browser settings"),
+    { enableHighAccuracy:true, timeout: 10000 }
+  );
+});
+
+/** =========================
+ *  PWA INSTALL
+ *  ========================= */
+let deferredPrompt = null;
+const installBtnTop = $("installBtnTop");
+const installBar = $("installBar");
+const installBtnBar = $("installBtnBar");
+
+function showInstallUI(show){
+  installBtnTop.style.display = show ? "inline-flex" : "none";
+  installBar.classList.toggle("show", !!show);
+}
+
+window.addEventListener("beforeinstallprompt", (e)=>{
+  e.preventDefault();
+  deferredPrompt = e;
+  showInstallUI(true);
+});
+
+async function doInstall(){
+  if(!deferredPrompt){
+    toast("Use Chrome menu → Add to Home screen");
+    return;
+  }
+  deferredPrompt.prompt();
+  await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  showInstallUI(false);
+  toast("Installed (or dismissed)");
+}
+
+installBtnTop.addEventListener("click", doInstall);
+installBtnBar.addEventListener("click", doInstall);
+
+window.addEventListener("appinstalled", ()=>{
+  showInstallUI(false);
+  toast("JerseyGo installed");
+});
+
+/** =========================
+ *  SERVICE WORKER
+ *  ========================= */
+if("serviceWorker" in navigator){
+  window.addEventListener("load", ()=>{
+    navigator.serviceWorker.register("./sw.js").catch(()=>{});
+  });
+}
+
+/** =========================
+ *  INIT
+ *  ========================= */
+renderParishSelect();
+renderAll();
 </script>
 </body>
-</html>
+  </html>
