@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en-GB">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
@@ -12,7 +12,7 @@
   <link rel="apple-touch-icon" href="./icon.svg">
 
   <meta property="og:title" content="JerseyGo — Parking LIVE + essentials" />
-  <meta property="og:description" content="Parking LIVE, weather, transport, museums, activities, ports & airport, pharmacies, emergency." />
+  <meta property="og:description" content="Parking LIVE, weather, transport, health, museums, activities, ports & airport, pharmacies, emergency." />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="./icon.svg" />
   <meta name="twitter:card" content="summary" />
@@ -223,6 +223,7 @@
     .chip:hover{background: rgba(255,255,255,.08)}
     .chip.primary{border-color: rgba(77,163,255,.35); background: rgba(77,163,255,.12)}
     .chip.good{border-color: rgba(53,208,127,.35); background: rgba(53,208,127,.10)}
+    .chip:disabled{opacity:.6; cursor:not-allowed}
 
     .cards{
       margin-top:12px;
@@ -363,10 +364,10 @@
         </div>
 
         <div class="quick">
-          <a class="chip primary" href="https://www.gov.je/Travel/Motoring/Parking/pages/carparkspaces.aspx" target="_blank" rel="noopener">🅿️ Live</a>
-          <a class="chip" href="https://www.gov.je/Home/Weather/pages/default.aspx" target="_blank" rel="noopener">🌦️ Weather</a>
-          <a class="chip" href="https://www.jersey.com/things-to-do/" target="_blank" rel="noopener">✨ Visit</a>
-          <a class="chip" href="https://www.jersey.com/things-to-do/events/" target="_blank" rel="noopener">📅 Events</a>
+          <button class="chip primary" type="button" data-open="https://www.gov.je/Travel/Motoring/Parking/pages/carparkspaces.aspx">🅿️ Live</button>
+          <button class="chip" type="button" data-open="https://www.gov.je/weather/">🌦️ Weather</button>
+          <button class="chip" type="button" data-open="https://www.jersey.com/things-to-do/">✨ Visit</button>
+          <button class="chip" type="button" data-open="https://www.jersey.com/things-to-do/events/">📅 Events</button>
           <button id="shareAppBtn" class="chip good" type="button">📤 Share JerseyGo</button>
         </div>
       </div>
@@ -383,6 +384,9 @@
 <div id="toast" class="toast"></div>
 
 <script>
+/* =========================================================
+   JerseyGo — 100% functional links (PWA safe) + EN/PT/PL
+   ========================================================= */
 const $ = (id)=>document.getElementById(id);
 const norm = (s)=> (s||"").toLowerCase().trim();
 const escapeHtml = (s)=> (s||"")
@@ -396,6 +400,14 @@ const toast = (msg)=>{
   clearTimeout(window.__toast);
   window.__toast = setTimeout(()=>t.classList.remove("show"), 1600);
 };
+
+function openUrl(url){
+  if(!url) return;
+  // Try opening a new tab/window first (works in browser)
+  const w = window.open(url, "_blank", "noopener,noreferrer");
+  // If blocked (often in PWA standalone), fallback to same-tab navigation
+  if(!w) window.location.href = url;
+}
 
 const telHref = (phone)=>{
   const cleaned = (phone||"").replace(/[^\d+]/g,"");
@@ -590,11 +602,7 @@ const state = {
 };
 
 function t(){ return I18N[state.lang] || I18N.en; }
-
-function pickLang(obj){
-  if(!obj) return "";
-  return obj[state.lang] || obj.en || "";
-}
+function pickLang(obj){ return (obj && (obj[state.lang] || obj.en)) || ""; }
 function pickTags(tags){
   const arr = (tags && (tags[state.lang] || tags.en)) || [];
   return Array.isArray(arr) ? arr : [];
@@ -613,7 +621,6 @@ function readUrlState(){
     if(favs === "1") state.showFavs = true;
   }catch{}
 }
-
 let __urlTimer=null;
 function writeUrlState(){
   clearTimeout(__urlTimer);
@@ -667,24 +674,25 @@ function catIcon(cat){
 }
 
 /* -------------------------
-   Official links (gov.je + Visit Jersey)
+   LINKS (updated + working)
    ------------------------- */
 const LINKS = {
   // Parking
   govLivePage: "https://www.gov.je/Travel/Motoring/Parking/pages/carparkspaces.aspx",
   payByPhone: "https://www.gov.je/Travel/Motoring/Parking/PayForParking/pages/paybyphoneapp.aspx",
 
-  // Weather
-  govWeather: "https://www.gov.je/Home/Weather/pages/default.aspx",
+  // Weather (fixed)
+  govWeather: "https://www.gov.je/weather/",
+  govRadar: "https://www.gov.je/weather/radar/",
 
-  // Tides (gov)
-  govTides: "https://www.gov.je/Leisure/Coastal/Pages/Tides.aspx",
+  // Tides (official)
+  govTides: "https://www.gov.je/weather/tidetimes/",
 
-  // Customer hub wait times
-  govHubWait: "https://www.gov.je/Government/Departments/CustomerHub/pages/waitingtimes.aspx",
+  // Customer Hub wait times
+  govHubWait: "https://www.gov.je/Government/Departments/EmploymentSocialSecurityHousing/pages/waitingtimes.aspx",
 
   // Jobs
-  govJobs: "https://www.gov.je/Government/Working/Pages/JobSearch.aspx",
+  govJobs: "https://www.gov.je/Working/JobCareerAdvice/pages/jobs.aspx",
 
   // Waste / recycling
   govWaste: "https://www.gov.je/Environment/WasteReduction/pages/default.aspx",
@@ -695,6 +703,7 @@ const LINKS = {
   // Health services
   govGPs: "https://www.gov.je/Health/DoctorDentist/pages/gp.aspx",
   govHospital: "https://www.gov.je/Health/Hospitals/Pages/default.aspx",
+  govPharmHours: "https://www.gov.je/Health/DoctorDentist/PharmacistsChemists/pages/pharmacyopeninghours.aspx",
 
   // Museums & tourism
   heritagePlaces: "https://www.jerseyheritage.org/visit/places-to-visit/",
@@ -720,7 +729,7 @@ const DIRECTORY_STATIC = [
     name:{en:"Parking LIVE (official)", pt:"Parking LIVE (oficial)", pl:"Parking LIVE (oficjalne)"},
     desc:{en:"Live car park spaces (gov feed).", pt:"Lugares ao vivo (feed gov).", pl:"Wolne miejsca (feed rządu)."},
     tags:{en:["parking","spaces","live"], pt:["estacionamento","lugares","ao vivo"], pl:["parking","miejsca","na żywo"]},
-    links:[{label:{en:"Open live page", pt:"Abrir página live", pl:"Otwórz stronę"}, url: LINKS.govLivePage}],
+    links:[{label:{en:"Open live page", pt:"Abrir página live", pl:"Otwórz live"}, url: LINKS.govLivePage}],
     mapsQuery:"St Helier car parks"
   },
   {
@@ -729,7 +738,10 @@ const DIRECTORY_STATIC = [
     name:{en:"Weather (official)", pt:"Tempo (oficial)", pl:"Pogoda (oficjalna)"},
     desc:{en:"Forecast and warnings (gov.je).", pt:"Previsão e avisos (gov.je).", pl:"Prognoza i ostrzeżenia (gov.je)."},
     tags:{en:["weather","forecast"], pt:["tempo","previsão"], pl:["pogoda","prognoza"]},
-    links:[{label:{en:"Open weather", pt:"Abrir tempo", pl:"Otwórz pogodę"}, url: LINKS.govWeather}],
+    links:[
+      {label:{en:"Open weather", pt:"Abrir tempo", pl:"Otwórz pogodę"}, url: LINKS.govWeather},
+      {label:{en:"Radar", pt:"Radar", pl:"Radar"}, url: LINKS.govRadar}
+    ],
     mapsQuery:"St Helier Jersey"
   },
   {
@@ -742,13 +754,31 @@ const DIRECTORY_STATIC = [
     mapsQuery:"St Helier tides"
   },
   {
-    id:"ess-events",
+    id:"res-hubwait",
     category:"Essentials",
-    name:{en:"Events (Visit Jersey)", pt:"Eventos (Visit Jersey)", pl:"Wydarzenia (Visit Jersey)"},
-    desc:{en:"What’s on + listings.", pt:"Agenda + listagens.", pl:"Co się dzieje + lista."},
-    tags:{en:["events","what's on"], pt:["eventos","agenda"], pl:["wydarzenia","lista"]},
-    links:[{label:{en:"Open events", pt:"Abrir eventos", pl:"Otwórz wydarzenia"}, url: LINKS.visitEvents}],
-    mapsQuery:"St Helier events"
+    name:{en:"Customer Hub waiting times (gov.je)", pt:"Tempos de espera (Customer Hub)", pl:"Czas oczekiwania (Customer Hub)"},
+    desc:{en:"Check waiting times before you go.", pt:"Vê os tempos antes de ires.", pl:"Sprawdź czas przed wizytą."},
+    tags:{en:["waiting times","customer hub"], pt:["tempos de espera","customer hub"], pl:["czas oczekiwania","customer hub"]},
+    links:[{label:{en:"Open waiting times", pt:"Abrir tempos", pl:"Otwórz czasy"}, url: LINKS.govHubWait}],
+    mapsQuery:"Customer Hub St Helier"
+  },
+  {
+    id:"res-jobs",
+    category:"Essentials",
+    name:{en:"Jobs (gov.je)", pt:"Empregos (gov.je)", pl:"Praca (gov.je)"},
+    desc:{en:"Find public sector jobs and listings.", pt:"Vê vagas e oportunidades.", pl:"Oferty pracy i ogłoszenia."},
+    tags:{en:["jobs","work"], pt:["empregos","trabalho"], pl:["praca","oferty"]},
+    links:[{label:{en:"Open jobs", pt:"Abrir empregos", pl:"Otwórz pracę"}, url: LINKS.govJobs}],
+    mapsQuery:"St Helier Jersey"
+  },
+  {
+    id:"res-waste",
+    category:"Essentials",
+    name:{en:"Waste & recycling (gov.je)", pt:"Lixo e reciclagem (gov.je)", pl:"Odpady i recykling (gov.je)"},
+    desc:{en:"Recycling guidance and services.", pt:"Guia de reciclagem e serviços.", pl:"Informacje o recyklingu i usługach."},
+    tags:{en:["waste","recycling"], pt:["lixo","reciclagem"], pl:["odpady","recykling"]},
+    links:[{label:{en:"Open waste & recycling", pt:"Abrir lixo/reciclagem", pl:"Otwórz odpady"}, url: LINKS.govWaste}],
+    mapsQuery:"Household recycling Jersey"
   },
 
   // Emergency
@@ -770,7 +800,10 @@ const DIRECTORY_STATIC = [
     name:{en:"Weather forecast (gov.je)", pt:"Previsão do tempo (gov.je)", pl:"Prognoza pogody (gov.je)"},
     desc:{en:"Forecast, warnings and updates.", pt:"Previsão, avisos e atualizações.", pl:"Prognoza, ostrzeżenia i aktualizacje."},
     tags:{en:["weather","warnings"], pt:["tempo","avisos"], pl:["pogoda","ostrzeżenia"]},
-    links:[{label:{en:"Open weather", pt:"Abrir tempo", pl:"Otwórz pogodę"}, url: LINKS.govWeather}],
+    links:[
+      {label:{en:"Open weather", pt:"Abrir tempo", pl:"Otwórz pogodę"}, url: LINKS.govWeather},
+      {label:{en:"Radar", pt:"Radar", pl:"Radar"}, url: LINKS.govRadar}
+    ],
     mapsQuery:"Jersey weather"
   },
   {
@@ -851,7 +884,7 @@ const DIRECTORY_STATIC = [
     name:{en:"Pharmacy opening hours (official list)", pt:"Horários de farmácias (lista oficial)", pl:"Godziny aptek (lista oficjalna)"},
     desc:{en:"Search opening hours by pharmacy.", pt:"Pesquisa horários por farmácia.", pl:"Sprawdź godziny otwarcia aptek."},
     tags:{en:["pharmacy","opening hours"], pt:["farmácia","horários"], pl:["apteka","godziny"]},
-    links:[{label:{en:"Open list", pt:"Abrir lista", pl:"Otwórz listę"}, url:"https://www.gov.je/Health/DoctorDentist/PharmacistsChemists/pages/pharmacyopeninghours.aspx"}],
+    links:[{label:{en:"Open list", pt:"Abrir lista", pl:"Otwórz listę"}, url: LINKS.govPharmHours}],
     mapsQuery:"Pharmacy St Helier Jersey"
   },
 
@@ -887,40 +920,11 @@ const DIRECTORY_STATIC = [
     tags:{en:["events"], pt:["eventos"], pl:["wydarzenia"]},
     links:[{label:{en:"Open events", pt:"Abrir eventos", pl:"Otwórz wydarzenia"}, url: LINKS.visitEvents}],
     mapsQuery:"St Helier events"
-  },
-
-  // Resident-only helpful (still inside Essentials)
-  {
-    id:"res-hubwait",
-    category:"Essentials",
-    name:{en:"Customer Hub waiting times (gov.je)", pt:"Tempos de espera (Customer Hub)", pl:"Czas oczekiwania (Customer Hub)"},
-    desc:{en:"Check waiting times before you go.", pt:"Vê os tempos antes de ires.", pl:"Sprawdź czas przed wizytą."},
-    tags:{en:["waiting times","customer hub"], pt:["tempos de espera","customer hub"], pl:["czas oczekiwania","customer hub"]},
-    links:[{label:{en:"Open waiting times", pt:"Abrir tempos", pl:"Otwórz czasy"}, url: LINKS.govHubWait}],
-    mapsQuery:"Customer Hub St Helier"
-  },
-  {
-    id:"res-jobs",
-    category:"Essentials",
-    name:{en:"Jobs (gov.je)", pt:"Empregos (gov.je)", pl:"Praca (gov.je)"},
-    desc:{en:"Find public sector jobs and listings.", pt:"Vê vagas e oportunidades.", pl:"Oferty pracy i ogłoszenia."},
-    tags:{en:["jobs","work"], pt:["empregos","trabalho"], pl:["praca","oferty"]},
-    links:[{label:{en:"Open jobs", pt:"Abrir empregos", pl:"Otwórz pracę"}, url: LINKS.govJobs}],
-    mapsQuery:"St Helier Jersey"
-  },
-  {
-    id:"res-waste",
-    category:"Essentials",
-    name:{en:"Waste & recycling (gov.je)", pt:"Lixo e reciclagem (gov.je)", pl:"Odpady i recykling (gov.je)"},
-    desc:{en:"Recycling guidance and services.", pt:"Guia de reciclagem e serviços.", pl:"Informacje o recyklingu i usługach."},
-    tags:{en:["waste","recycling"], pt:["lixo","reciclagem"], pl:["odpady","recykling"]},
-    links:[{label:{en:"Open waste & recycling", pt:"Abrir lixo/reciclagem", pl:"Otwórz odpady"}, url: LINKS.govWaste}],
-    mapsQuery:"Household recycling Jersey"
   }
 ];
 
 /* -------------------------
-   LIVE Parking (gov JSON)
+   TRUE Parking LIVE (gov JSON)
    ------------------------- */
 const LIVE_FALLBACK = [
   { code:"CHARLESSTREET", name:"Charles Street", type:"Short stay", mapsQuery:"Charles Street car park St Helier Jersey" },
@@ -948,37 +952,38 @@ function spacesBadgeHTML(n){
 
 function buildLiveParkingServices(){
   const L=t();
-  const sorted=[...LIVE_SPACES].sort((a,b)=> spacesNum(b)-spacesNum(a));
-  return sorted.map(x=>{
-    const n=spacesNum(x);
+  const sorted = [...LIVE_SPACES].sort((a,b)=> spacesNum(b) - spacesNum(a));
+  return sorted.map(x => {
+    const n = spacesNum(x);
     const openText = x.open ? L.live.open : L.live.closed;
     const typeText = x.type ? ` • ${x.type}` : "";
-    return {
-      id:"live-"+x.code,
-      category:"Parking LIVE",
-      name:x.name,
-      desc:`${openText}${typeText} • ${x.spaces} ${L.live.spaces}`,
-      tags:["live","spaces",x.type||""].filter(Boolean),
+    return ({
+      id: "live-" + x.code,
+      category: "Parking LIVE",
+      nameText: `${x.name}`,
+      descText: `${openText}${typeText} • ${x.spaces} ${L.live.spaces}`,
+      tags: ["live", "spaces", x.type || ""].filter(Boolean),
       pillHTML: spacesBadgeHTML(n),
-      links:[
-        {label:{en:"Official LIVE page (gov.je)", pt:"LIVE oficial (gov.je)", pl:"LIVE oficjalne (gov.je)"}, url: LINKS.govLivePage},
-        {label:{en:"PayByPhone info (gov.je)", pt:"PayByPhone (gov.je)", pl:"PayByPhone (gov.je)"}, url: LINKS.payByPhone}
+      links: [
+        { labelText: (state.lang==="pt"?"LIVE oficial (gov.je)":state.lang==="pl"?"LIVE oficjalne (gov.je)":"Official LIVE page (gov.je)"), url: LINKS.govLivePage },
+        { labelText: (state.lang==="pt"?"PayByPhone (gov.je)":state.lang==="pl"?"PayByPhone (gov.je)":"PayByPhone info (gov.je)"), url: LINKS.payByPhone }
       ],
-      mapsQuery:x.mapsQuery
-    };
+      mapsQuery: x.mapsQuery
+    });
   });
 }
 
 function normalizeSvcForLang(s){
-  const out = {...s};
-  out.nameText = typeof s.name === "object" ? pickLang(s.name) : (s.name||"");
-  out.descText = typeof s.desc === "object" ? pickLang(s.desc) : (s.desc||"");
-  out.tags = typeof s.tags === "object" ? pickTags(s.tags) : (s.tags||[]);
-  out.links = (s.links||[]).map(l => ({
-    labelText: typeof l.label === "object" ? pickLang(l.label) : (l.label||""),
-    url: l.url
-  }));
-  return out;
+  return {
+    ...s,
+    nameText: typeof s.name === "object" ? pickLang(s.name) : (s.name||""),
+    descText: typeof s.desc === "object" ? pickLang(s.desc) : (s.desc||""),
+    tags: typeof s.tags === "object" ? pickTags(s.tags) : (s.tags||[]),
+    links: (s.links||[]).map(l => ({
+      labelText: typeof l.label === "object" ? pickLang(l.label) : (l.label||""),
+      url: l.url
+    }))
+  };
 }
 
 function allServices(){
@@ -988,6 +993,9 @@ function allServices(){
   ];
 }
 
+/* -------------------------
+   Filter/search
+   ------------------------- */
 function matchesQuery(svc, q){
   if(!q) return true;
   const hay = [
@@ -1003,15 +1011,18 @@ function matchesQuery(svc, q){
 
 function visibleServices(){
   return allServices()
-    .filter(s => state.category==="All" ? true : s.category===state.category)
+    .filter(s => state.category === "All" ? true : s.category === state.category)
     .filter(s => state.showFavs ? state.favs.has(s.id) : true)
     .filter(s => matchesQuery(s, state.q));
 }
 
+/* -------------------------
+   Render
+   ------------------------- */
 function renderCats(){
   const merged = allServices();
   const counts = merged.reduce((acc, s)=>{ acc[s.category]=(acc[s.category]||0)+1; return acc; },{});
-  const cats = ["All", ...CATEGORY_ORDER.filter(c=>counts[c])];
+  const cats = ["All", ...CATEGORY_ORDER.filter(c => counts[c])];
 
   const L=t();
   $("cats").innerHTML = cats.map(cat=>{
@@ -1040,12 +1051,12 @@ function renderCats(){
 function renderHeader(){
   const list = visibleServices();
   const L=t();
-
   const title = (state.category==="All") ? L.allServices : (L.cats[state.category] || state.category);
   $("viewTitle").textContent = `${title} (${list.length})`;
 
-  const desc = state.showFavs ? (L.favourites + " — " + L.viewDescDefault) : (L.descByCat[state.category] || L.viewDescDefault);
-  $("viewDesc").textContent = desc;
+  $("viewDesc").textContent = state.showFavs
+    ? (L.favourites + " — " + L.viewDescDefault)
+    : (L.descByCat[state.category] || L.viewDescDefault);
 
   const liveText = LIVE_TIMESTAMP ? ` • Updated: ${LIVE_TIMESTAMP}` : "";
   $("statsLine").textContent = `Showing ${list.length} • Live refresh ~2 minutes${liveText}`;
@@ -1054,8 +1065,8 @@ function renderHeader(){
 
 function renderCards(){
   const list = visibleServices();
-  const L=t();
   const el = $("cards");
+  const L=t();
 
   if(!list.length){
     el.innerHTML = `
@@ -1071,10 +1082,12 @@ function renderCards(){
     const isFav = state.favs.has(s.id);
     const tags = (s.tags||[]).slice(0,10).map(t=>`<span class="tag">${escapeHtml(String(t))}</span>`).join("");
 
-    const phoneBtn = s.phone ? `<a class="chip" href="${telHref(s.phone)}">${escapeHtml(L.actions.call)}</a>` : "";
-    const emailBtn = s.email ? `<a class="chip" href="${mailHref(s.email)}">${escapeHtml(L.actions.email)}</a>` : "";
-    const mapsBtn = `<a class="chip" href="${mapsUrl(s.mapsQuery || (s.nameText + " Jersey"))}" target="_blank" rel="noopener">${escapeHtml(L.actions.maps)}</a>`;
-    const links = (s.links||[]).slice(0,4).map(l=>`<a class="chip primary" href="${l.url}" target="_blank" rel="noopener">↗ ${escapeHtml(l.labelText)}</a>`).join("");
+    const phoneBtn = s.phone ? `<button class="chip" type="button" data-open="${escapeHtml(telHref(s.phone))}">${escapeHtml(L.actions.call)}</button>` : "";
+    const emailBtn = s.email ? `<button class="chip" type="button" data-open="${escapeHtml(mailHref(s.email))}">${escapeHtml(L.actions.email)}</button>` : "";
+    const mapsBtn  = `<button class="chip" type="button" data-open="${escapeHtml(mapsUrl(s.mapsQuery || (s.nameText + " Jersey")))}">${escapeHtml(L.actions.maps)}</button>`;
+    const links = (s.links||[]).slice(0,4).map(l=>
+      `<button class="chip primary" type="button" data-open="${escapeHtml(l.url)}">↗ ${escapeHtml(l.labelText)}</button>`
+    ).join("");
 
     const pill = s.pillHTML ? `<div style="margin-top:6px;">${s.pillHTML}</div>` : "";
 
@@ -1103,6 +1116,7 @@ function renderCards(){
     `;
   }).join("");
 
+  // FAV
   [...document.querySelectorAll("[data-fav]")].forEach(btn=>{
     btn.addEventListener("click", ()=>{
       const id = btn.getAttribute("data-fav");
@@ -1118,15 +1132,16 @@ function renderCards(){
     });
   });
 
+  // COPY
   [...document.querySelectorAll("[data-copy]")].forEach(btn=>{
     btn.addEventListener("click", async ()=>{
       const id = btn.getAttribute("data-copy");
-      const svc = visibleServices().find(x=>x.id===id);
+      const svc = allServices().find(x=>x.id===id);
       if(!svc) return;
 
       const firstLink = (svc.links && svc.links[0]) ? svc.links[0].url : "";
       const text = [
-        svc.nameText,
+        svc.nameText || "",
         svc.descText || "",
         svc.phone ? ("Call: " + svc.phone) : "",
         svc.email ? ("Email: " + svc.email) : "",
@@ -1142,10 +1157,11 @@ function renderCards(){
     });
   });
 
+  // SHARE SERVICE
   [...document.querySelectorAll("[data-share]")].forEach(btn=>{
     btn.addEventListener("click", async ()=>{
       const id = btn.getAttribute("data-share");
-      const svc = visibleServices().find(x=>x.id===id);
+      const svc = allServices().find(x=>x.id===id);
       if(!svc) return;
 
       const u = new URL(location.href);
@@ -1169,6 +1185,14 @@ function renderCards(){
       }
     });
   });
+
+  // OPEN LINKS (PWA safe)
+  [...document.querySelectorAll("[data-open]")].forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      const url = btn.getAttribute("data-open");
+      openUrl(url);
+    });
+  });
 }
 
 function renderAll(rerenderCats=true){
@@ -1180,7 +1204,7 @@ function renderAll(rerenderCats=true){
 }
 
 /* -------------------------
-   UI events
+   UI actions
    ------------------------- */
 $("q").addEventListener("input", ()=>{
   state.q = $("q").value;
@@ -1200,14 +1224,14 @@ $("resetBtn").addEventListener("click", ()=>{
 });
 
 $("nearMeBtn").addEventListener("click", ()=>{
-  const L = t();
+  const L=t();
   if(!navigator.geolocation){ toast(L.geoNotSupported); return; }
   toast(L.gettingLocation);
   navigator.geolocation.getCurrentPosition(
     (pos)=>{
       const { latitude, longitude } = pos.coords;
       const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent("things to do")}&center=${latitude},${longitude}`;
-      window.open(url, "_blank");
+      openUrl(url);
     },
     ()=> toast(L.locationBlocked),
     { enableHighAccuracy:true, timeout: 10000 }
@@ -1263,64 +1287,75 @@ window.addEventListener("appinstalled", ()=>{
 });
 
 /* -------------------------
-   Live parking fetch + cache fallback
+   URL state
+   ------------------------- */
+function initUrl(){
+  readUrlState();
+  // keep lang in storage
+  localStorage.setItem(LS_LANG, state.lang);
+}
+
+/* -------------------------
+   Live parking fetch (gov JSON) + cache fallback
    ------------------------- */
 async function loadLiveSpaces(){
-  const GOV_JSON="https://sojpublicdata.blob.core.windows.net/sojpublicdata/carpark-data.json";
+  const GOV_JSON = "https://sojpublicdata.blob.core.windows.net/sojpublicdata/carpark-data.json";
 
   try{
-    $("liveStatus").textContent="LIVE…";
-    $("liveStatus").className="badge liveWait";
+    $("liveStatus").textContent = "LIVE…";
+    $("liveStatus").className = "badge liveWait";
 
-    const res=await fetch(GOV_JSON,{cache:"no-store"});
+    const res = await fetch(GOV_JSON, { cache:"no-store" });
     if(!res.ok) throw new Error("gov json failed");
-    const data=await res.json();
+    const data = await res.json();
 
-    const carparks=data?.carparkData?.Jersey?.carpark || [];
-    LIVE_TIMESTAMP=data?.carparkData?.Jersey?.Timestamp || "";
+    const carparks = data?.carparkData?.Jersey?.carpark || [];
+    LIVE_TIMESTAMP = data?.carparkData?.Jersey?.Timestamp || "";
 
-    const byCode=new Map(carparks.map(c=>[String(c.code||"").toUpperCase(), c]));
+    const byCode = new Map(carparks.map(c => [String(c.code || "").toUpperCase(), c]));
 
-    LIVE_SPACES=LIVE_FALLBACK.map(fb=>{
-      const r=byCode.get(String(fb.code).toUpperCase());
+    LIVE_SPACES = LIVE_FALLBACK.map(fb=>{
+      const r = byCode.get(String(fb.code).toUpperCase());
       return {
         ...fb,
-        spaces:(r && Number.isFinite(Number(r.spaces))) ? Number(r.spaces) : "—",
-        open:r ? !!r.carparkOpen : true,
-        status:r ? (r.status || "good") : "good"
+        spaces: (r && Number.isFinite(Number(r.spaces))) ? Number(r.spaces) : "—",
+        open: r ? !!r.carparkOpen : true,
+        status: r ? (r.status || "good") : "good"
       };
     });
 
     localStorage.setItem(LS_LIVE, JSON.stringify({ LIVE_SPACES, LIVE_TIMESTAMP, savedAt:new Date().toISOString() }));
 
-    $("liveStatus").textContent="LIVE ✓";
-    $("liveStatus").className="badge liveOk";
+    $("liveStatus").textContent = "LIVE ✓";
+    $("liveStatus").className = "badge liveOk";
     renderAll(true);
   }catch(e){
     console.log("Live parking failed:", e);
 
-    const cached=localStorage.getItem(LS_LIVE);
+    const cached = localStorage.getItem(LS_LIVE);
     if(cached){
       try{
-        const c=JSON.parse(cached);
+        const c = JSON.parse(cached);
         if(c?.LIVE_SPACES){
-          LIVE_SPACES=c.LIVE_SPACES;
-          LIVE_TIMESTAMP=c.LIVE_TIMESTAMP ? (c.LIVE_TIMESTAMP + " (cached)") : "Cached";
-          $("liveStatus").textContent="LIVE (cached)";
-          $("liveStatus").className="badge liveWait";
+          LIVE_SPACES = c.LIVE_SPACES;
+          LIVE_TIMESTAMP = c.LIVE_TIMESTAMP ? (c.LIVE_TIMESTAMP + " (cached)") : "Cached";
+          $("liveStatus").textContent = "LIVE (cached)";
+          $("liveStatus").className = "badge liveWait";
           renderAll(true);
           return;
         }
       }catch{}
     }
 
-    $("liveStatus").textContent="LIVE ✕";
-    $("liveStatus").className="badge liveBad";
+    $("liveStatus").textContent = "LIVE ✕";
+    $("liveStatus").className = "badge liveBad";
     renderAll(true);
   }
 }
 
-/* Service worker */
+/* -------------------------
+   Service worker
+   ------------------------- */
 if("serviceWorker" in navigator){
   window.addEventListener("load", ()=>{
     navigator.serviceWorker.register("./sw.js").catch(()=>{});
@@ -1328,10 +1363,15 @@ if("serviceWorker" in navigator){
 }
 
 /* Boot */
-readUrlState();
+initUrl();
 renderAll(true);
 loadLiveSpaces();
 setInterval(loadLiveSpaces, 120000);
+
+// Also bind quick buttons that are in the HTML header area
+document.querySelectorAll("[data-open]").forEach(btn=>{
+  btn.addEventListener("click", ()=> openUrl(btn.getAttribute("data-open")));
+});
 </script>
 </body>
 </html>
