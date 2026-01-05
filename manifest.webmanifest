@@ -1,8 +1,8 @@
 {
   "name": "JerseyGo",
   "short_name": "JerseyGo",
-  "description": "Parking LIVE + essentials in Jersey: museums, activities, ports & airport, buses & taxis, pharmacies, emergency.",
-  "start_url": "./?source=pwa",
+  "description": "Parking LIVE + essentials in Jersey.",
+  "start_url": "./?source=pwa&lang=en",
   "scope": "./",
   "display": "standalone",
   "background_color": "#070A12",
