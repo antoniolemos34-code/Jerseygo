@@ -5,14 +5,12 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#0B1220" />
   <meta name="description" content="JerseyGo — Parking LIVE, museums, activities, ports & airport, buses & taxis, pharmacies, emergency." />
-
   <title>JerseyGo</title>
 
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./icon.svg">
 
-  <!-- Social preview (optional but helpful) -->
   <meta property="og:title" content="JerseyGo — Parking LIVE + essentials" />
   <meta property="og:description" content="Live parking spaces + museums, activities, ports & airport, buses & taxis, pharmacies, emergency." />
   <meta property="og:type" content="website" />
@@ -21,8 +19,7 @@
 
   <style>
     :root{
-      --bg:#070A12;
-      --bg2:#0B1220;
+      --bg:#070A12; --bg2:#0B1220;
       --card:rgba(255,255,255,.04);
       --line:rgba(255,255,255,.10);
       --text:#E9EEF7;
@@ -69,6 +66,7 @@
     .brand .t{line-height:1.05}
     .brand .t .name{font-weight:950; font-size:18px}
     .brand .t .sub{margin-top:4px; font-size:12px; color:var(--muted)}
+
     .actionsTop{display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end; width:100%}
     @media (min-width: 760px){ .actionsTop{width:auto} }
 
@@ -104,6 +102,31 @@
     .btn.primary{border-color: rgba(77,163,255,.35); background: rgba(77,163,255,.14)}
     .btn.good{border-color: rgba(53,208,127,.35); background: rgba(53,208,127,.12)}
     .btn.ghost{background: rgba(255,255,255,.03)}
+
+    .langPill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      padding:8px 10px;
+      border-radius:999px;
+      font-size:12px;
+      color:var(--muted);
+    }
+    .langBtns{display:flex; gap:6px}
+    .langBtn{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      color:var(--text);
+      padding:7px 10px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:950;
+      font-size:12px;
+    }
+    .langBtn.on{border-color: rgba(77,163,255,.35); background: rgba(77,163,255,.14)}
+    .langBtn:hover{background: rgba(255,255,255,.08)}
 
     .grid{
       display:grid;
@@ -282,15 +305,25 @@
       <img src="./icon.svg" alt="JerseyGo icon">
       <div class="t">
         <div class="name">JerseyGo</div>
-        <div class="sub">Parking LIVE • Museums • Activities • Ports & Airport • Bus & Taxis • Pharmacies • Emergency</div>
+        <div id="brandSub" class="sub">Parking LIVE • Museums • Activities • Ports & Airport • Bus & Taxis • Pharmacies • Emergency</div>
       </div>
     </div>
 
     <div class="actionsTop">
       <div class="search">
         <span style="opacity:.9">🔎</span>
-        <input id="q" placeholder="Search: spaces, museum, castle, taxi, airport…" autocomplete="off" />
+        <input id="q" autocomplete="off" />
       </div>
+
+      <span class="langPill">
+        🌐 <span id="langLabel">Language</span>
+        <span class="langBtns">
+          <button class="langBtn" id="langEN" type="button">EN</button>
+          <button class="langBtn" id="langPT" type="button">PT</button>
+          <button class="langBtn" id="langPL" type="button">PL</button>
+        </span>
+      </span>
+
       <button id="favToggle" class="btn good">★ Favourites</button>
       <button id="nearMeBtn" class="btn primary">📍 Near me</button>
       <button id="installBtn" class="btn primary" style="display:none">⬇ Install</button>
@@ -302,16 +335,16 @@
 <div class="wrap grid">
   <aside class="panel">
     <div class="panelHd">
-      <h2>Categories</h2>
+      <h2 id="catsTitle">Categories</h2>
       <span id="countVisible" class="badge">0</span>
     </div>
     <div id="cats" class="cats"></div>
 
     <div class="panelHd" style="border-top:1px solid var(--line);">
-      <h2>Live parking</h2>
+      <h2 id="liveTitle">Live parking</h2>
       <span id="liveStatus" class="badge liveWait">LIVE…</span>
     </div>
-    <div style="padding:12px 14px; color:var(--muted); font-size:12px; line-height:1.45;">
+    <div id="liveHelp" style="padding:12px 14px; color:var(--muted); font-size:12px; line-height:1.45;">
       Parking LIVE uses the official government JSON feed. Auto-refresh ~2 minutes.
     </div>
   </aside>
@@ -323,7 +356,7 @@
           <h1 id="viewTitle">All services</h1>
           <p id="viewDesc">One-tap actions: Call • Email • Maps • Official pages.</p>
           <div id="statsLine" class="mini">Loading…</div>
-          <div class="mini">Free • No login • Installable (offline-friendly)</div>
+          <div id="freeLine" class="mini">Free • No login • Installable (offline-friendly)</div>
         </div>
 
         <div class="quick">
@@ -337,7 +370,7 @@
 
       <div id="cards" class="cards"></div>
 
-      <footer>
+      <footer id="footerLine">
         Emergency: call <b>999</b> / <b>112</b> • JerseyGo (unofficial directory; uses public sources)
       </footer>
     </div>
@@ -348,9 +381,7 @@
 
 <script>
 /* =========================================================
-   JerseyGo — PWA directory + TRUE Parking LIVE (gov feed)
-   Improvements: install button, shareable URL state, share per card,
-                 live cache fallback, offline-friendly SW.
+   JerseyGo — TRILINGUAL (EN/PT/PL) + PWA + Live Parking
    ========================================================= */
 const $ = (id)=>document.getElementById(id);
 const norm = (s)=> (s||"").toLowerCase().trim();
@@ -374,8 +405,191 @@ const mailHref = (email)=> email ? ("mailto:" + email) : "#";
 const mapsUrl = (query)=> `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query || "Jersey")}`;
 
 /* -------------------------
-   Categories
+   i18n strings
    ------------------------- */
+const I18N = {
+  en: {
+    language: "Language",
+    brandSub: "Parking LIVE • Museums • Activities • Ports & Airport • Bus & Taxis • Pharmacies • Emergency",
+    searchPH: "Search: spaces, museum, castle, taxi, airport…",
+    favourites: "★ Favourites",
+    nearMe: "📍 Near me",
+    install: "⬇ Install",
+    reset: "Reset",
+    categories: "Categories",
+    liveParking: "Live parking",
+    liveHelp: "Parking LIVE uses the official government JSON feed. Auto-refresh ~2 minutes.",
+    allServices: "All services",
+    viewDescDefault: "One-tap actions: Call • Email • Maps • Official pages.",
+    freeLine: "Free • No login • Installable (offline-friendly)",
+    shareApp: "📤 Share JerseyGo",
+    noResultsTitle: "No results",
+    noResultsDesc: "Try: “spaces”, “museum”, “castle”, “events”, “taxi”, “airport”.",
+    copied: "Copied",
+    copyNotSupported: "Copy not supported",
+    shareCancelled: "Share cancelled",
+    removedFav: "Removed from favourites",
+    savedFav: "Saved to favourites",
+    gettingLocation: "Getting location…",
+    geoNotSupported: "Geolocation not supported",
+    locationBlocked: "Location blocked in browser settings",
+    installed: "Installed ✅",
+    linkCopied: "Link copied",
+    footer: 'Emergency: call <b>999</b> / <b>112</b> • JerseyGo (unofficial directory; uses public sources)',
+    descByCat: {
+      "Parking LIVE": "Official live spaces (auto-refresh). Tap each car park for maps + official links.",
+      "Museums & Heritage": "Museums, castles and heritage sites (official sources).",
+      "Activities": "Top attractions and what’s on (official tourism site).",
+      "Ports & Airport": "Ports, harbours and airport contacts.",
+      "Bus & Taxis": "Buses and taxi info.",
+      "Pharmacies": "Official pharmacy opening hours + contacts.",
+      "Emergency": "Emergency numbers and guidance."
+    },
+    cats: {
+      "All": "All",
+      "Emergency": "Emergency",
+      "Parking LIVE": "Parking LIVE",
+      "Museums & Heritage": "Museums & Heritage",
+      "Activities": "Activities",
+      "Ports & Airport": "Ports & Airport",
+      "Bus & Taxis": "Bus & Taxis",
+      "Pharmacies": "Pharmacies"
+    },
+    actions: {
+      call: "📞 Call",
+      email: "✉️ Email",
+      maps: "🗺️ Maps",
+      copy: "📋 Copy",
+      share: "📤 Share"
+    },
+    live: {
+      open: "Open",
+      closed: "Closed",
+      spaces: "spaces"
+    }
+  },
+  pt: {
+    language: "Idioma",
+    brandSub: "Parking LIVE • Museus • Atividades • Portos & Aeroporto • Autocarros & Táxis • Farmácias • Emergência",
+    searchPH: "Pesquisar: lugares, museu, castelo, táxi, aeroporto…",
+    favourites: "★ Favoritos",
+    nearMe: "📍 Perto de mim",
+    install: "⬇ Instalar",
+    reset: "Repor",
+    categories: "Categorias",
+    liveParking: "Estacionamento ao vivo",
+    liveHelp: "Parking LIVE usa o feed JSON oficial do governo. Atualiza ~2 minutos.",
+    allServices: "Todos os serviços",
+    viewDescDefault: "Ações rápidas: Ligar • Email • Mapas • Páginas oficiais.",
+    freeLine: "Grátis • Sem login • Instalável (funciona offline)",
+    shareApp: "📤 Partilhar JerseyGo",
+    noResultsTitle: "Sem resultados",
+    noResultsDesc: "Tenta: “lugares”, “museu”, “castelo”, “eventos”, “táxi”, “aeroporto”.",
+    copied: "Copiado",
+    copyNotSupported: "Copiar não suportado",
+    shareCancelled: "Partilha cancelada",
+    removedFav: "Removido dos favoritos",
+    savedFav: "Guardado nos favoritos",
+    gettingLocation: "A obter localização…",
+    geoNotSupported: "Geolocalização não suportada",
+    locationBlocked: "Localização bloqueada no navegador",
+    installed: "Instalado ✅",
+    linkCopied: "Link copiado",
+    footer: 'Emergência: ligar <b>999</b> / <b>112</b> • JerseyGo (diretório não oficial; usa fontes públicas)',
+    descByCat: {
+      "Parking LIVE": "Lugares ao vivo (auto-refresh). Toca em cada parque para Mapas + links oficiais.",
+      "Museums & Heritage": "Museus, castelos e património (fontes oficiais).",
+      "Activities": "Atrações e o que fazer (site oficial de turismo).",
+      "Ports & Airport": "Contactos de portos, marina e aeroporto.",
+      "Bus & Taxis": "Autocarros e info de táxis.",
+      "Pharmacies": "Horários de farmácias (oficial) + contactos.",
+      "Emergency": "Números e orientação de emergência."
+    },
+    cats: {
+      "All": "Tudo",
+      "Emergency": "Emergência",
+      "Parking LIVE": "Parking LIVE",
+      "Museums & Heritage": "Museus & Património",
+      "Activities": "Atividades",
+      "Ports & Airport": "Portos & Aeroporto",
+      "Bus & Taxis": "Autocarros & Táxis",
+      "Pharmacies": "Farmácias"
+    },
+    actions: {
+      call: "📞 Ligar",
+      email: "✉️ Email",
+      maps: "🗺️ Mapas",
+      copy: "📋 Copiar",
+      share: "📤 Partilhar"
+    },
+    live: {
+      open: "Aberto",
+      closed: "Fechado",
+      spaces: "lugares"
+    }
+  },
+  pl: {
+    language: "Język",
+    brandSub: "Parking LIVE • Muzea • Atrakcje • Porty i Lotnisko • Autobusy i Taksówki • Apteki • Alarm",
+    searchPH: "Szukaj: miejsca, muzeum, zamek, taxi, lotnisko…",
+    favourites: "★ Ulubione",
+    nearMe: "📍 W pobliżu",
+    install: "⬇ Zainstaluj",
+    reset: "Reset",
+    categories: "Kategorie",
+    liveParking: "Parking na żywo",
+    liveHelp: "Parking LIVE korzysta z oficjalnego feedu JSON rządu. Odświeżanie ~2 minuty.",
+    allServices: "Wszystkie usługi",
+    viewDescDefault: "Szybkie akcje: Zadzwoń • Email • Mapy • Oficjalne strony.",
+    freeLine: "Darmowe • Bez logowania • Instalowalne (offline)",
+    shareApp: "📤 Udostępnij JerseyGo",
+    noResultsTitle: "Brak wyników",
+    noResultsDesc: "Spróbuj: „miejsca”, „muzeum”, „zamek”, „wydarzenia”, „taxi”, „lotnisko”.",
+    copied: "Skopiowano",
+    copyNotSupported: "Kopiowanie niedostępne",
+    shareCancelled: "Udostępnianie anulowane",
+    removedFav: "Usunięto z ulubionych",
+    savedFav: "Zapisano w ulubionych",
+    gettingLocation: "Pobieranie lokalizacji…",
+    geoNotSupported: "Geolokalizacja nieobsługiwana",
+    locationBlocked: "Lokalizacja zablokowana w ustawieniach przeglądarki",
+    installed: "Zainstalowano ✅",
+    linkCopied: "Skopiowano link",
+    footer: 'Alarm: zadzwoń <b>999</b> / <b>112</b> • JerseyGo (nieoficjalny katalog; publiczne źródła)',
+    descByCat: {
+      "Parking LIVE": "Oficjalne wolne miejsca (auto). Kliknij parking: Mapy + linki oficjalne.",
+      "Museums & Heritage": "Muzea, zamki i dziedzictwo (oficjalne źródła).",
+      "Activities": "Atrakcje i co robić (oficjalna turystyka).",
+      "Ports & Airport": "Kontakty: porty, mariny i lotnisko.",
+      "Bus & Taxis": "Autobusy i informacje o taksówkach.",
+      "Pharmacies": "Godziny aptek (oficjalne) + kontakty.",
+      "Emergency": "Numery alarmowe i wskazówki."
+    },
+    cats: {
+      "All": "Wszystko",
+      "Emergency": "Alarm",
+      "Parking LIVE": "Parking LIVE",
+      "Museums & Heritage": "Muzea i Dziedzictwo",
+      "Activities": "Atrakcje",
+      "Ports & Airport": "Porty i Lotnisko",
+      "Bus & Taxis": "Autobusy i Taksówki",
+      "Pharmacies": "Apteki"
+    },
+    actions: {
+      call: "📞 Zadzwoń",
+      email: "✉️ Email",
+      maps: "🗺️ Mapy",
+      copy: "📋 Kopiuj",
+      share: "📤 Udostępnij"
+    },
+    live: {
+      open: "Otwarte",
+      closed: "Zamknięte",
+      spaces: "miejsc"
+    }
+  }
+};
+
 const CATEGORY_ORDER = [
   "Emergency",
   "Parking LIVE",
@@ -386,22 +600,89 @@ const CATEGORY_ORDER = [
   "Pharmacies"
 ];
 
-/* -------------------------
-   LocalStorage keys
-   ------------------------- */
 const LS_FAVS = "jerseygo:favs:v3";
 const LS_LIVE = "jerseygo:lastLive:v1";
+const LS_LANG = "jerseygo:lang:v1";
 
 /* -------------------------
-   App state
+   State
    ------------------------- */
 const state = {
   q: "",
   category: "All",
   showFavs: false,
+  lang: localStorage.getItem(LS_LANG) || "en",
   favs: new Set(JSON.parse(localStorage.getItem(LS_FAVS) || "[]"))
 };
 
+function t(){ return I18N[state.lang] || I18N.en; }
+
+/* -------------------------
+   URL state (shareable links)
+   ------------------------- */
+function readUrlState(){
+  try{
+    const u = new URL(location.href);
+    const q = u.searchParams.get("q");
+    const cat = u.searchParams.get("cat");
+    const favs = u.searchParams.get("favs");
+    const lang = u.searchParams.get("lang");
+
+    if(lang && I18N[lang]) state.lang = lang;
+    if(q !== null){ state.q = q; $("q").value = q; }
+    if(cat) state.category = cat;
+    if(favs === "1") state.showFavs = true;
+  }catch{}
+}
+
+let __urlTimer = null;
+function writeUrlState(){
+  clearTimeout(__urlTimer);
+  __urlTimer = setTimeout(() => {
+    const u = new URL(location.href);
+    if (state.q) u.searchParams.set("q", state.q); else u.searchParams.delete("q");
+    if (state.category && state.category !== "All") u.searchParams.set("cat", state.category); else u.searchParams.delete("cat");
+    if (state.showFavs) u.searchParams.set("favs", "1"); else u.searchParams.delete("favs");
+    u.searchParams.set("lang", state.lang);
+    history.replaceState({}, "", u.toString());
+  }, 120);
+}
+
+/* -------------------------
+   UI translation apply
+   ------------------------- */
+function applyI18n(){
+  const L = t();
+  $("langLabel").textContent = L.language;
+  $("brandSub").textContent = L.brandSub;
+
+  $("q").placeholder = L.searchPH;
+
+  $("favToggle").textContent = L.favourites;
+  $("nearMeBtn").textContent = L.nearMe;
+  $("installBtn").textContent = L.install;
+  $("resetBtn").textContent = L.reset;
+
+  $("catsTitle").textContent = L.categories;
+  $("liveTitle").textContent = L.liveParking;
+  $("liveHelp").textContent = L.liveHelp;
+
+  $("freeLine").textContent = L.freeLine;
+  $("shareAppBtn").textContent = L.shareApp;
+
+  $("footerLine").innerHTML = L.footer;
+
+  $("langEN").classList.toggle("on", state.lang==="en");
+  $("langPT").classList.toggle("on", state.lang==="pt");
+  $("langPL").classList.toggle("on", state.lang==="pl");
+
+  document.documentElement.lang = state.lang;
+  localStorage.setItem(LS_LANG, state.lang);
+}
+
+/* -------------------------
+   Icons per category
+   ------------------------- */
 function catIcon(cat){
   switch(cat){
     case "All": return "🧭";
@@ -417,40 +698,12 @@ function catIcon(cat){
 }
 
 /* -------------------------
-   URL state (shareable links)
-   ------------------------- */
-function readUrlState(){
-  try{
-    const u = new URL(location.href);
-    const q = u.searchParams.get("q");
-    const cat = u.searchParams.get("cat");
-    const favs = u.searchParams.get("favs");
-    if (q !== null) { state.q = q; $("q").value = q; }
-    if (cat) state.category = cat;
-    if (favs === "1") state.showFavs = true;
-  }catch{}
-}
-
-let __urlTimer = null;
-function writeUrlState(){
-  clearTimeout(__urlTimer);
-  __urlTimer = setTimeout(() => {
-    const u = new URL(location.href);
-    if (state.q) u.searchParams.set("q", state.q); else u.searchParams.delete("q");
-    if (state.category && state.category !== "All") u.searchParams.set("cat", state.category); else u.searchParams.delete("cat");
-    if (state.showFavs) u.searchParams.set("favs", "1"); else u.searchParams.delete("favs");
-    history.replaceState({}, "", u.toString());
-  }, 120);
-}
-
-/* -------------------------
-   LINKS (public, official)
+   Official links
    ------------------------- */
 const LINKS = {
   govLivePage: "https://www.gov.je/Travel/Motoring/Parking/pages/carparkspaces.aspx",
   payByPhone: "https://www.gov.je/Travel/Motoring/Parking/PayForParking/pages/paybyphoneapp.aspx",
 
-  heritageHome: "https://www.jerseyheritage.org/",
   heritagePlaces: "https://www.jerseyheritage.org/visit/places-to-visit/",
   jerseyMuseum: "https://www.jerseyheritage.org/visit/places-to-visit/jersey-museum/",
   maritimeMuseum: "https://www.jerseyheritage.org/visit/places-to-visit/maritime-museum-occupation-tapestry/",
@@ -473,167 +726,269 @@ const LINKS = {
 };
 
 /* -------------------------
-   STATIC DIRECTORY
+   Helpers for multilingual fields
+   ------------------------- */
+function pickLang(obj){
+  // obj: { en:"", pt:"", pl:"" }
+  if(!obj) return "";
+  return obj[state.lang] || obj.en || "";
+}
+function pickTags(tags){
+  // tags: { en:[...], pt:[...], pl:[...] }
+  const arr = (tags && (tags[state.lang] || tags.en)) || [];
+  return Array.isArray(arr) ? arr : [];
+}
+
+/* -------------------------
+   Static directory (tri-language)
    ------------------------- */
 const DIRECTORY_STATIC = [
-  // Emergency
   {
     id:"emg-999",
     category:"Emergency",
-    name:"Emergency services (999 / 112)",
-    desc:"Police, Fire & Ambulance (life-threatening emergencies).",
-    tags:["999","112","emergency"],
+    name:{ en:"Emergency services (999 / 112)", pt:"Serviços de emergência (999 / 112)", pl:"Służby ratunkowe (999 / 112)" },
+    desc:{
+      en:"Police, Fire & Ambulance (life-threatening emergencies).",
+      pt:"Polícia, Bombeiros e Ambulância (emergências graves).",
+      pl:"Policja, Straż Pożarna i Pogotowie (zagrożenie życia)."
+    },
+    tags:{
+      en:["999","112","emergency"],
+      pt:["999","112","emergência"],
+      pl:["999","112","alarm"]
+    },
     phone:"999",
     links:[
-      {label:"Official info (gov.je)", url:"https://www.gov.je/LifeEvents/MovingToJersey/WhenYouArrive/pages/contactemergencyservices.aspx"}
+      {label:{en:"Official info (gov.je)", pt:"Info oficial (gov.je)", pl:"Informacje oficjalne (gov.je)"}, url:"https://www.gov.je/LifeEvents/MovingToJersey/WhenYouArrive/pages/contactemergencyservices.aspx"}
     ],
     mapsQuery:"Jersey General Hospital Emergency Department"
   },
 
-  // Pharmacies
   {
     id:"pharm-hours",
     category:"Pharmacies",
-    name:"Pharmacy opening hours (official list)",
-    desc:"Search opening hours by pharmacy.",
-    tags:["opening hours","official"],
-    links:[{label:"gov.je list", url:"https://www.gov.je/Health/DoctorDentist/PharmacistsChemists/pages/pharmacyopeninghours.aspx"}],
+    name:{ en:"Pharmacy opening hours (official list)", pt:"Horários de farmácias (lista oficial)", pl:"Godziny aptek (lista oficjalna)" },
+    desc:{
+      en:"Search opening hours by pharmacy.",
+      pt:"Pesquisa horários por farmácia.",
+      pl:"Sprawdź godziny otwarcia aptek."
+    },
+    tags:{
+      en:["opening hours","official"],
+      pt:["horários","oficial"],
+      pl:["godziny","oficjalne"]
+    },
+    links:[
+      {label:{en:"gov.je list", pt:"Lista gov.je", pl:"Lista gov.je"}, url:"https://www.gov.je/Health/DoctorDentist/PharmacistsChemists/pages/pharmacyopeninghours.aspx"}
+    ],
     mapsQuery:"Pharmacy St Helier Jersey"
   },
 
-  // Ports & Airport
   {
     id:"ports-contact",
     category:"Ports & Airport",
-    name:"Ports of Jersey — contact",
-    desc:"Airport & Harbours general enquiries.",
-    tags:["ports","airport","harbour"],
+    name:{ en:"Ports of Jersey — contact", pt:"Ports of Jersey — contacto", pl:"Ports of Jersey — kontakt" },
+    desc:{
+      en:"Airport & Harbours general enquiries.",
+      pt:"Informações gerais do aeroporto e portos.",
+      pl:"Informacje ogólne: lotnisko i porty."
+    },
+    tags:{
+      en:["ports","airport","harbour"],
+      pt:["portos","aeroporto","marina"],
+      pl:["porty","lotnisko","port"]
+    },
     phone:"+44 1534 446000",
     email:"customerrelations@ports.je",
-    links:[{label:"ports.je contact", url: LINKS.portsContact}],
+    links:[{label:{en:"ports.je contact", pt:"Contacto ports.je", pl:"Kontakt ports.je"}, url: LINKS.portsContact}],
     mapsQuery:"Ports of Jersey"
   },
   {
     id:"airport-contact",
     category:"Ports & Airport",
-    name:"Jersey Airport — contact",
-    desc:"Airport contact page (official).",
-    tags:["airport"],
-    links:[{label:"Airport contact", url: LINKS.airportContact}],
+    name:{ en:"Jersey Airport — contact", pt:"Aeroporto de Jersey — contacto", pl:"Lotnisko Jersey — kontakt" },
+    desc:{
+      en:"Airport contact page (official).",
+      pt:"Página oficial de contacto do aeroporto.",
+      pl:"Oficjalna strona kontaktu lotniska."
+    },
+    tags:{ en:["airport"], pt:["aeroporto"], pl:["lotnisko"] },
+    links:[{label:{en:"Airport contact", pt:"Contacto aeroporto", pl:"Kontakt lotniska"}, url: LINKS.airportContact}],
     mapsQuery:"Jersey Airport"
   },
 
-  // Bus & Taxis
   {
     id:"libertybus",
     category:"Bus & Taxis",
-    name:"LibertyBus",
-    desc:"Routes, timetables, tickets (official).",
-    tags:["bus","timetable"],
+    name:{ en:"LibertyBus", pt:"LibertyBus", pl:"LibertyBus" },
+    desc:{
+      en:"Routes, timetables, tickets (official).",
+      pt:"Rotas, horários, bilhetes (oficial).",
+      pl:"Trasy, rozkłady, bilety (oficjalne)."
+    },
+    tags:{
+      en:["bus","timetable"],
+      pt:["autocarro","horários"],
+      pl:["autobus","rozkład"]
+    },
     links:[
-      {label:"libertybus.je", url: LINKS.libertyBus},
-      {label:"Routes & timetables (gov.je)", url:"https://www.gov.je/Travel/Buses/Pages/RoutesTimetables.aspx"}
+      {label:{en:"libertybus.je", pt:"libertybus.je", pl:"libertybus.je"}, url: LINKS.libertyBus},
+      {label:{en:"Routes & timetables (gov.je)", pt:"Rotas e horários (gov.je)", pl:"Trasy i rozkłady (gov.je)"}, url:"https://www.gov.je/Travel/Buses/Pages/RoutesTimetables.aspx"}
     ],
     mapsQuery:"Liberation Station St Helier"
   },
 
-  // Museums & Heritage (Jersey Heritage + National Trust)
   {
     id:"heritage-places",
     category:"Museums & Heritage",
-    name:"Jersey Heritage — places to visit",
-    desc:"Official list of museums, castles and heritage sites.",
-    tags:["heritage","museums","castles"],
-    links:[{label:"Places list", url: LINKS.heritagePlaces}],
+    name:{ en:"Jersey Heritage — places to visit", pt:"Jersey Heritage — locais a visitar", pl:"Jersey Heritage — miejsca do odwiedzenia" },
+    desc:{
+      en:"Official list of museums, castles and heritage sites.",
+      pt:"Lista oficial de museus, castelos e locais históricos.",
+      pl:"Oficjalna lista muzeów, zamków i miejsc historycznych."
+    },
+    tags:{
+      en:["heritage","museums","castles"],
+      pt:["património","museus","castelos"],
+      pl:["dziedzictwo","muzea","zamki"]
+    },
+    links:[{label:{en:"Places list", pt:"Lista de locais", pl:"Lista miejsc"}, url: LINKS.heritagePlaces}],
     mapsQuery:"Jersey Museum St Helier"
   },
   {
     id:"museum-jersey",
     category:"Museums & Heritage",
-    name:"Jersey Museum, Art Gallery & Victorian House",
-    desc:"Jersey Heritage — entry and info page.",
-    tags:["museum","art","victorian house"],
-    links:[{label:"Jersey Museum page", url: LINKS.jerseyMuseum}],
+    name:{ en:"Jersey Museum, Art Gallery & Victorian House", pt:"Jersey Museum, Galeria de Arte & Casa Vitoriana", pl:"Jersey Museum, Galeria Sztuki i Dom Wiktoriański" },
+    desc:{
+      en:"Jersey Heritage — entry and info page.",
+      pt:"Jersey Heritage — bilhetes e informações.",
+      pl:"Jersey Heritage — bilety i informacje."
+    },
+    tags:{
+      en:["museum","art","victorian house"],
+      pt:["museu","arte","casa vitoriana"],
+      pl:["muzeum","sztuka","dom wiktoriański"]
+    },
+    links:[{label:{en:"Jersey Museum page", pt:"Página do museu", pl:"Strona muzeum"}, url: LINKS.jerseyMuseum}],
     mapsQuery:"Jersey Museum St Helier"
   },
   {
     id:"museum-maritime",
     category:"Museums & Heritage",
-    name:"Maritime Museum & Occupation Tapestry Gallery",
-    desc:"Jersey Heritage — museum page + tickets.",
-    tags:["maritime","occupation tapestry"],
-    links:[{label:"Maritime Museum page", url: LINKS.maritimeMuseum}],
+    name:{ en:"Maritime Museum & Occupation Tapestry Gallery", pt:"Museu Marítimo & Galeria Occupation Tapestry", pl:"Muzeum Morskie i Galeria Occupation Tapestry" },
+    desc:{
+      en:"Jersey Heritage — museum page + tickets.",
+      pt:"Jersey Heritage — página do museu + bilhetes.",
+      pl:"Jersey Heritage — strona muzeum + bilety."
+    },
+    tags:{
+      en:["maritime","occupation tapestry"],
+      pt:["marítimo","tapeçaria ocupação"],
+      pl:["morskie","tkanina okupacji"]
+    },
+    links:[{label:{en:"Maritime Museum page", pt:"Página do museu", pl:"Strona muzeum"}, url: LINKS.maritimeMuseum}],
     mapsQuery:"Maritime Museum St Helier"
   },
   {
     id:"heritage-hamptonne",
     category:"Museums & Heritage",
-    name:"Hamptonne Country Life Museum",
-    desc:"Historic farm estate and rural life museum.",
-    tags:["hamptonne","country life"],
+    name:{ en:"Hamptonne Country Life Museum", pt:"Hamptonne — Museu da Vida Rural", pl:"Hamptonne — Muzeum Życia Wiejskiego" },
+    desc:{
+      en:"Historic farm estate and rural life museum.",
+      pt:"Propriedade histórica e museu da vida rural.",
+      pl:"Historyczne gospodarstwo i muzeum życia wiejskiego."
+    },
+    tags:{
+      en:["hamptonne","country life"],
+      pt:["hamptonne","vida rural"],
+      pl:["hamptonne","życie wiejskie"]
+    },
     links:[
-      {label:"Jersey Heritage page", url: LINKS.hamptonne},
-      {label:"National Trust page", url: LINKS.ntHamptonne}
+      {label:{en:"Jersey Heritage page", pt:"Página Jersey Heritage", pl:"Strona Jersey Heritage"}, url: LINKS.hamptonne},
+      {label:{en:"National Trust page", pt:"Página National Trust", pl:"Strona National Trust"}, url: LINKS.ntHamptonne}
     ],
     mapsQuery:"Hamptonne Country Life Museum"
   },
   {
     id:"heritage-whats-on",
     category:"Museums & Heritage",
-    name:"Jersey Heritage — what’s on",
-    desc:"Tours, exhibitions and heritage events.",
-    tags:["events","exhibitions"],
-    links:[{label:"What’s on", url: LINKS.heritageWhatsOn}],
+    name:{ en:"Jersey Heritage — what’s on", pt:"Jersey Heritage — agenda", pl:"Jersey Heritage — wydarzenia" },
+    desc:{
+      en:"Tours, exhibitions and heritage events.",
+      pt:"Visitas, exposições e eventos.",
+      pl:"Wycieczki, wystawy i wydarzenia."
+    },
+    tags:{ en:["events","exhibitions"], pt:["eventos","exposições"], pl:["wydarzenia","wystawy"] },
+    links:[{label:{en:"What’s on", pt:"Agenda", pl:"Wydarzenia"}, url: LINKS.heritageWhatsOn}],
     mapsQuery:"Mont Orgueil Castle"
   },
   {
     id:"nt-sites",
     category:"Museums & Heritage",
-    name:"National Trust for Jersey — historic buildings",
-    desc:"Historic houses, mills, landscapes and more.",
-    tags:["national trust","historic buildings"],
+    name:{ en:"National Trust for Jersey — historic buildings", pt:"National Trust for Jersey — edifícios históricos", pl:"National Trust for Jersey — budynki historyczne" },
+    desc:{
+      en:"Historic houses, mills, landscapes and more.",
+      pt:"Casas históricas, moinhos, paisagens e mais.",
+      pl:"Historyczne domy, młyny, krajobrazy i więcej."
+    },
+    tags:{
+      en:["national trust","historic buildings"],
+      pt:["national trust","edifícios históricos"],
+      pl:["national trust","budynki historyczne"]
+    },
     links:[
-      {label:"National Trust", url: LINKS.nationalTrust},
-      {label:"Historic buildings", url: LINKS.nationalTrustBuildings}
+      {label:{en:"National Trust", pt:"National Trust", pl:"National Trust"}, url: LINKS.nationalTrust},
+      {label:{en:"Historic buildings", pt:"Edifícios históricos", pl:"Budynki historyczne"}, url: LINKS.nationalTrustBuildings}
     ],
     mapsQuery:"The Elms Jersey"
   },
 
-  // Activities (Visit Jersey)
   {
     id:"visit-things",
     category:"Activities",
-    name:"Things to do (Visit Jersey)",
-    desc:"Official tourism guide: inspiration, indoor/outdoor ideas.",
-    tags:["things to do","guide"],
-    links:[{label:"Things to do", url: LINKS.visitThings}],
+    name:{ en:"Things to do (Visit Jersey)", pt:"O que fazer (Visit Jersey)", pl:"Co robić (Visit Jersey)" },
+    desc:{
+      en:"Official tourism guide: inspiration, indoor/outdoor ideas.",
+      pt:"Guia oficial: ideias indoor/outdoor.",
+      pl:"Oficjalny przewodnik: pomysły na atrakcje."
+    },
+    tags:{ en:["things to do","guide"], pt:["o que fazer","guia"], pl:["atrakcje","przewodnik"] },
+    links:[{label:{en:"Things to do", pt:"O que fazer", pl:"Co robić"}, url: LINKS.visitThings}],
     mapsQuery:"Jersey things to do"
   },
   {
     id:"visit-attractions",
     category:"Activities",
-    name:"Top attractions (Visit Jersey)",
-    desc:"Attractions list: family, gardens, animals, tunnels, etc.",
-    tags:["attractions","family"],
-    links:[{label:"Attractions", url: LINKS.visitAttractions}],
+    name:{ en:"Top attractions (Visit Jersey)", pt:"Principais atrações (Visit Jersey)", pl:"Top atrakcje (Visit Jersey)" },
+    desc:{
+      en:"Attractions list: family, gardens, animals, tunnels, etc.",
+      pt:"Lista de atrações: família, jardins, animais, túneis, etc.",
+      pl:"Lista atrakcji: rodziny, ogrody, zwierzęta, tunele, itp."
+    },
+    tags:{ en:["attractions","family"], pt:["atrações","família"], pl:["atrakcje","rodzina"] },
+    links:[{label:{en:"Attractions", pt:"Atrações", pl:"Atrakcje"}, url: LINKS.visitAttractions}],
     mapsQuery:"Jersey attractions"
   },
   {
     id:"visit-events",
     category:"Activities",
-    name:"What’s on / Events (Visit Jersey)",
-    desc:"Events overview + listings.",
-    tags:["events","festivals"],
+    name:{ en:"What’s on / Events (Visit Jersey)", pt:"Agenda / Eventos (Visit Jersey)", pl:"Wydarzenia (Visit Jersey)" },
+    desc:{
+      en:"Events overview + listings.",
+      pt:"Visão geral + listagens de eventos.",
+      pl:"Przegląd + lista wydarzeń."
+    },
+    tags:{ en:["events","festivals"], pt:["eventos","festivais"], pl:["wydarzenia","festiwale"] },
     links:[
-      {label:"Events", url: LINKS.visitEvents},
-      {label:"Event listings", url: LINKS.visitEventsListings}
+      {label:{en:"Events", pt:"Eventos", pl:"Wydarzenia"}, url: LINKS.visitEvents},
+      {label:{en:"Event listings", pt:"Listagens", pl:"Lista"}, url: LINKS.visitEventsListings}
     ],
     mapsQuery:"St Helier events"
   }
 ];
 
 /* -------------------------
-   TRUE Parking LIVE (gov JSON)
+   LIVE Parking (gov JSON)
    ------------------------- */
 const LIVE_FALLBACK = [
   { code:"CHARLESSTREET", name:"Charles Street", type:"Short stay", mapsQuery:"Charles Street car park St Helier Jersey" },
@@ -660,30 +1015,28 @@ function spacesBadgeHTML(n){
 }
 
 function buildLiveParkingServices(){
+  const L = t();
   const sorted = [...LIVE_SPACES].sort((a,b)=> spacesNum(b) - spacesNum(a));
   return sorted.map(x => {
     const n = spacesNum(x);
-    const openText = x.open ? "Open" : "Closed";
+    const openText = x.open ? L.live.open : L.live.closed;
     const typeText = x.type ? ` • ${x.type}` : "";
     return ({
       id: "live-" + x.code,
       category: "Parking LIVE",
-      name: `${x.name}`,
-      desc: `${openText}${typeText} • ${x.spaces} spaces`,
+      name: x.name,
+      desc: `${openText}${typeText} • ${x.spaces} ${L.live.spaces}`,
       tags: ["live", "spaces", x.type || ""].filter(Boolean),
       pillHTML: spacesBadgeHTML(n),
       links: [
-        { label:"Official LIVE page (gov.je)", url: LINKS.govLivePage },
-        { label:"PayByPhone info (gov.je)", url: LINKS.payByPhone }
+        { label: {en:"Official LIVE page (gov.je)", pt:"LIVE oficial (gov.je)", pl:"LIVE oficjalne (gov.je)"}, url: LINKS.govLivePage },
+        { label: {en:"PayByPhone info (gov.je)", pt:"PayByPhone (gov.je)", pl:"PayByPhone (gov.je)"}, url: LINKS.payByPhone }
       ],
       mapsQuery: x.mapsQuery
     });
   });
 }
 
-/* -------------------------
-   All services
-   ------------------------- */
 function allServices(){
   return [
     ...buildLiveParkingServices(),
@@ -692,16 +1045,18 @@ function allServices(){
 }
 
 /* -------------------------
-   Filter/search
+   Filters
    ------------------------- */
 function matchesQuery(svc, q){
   if(!q) return true;
   const hay = [
-    svc.name, svc.desc, svc.category,
+    svc.nameText || svc.name || "",
+    svc.descText || svc.desc || "",
+    svc.category,
     ...(svc.tags||[]),
     svc.phone||"",
     svc.email||"",
-    ...(svc.links||[]).map(x=>x.label+" "+x.url),
+    ...(svc.links||[]).map(x=> (x.labelText||x.label||"") + " " + x.url),
     svc.mapsQuery||""
   ].join(" ");
   return norm(hay).includes(norm(q));
@@ -709,9 +1064,23 @@ function matchesQuery(svc, q){
 
 function visibleServices(){
   return allServices()
+    .map(s => normalizeSvcForLang(s))
     .filter(s => state.category === "All" ? true : s.category === state.category)
     .filter(s => state.showFavs ? state.favs.has(s.id) : true)
     .filter(s => matchesQuery(s, state.q));
+}
+
+function normalizeSvcForLang(s){
+  const out = {...s};
+  // apply multilingual fields to plain strings
+  out.nameText = typeof s.name === "object" ? pickLang(s.name) : (s.name || "");
+  out.descText = typeof s.desc === "object" ? pickLang(s.desc) : (s.desc || "");
+  out.tags = typeof s.tags === "object" ? pickTags(s.tags) : (s.tags || []);
+  out.links = (s.links || []).map(l => ({
+    labelText: typeof l.label === "object" ? pickLang(l.label) : (l.label || ""),
+    url: l.url
+  }));
+  return out;
 }
 
 /* -------------------------
@@ -722,14 +1091,16 @@ function renderCats(){
   const counts = merged.reduce((acc, s)=>{ acc[s.category]=(acc[s.category]||0)+1; return acc; },{});
   const cats = ["All", ...CATEGORY_ORDER.filter(c => counts[c])];
 
+  const L = t();
   $("cats").innerHTML = cats.map(cat=>{
     const count = cat==="All" ? merged.length : (counts[cat]||0);
     const active = (state.category===cat) ? "active" : "";
+    const label = L.cats[cat] || cat;
     return `
       <div class="cat ${active}" data-cat="${escapeHtml(cat)}">
         <div class="catLeft">
           <div class="catIcon">${catIcon(cat)}</div>
-          <div class="catName">${escapeHtml(cat)}</div>
+          <div class="catName">${escapeHtml(label)}</div>
         </div>
         <div class="badge catCount">${count}</div>
       </div>
@@ -746,19 +1117,13 @@ function renderCats(){
 
 function renderHeader(){
   const list = visibleServices();
-  const title = (state.category==="All") ? "All services" : state.category;
+  const L = t();
+
+  const title = (state.category==="All") ? L.allServices : (L.cats[state.category] || state.category);
   $("viewTitle").textContent = `${title} (${list.length})`;
 
-  const descByCat = {
-    "Parking LIVE": "Official live spaces (auto-refresh). Tap each car park for maps + official links.",
-    "Museums & Heritage": "Museums, castles and heritage sites (official sources).",
-    "Activities": "Top attractions and what’s on (official tourism site).",
-    "Ports & Airport": "Ports, harbours and airport contacts.",
-    "Bus & Taxis": "Buses and taxi info.",
-    "Pharmacies": "Official pharmacy opening hours + contacts.",
-    "Emergency": "Emergency numbers and guidance."
-  };
-  $("viewDesc").textContent = state.showFavs ? "Your saved services for one-tap access." : (descByCat[state.category] || "One-tap actions: Call • Email • Maps • Official pages.");
+  const desc = state.showFavs ? (L.favourites + " — " + L.viewDescDefault) : (L.descByCat[state.category] || L.viewDescDefault);
+  $("viewDesc").textContent = desc;
 
   const liveText = LIVE_TIMESTAMP ? ` • Updated: ${LIVE_TIMESTAMP}` : "";
   $("statsLine").textContent = `Showing ${list.length} • Live refresh ~2 minutes${liveText}`;
@@ -768,13 +1133,14 @@ function renderHeader(){
 
 function renderCards(){
   const list = visibleServices();
+  const L = t();
   const el = $("cards");
 
   if(!list.length){
     el.innerHTML = `
       <div class="card" style="grid-column:1/-1;">
-        <div class="name">No results</div>
-        <div class="meta">Try: “spaces”, “museum”, “castle”, “events”, “taxi”, “airport”.</div>
+        <div class="name">${escapeHtml(L.noResultsTitle)}</div>
+        <div class="meta">${escapeHtml(L.noResultsDesc)}</div>
       </div>
     `;
     return;
@@ -784,10 +1150,10 @@ function renderCards(){
     const isFav = state.favs.has(s.id);
     const tags = (s.tags||[]).slice(0,10).map(t=>`<span class="tag">${escapeHtml(String(t))}</span>`).join("");
 
-    const phoneBtn = (s.phone ? `<a class="chip" href="${telHref(s.phone)}">📞 Call</a>` : "");
-    const emailBtn = s.email ? `<a class="chip" href="${mailHref(s.email)}">✉️ Email</a>` : "";
-    const mapsBtn = `<a class="chip" href="${mapsUrl(s.mapsQuery || (s.name + " Jersey"))}" target="_blank" rel="noopener">🗺️ Maps</a>`;
-    const links = (s.links||[]).slice(0,4).map(l=>`<a class="chip primary" href="${l.url}" target="_blank" rel="noopener">↗ ${escapeHtml(l.label)}</a>`).join("");
+    const phoneBtn = s.phone ? `<a class="chip" href="${telHref(s.phone)}">${escapeHtml(L.actions.call)}</a>` : "";
+    const emailBtn = s.email ? `<a class="chip" href="${mailHref(s.email)}">${escapeHtml(L.actions.email)}</a>` : "";
+    const mapsBtn = `<a class="chip" href="${mapsUrl(s.mapsQuery || (s.nameText + " Jersey"))}" target="_blank" rel="noopener">${escapeHtml(L.actions.maps)}</a>`;
+    const links = (s.links||[]).slice(0,4).map(l=>`<a class="chip primary" href="${l.url}" target="_blank" rel="noopener">↗ ${escapeHtml(l.labelText)}</a>`).join("");
 
     const pill = s.pillHTML ? `<div style="margin-top:6px;">${s.pillHTML}</div>` : "";
 
@@ -795,8 +1161,8 @@ function renderCards(){
       <div class="card">
         <div class="row">
           <div>
-            <div class="name">${escapeHtml(s.name)}</div>
-            <div class="meta">${escapeHtml(s.desc || "")}</div>
+            <div class="name">${escapeHtml(s.nameText)}</div>
+            <div class="meta">${escapeHtml(s.descText)}</div>
             ${pill}
           </div>
           <button class="favBtn ${isFav ? "on" : ""}" data-fav="${escapeHtml(s.id)}">${isFav ? "★" : "☆"}</button>
@@ -809,8 +1175,8 @@ function renderCards(){
           ${emailBtn}
           ${mapsBtn}
           ${links}
-          <button class="chip" type="button" data-copy="${escapeHtml(s.id)}">📋 Copy</button>
-          <button class="chip good" type="button" data-share="${escapeHtml(s.id)}">📤 Share</button>
+          <button class="chip" type="button" data-copy="${escapeHtml(s.id)}">${escapeHtml(L.actions.copy)}</button>
+          <button class="chip good" type="button" data-share="${escapeHtml(s.id)}">${escapeHtml(L.actions.share)}</button>
         </div>
       </div>
     `;
@@ -821,10 +1187,10 @@ function renderCards(){
       const id = btn.getAttribute("data-fav");
       if(state.favs.has(id)){
         state.favs.delete(id);
-        toast("Removed from favourites");
+        toast(t().removedFav);
       }else{
         state.favs.add(id);
-        toast("Saved to favourites");
+        toast(t().savedFav);
       }
       localStorage.setItem(LS_FAVS, JSON.stringify([...state.favs]));
       renderAll(false);
@@ -834,13 +1200,13 @@ function renderCards(){
   [...document.querySelectorAll("[data-copy]")].forEach(btn=>{
     btn.addEventListener("click", async ()=>{
       const id = btn.getAttribute("data-copy");
-      const svc = allServices().find(x=>x.id===id);
+      const svc = visibleServices().find(x=>x.id===id);
       if(!svc) return;
 
       const firstLink = (svc.links && svc.links[0]) ? svc.links[0].url : "";
       const text = [
-        svc.name,
-        svc.desc || "",
+        svc.nameText,
+        svc.descText || "",
         svc.phone ? ("Call: " + svc.phone) : "",
         svc.email ? ("Email: " + svc.email) : "",
         firstLink
@@ -848,9 +1214,9 @@ function renderCards(){
 
       try{
         await navigator.clipboard.writeText(text);
-        toast("Copied");
+        toast(t().copied);
       }catch{
-        toast("Copy not supported");
+        toast(t().copyNotSupported);
       }
     });
   });
@@ -858,33 +1224,34 @@ function renderCards(){
   [...document.querySelectorAll("[data-share]")].forEach(btn=>{
     btn.addEventListener("click", async ()=>{
       const id = btn.getAttribute("data-share");
-      const svc = allServices().find(x=>x.id===id);
+      const svc = visibleServices().find(x=>x.id===id);
       if(!svc) return;
 
       const u = new URL(location.href);
-      // keep current filters in link
       if (state.category && state.category !== "All") u.searchParams.set("cat", state.category);
       if (state.q) u.searchParams.set("q", state.q);
       if (state.showFavs) u.searchParams.set("favs", "1");
+      u.searchParams.set("lang", state.lang);
 
       const firstLink = (svc.links && svc.links[0]) ? svc.links[0].url : "";
-      const text = [svc.name, svc.desc || "", firstLink].filter(Boolean).join("\n");
+      const text = [svc.nameText, svc.descText || "", firstLink].filter(Boolean).join("\n");
 
       try{
         if(navigator.share){
           await navigator.share({ title: "JerseyGo", text, url: u.toString() });
         }else{
           await navigator.clipboard.writeText(u.toString());
-          toast("Link copied");
+          toast(t().linkCopied);
         }
       }catch{
-        toast("Share cancelled");
+        toast(t().shareCancelled);
       }
     });
   });
 }
 
 function renderAll(rerenderCats=true){
+  applyI18n();
   if(rerenderCats) renderCats();
   renderHeader();
   renderCards();
@@ -912,15 +1279,16 @@ $("resetBtn").addEventListener("click", ()=>{
 });
 
 $("nearMeBtn").addEventListener("click", ()=>{
-  if(!navigator.geolocation){ toast("Geolocation not supported"); return; }
-  toast("Getting location…");
+  const L = t();
+  if(!navigator.geolocation){ toast(L.geoNotSupported); return; }
+  toast(L.gettingLocation);
   navigator.geolocation.getCurrentPosition(
     (pos)=>{
       const { latitude, longitude } = pos.coords;
       const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent("things to do")}&center=${latitude},${longitude}`;
       window.open(url, "_blank");
     },
-    ()=> toast("Location blocked in browser settings"),
+    ()=> toast(L.locationBlocked),
     { enableHighAccuracy:true, timeout: 10000 }
   );
 });
@@ -930,6 +1298,7 @@ $("shareAppBtn").addEventListener("click", async ()=>{
   if (state.category && state.category !== "All") u.searchParams.set("cat", state.category);
   if (state.q) u.searchParams.set("q", state.q);
   if (state.showFavs) u.searchParams.set("favs", "1");
+  u.searchParams.set("lang", state.lang);
 
   const text = "JerseyGo — Parking LIVE + essentials (free, no login).";
   try{
@@ -937,23 +1306,29 @@ $("shareAppBtn").addEventListener("click", async ()=>{
       await navigator.share({ title:"JerseyGo", text, url:u.toString() });
     }else{
       await navigator.clipboard.writeText(u.toString());
-      toast("Link copied");
+      toast(t().linkCopied);
     }
   }catch{
-    toast("Share cancelled");
+    toast(t().shareCancelled);
   }
 });
 
 /* -------------------------
-   PWA Install (Add to Home Screen)
+   Language buttons
+   ------------------------- */
+$("langEN").addEventListener("click", ()=>{ state.lang="en"; renderAll(true); });
+$("langPT").addEventListener("click", ()=>{ state.lang="pt"; renderAll(true); });
+$("langPL").addEventListener("click", ()=>{ state.lang="pl"; renderAll(true); });
+
+/* -------------------------
+   PWA Install
    ------------------------- */
 let deferredPrompt = null;
 
 window.addEventListener("beforeinstallprompt", (e) => {
   e.preventDefault();
   deferredPrompt = e;
-  const b = $("installBtn");
-  if (b) b.style.display = "inline-flex";
+  $("installBtn").style.display = "inline-flex";
 });
 
 $("installBtn").addEventListener("click", async () => {
@@ -965,14 +1340,12 @@ $("installBtn").addEventListener("click", async () => {
 });
 
 window.addEventListener("appinstalled", () => {
-  toast("Installed ✅");
-  const b = $("installBtn");
-  if (b) b.style.display = "none";
+  toast(t().installed);
+  $("installBtn").style.display = "none";
 });
 
 /* -------------------------
-   TRUE LIVE parking fetch (same feed used by gov.je)
-   + cache fallback (localStorage)
+   LIVE parking fetch + cache fallback
    ------------------------- */
 async function loadLiveSpaces(){
   const GOV_JSON = "https://sojpublicdata.blob.core.windows.net/sojpublicdata/carpark-data.json";
@@ -1000,11 +1373,8 @@ async function loadLiveSpaces(){
       };
     });
 
-    // Save last good result (for offline / gov feed down)
     localStorage.setItem(LS_LIVE, JSON.stringify({
-      LIVE_SPACES,
-      LIVE_TIMESTAMP,
-      savedAt: new Date().toISOString()
+      LIVE_SPACES, LIVE_TIMESTAMP, savedAt: new Date().toISOString()
     }));
 
     $("liveStatus").textContent = "LIVE ✓";
@@ -1013,7 +1383,6 @@ async function loadLiveSpaces(){
   }catch(e){
     console.log("Live parking failed:", e);
 
-    // Try cached live
     const cached = localStorage.getItem(LS_LIVE);
     if(cached){
       try{
@@ -1048,6 +1417,7 @@ if("serviceWorker" in navigator){
    Boot
    ------------------------- */
 readUrlState();
+applyI18n();
 renderAll(true);
 
 loadLiveSpaces();
