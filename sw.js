@@ -1,4 +1,4 @@
-const VERSION = "jerseygo-v1.1.0";
+const VERSION = "jerseygo-v1.2.0";
 const CORE_CACHE = `core-${VERSION}`;
 const RUNTIME_CACHE = `runtime-${VERSION}`;
 
