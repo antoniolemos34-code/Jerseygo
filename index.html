@@ -12,6 +12,13 @@
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./icon.svg">
 
+  <!-- Social preview (optional but helpful) -->
+  <meta property="og:title" content="JerseyGo — Parking LIVE + essentials" />
+  <meta property="og:description" content="Live parking spaces + museums, activities, ports & airport, buses & taxis, pharmacies, emergency." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="./icon.svg" />
+  <meta name="twitter:card" content="summary" />
+
   <style>
     :root{
       --bg:#070A12;
@@ -89,6 +96,9 @@
       cursor:pointer;
       font-weight:900;
       letter-spacing:.2px;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
     }
     .btn:hover{background: rgba(255,255,255,.08)}
     .btn.primary{border-color: rgba(77,163,255,.35); background: rgba(77,163,255,.14)}
@@ -215,7 +225,6 @@
       color:var(--muted);
       background: rgba(255,255,255,.02);
     }
-    .actions{display:flex; gap:8px; flex-wrap:wrap; margin-top:auto}
 
     .favBtn{
       border:1px solid var(--line);
@@ -284,6 +293,7 @@
       </div>
       <button id="favToggle" class="btn good">★ Favourites</button>
       <button id="nearMeBtn" class="btn primary">📍 Near me</button>
+      <button id="installBtn" class="btn primary" style="display:none">⬇ Install</button>
       <button id="resetBtn" class="btn ghost">Reset</button>
     </div>
   </div>
@@ -313,6 +323,7 @@
           <h1 id="viewTitle">All services</h1>
           <p id="viewDesc">One-tap actions: Call • Email • Maps • Official pages.</p>
           <div id="statsLine" class="mini">Loading…</div>
+          <div class="mini">Free • No login • Installable (offline-friendly)</div>
         </div>
 
         <div class="quick">
@@ -320,6 +331,7 @@
           <a class="chip" href="https://www.jerseyheritage.org/visit/places-to-visit/" target="_blank" rel="noopener">🏛️ Museums list</a>
           <a class="chip" href="https://www.jersey.com/things-to-do/attractions/" target="_blank" rel="noopener">✨ Attractions</a>
           <a class="chip" href="https://www.jersey.com/things-to-do/events/" target="_blank" rel="noopener">📅 Events</a>
+          <button id="shareAppBtn" class="chip good" type="button">📤 Share JerseyGo</button>
         </div>
       </div>
 
@@ -337,6 +349,8 @@
 <script>
 /* =========================================================
    JerseyGo — PWA directory + TRUE Parking LIVE (gov feed)
+   Improvements: install button, shareable URL state, share per card,
+                 live cache fallback, offline-friendly SW.
    ========================================================= */
 const $ = (id)=>document.getElementById(id);
 const norm = (s)=> (s||"").toLowerCase().trim();
@@ -359,6 +373,9 @@ const telHref = (phone)=>{
 const mailHref = (email)=> email ? ("mailto:" + email) : "#";
 const mapsUrl = (query)=> `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query || "Jersey")}`;
 
+/* -------------------------
+   Categories
+   ------------------------- */
 const CATEGORY_ORDER = [
   "Emergency",
   "Parking LIVE",
@@ -369,8 +386,15 @@ const CATEGORY_ORDER = [
   "Pharmacies"
 ];
 
+/* -------------------------
+   LocalStorage keys
+   ------------------------- */
 const LS_FAVS = "jerseygo:favs:v3";
+const LS_LIVE = "jerseygo:lastLive:v1";
 
+/* -------------------------
+   App state
+   ------------------------- */
 const state = {
   q: "",
   category: "All",
@@ -390,6 +414,33 @@ function catIcon(cat){
     case "Pharmacies": return "💊";
     default: return "•";
   }
+}
+
+/* -------------------------
+   URL state (shareable links)
+   ------------------------- */
+function readUrlState(){
+  try{
+    const u = new URL(location.href);
+    const q = u.searchParams.get("q");
+    const cat = u.searchParams.get("cat");
+    const favs = u.searchParams.get("favs");
+    if (q !== null) { state.q = q; $("q").value = q; }
+    if (cat) state.category = cat;
+    if (favs === "1") state.showFavs = true;
+  }catch{}
+}
+
+let __urlTimer = null;
+function writeUrlState(){
+  clearTimeout(__urlTimer);
+  __urlTimer = setTimeout(() => {
+    const u = new URL(location.href);
+    if (state.q) u.searchParams.set("q", state.q); else u.searchParams.delete("q");
+    if (state.category && state.category !== "All") u.searchParams.set("cat", state.category); else u.searchParams.delete("cat");
+    if (state.showFavs) u.searchParams.set("favs", "1"); else u.searchParams.delete("favs");
+    history.replaceState({}, "", u.toString());
+  }, 120);
 }
 
 /* -------------------------
@@ -479,7 +530,6 @@ const DIRECTORY_STATIC = [
     name:"LibertyBus",
     desc:"Routes, timetables, tickets (official).",
     tags:["bus","timetable"],
-    phone:"01534 828F? (check website)",
     links:[
       {label:"libertybus.je", url: LINKS.libertyBus},
       {label:"Routes & timetables (gov.je)", url:"https://www.gov.je/Travel/Buses/Pages/RoutesTimetables.aspx"}
@@ -734,7 +784,7 @@ function renderCards(){
     const isFav = state.favs.has(s.id);
     const tags = (s.tags||[]).slice(0,10).map(t=>`<span class="tag">${escapeHtml(String(t))}</span>`).join("");
 
-    const phoneBtn = s.phone && String(s.phone).includes("check") ? "" : (s.phone ? `<a class="chip" href="${telHref(s.phone)}">📞 Call</a>` : "");
+    const phoneBtn = (s.phone ? `<a class="chip" href="${telHref(s.phone)}">📞 Call</a>` : "");
     const emailBtn = s.email ? `<a class="chip" href="${mailHref(s.email)}">✉️ Email</a>` : "";
     const mapsBtn = `<a class="chip" href="${mapsUrl(s.mapsQuery || (s.name + " Jersey"))}" target="_blank" rel="noopener">🗺️ Maps</a>`;
     const links = (s.links||[]).slice(0,4).map(l=>`<a class="chip primary" href="${l.url}" target="_blank" rel="noopener">↗ ${escapeHtml(l.label)}</a>`).join("");
@@ -760,6 +810,7 @@ function renderCards(){
           ${mapsBtn}
           ${links}
           <button class="chip" type="button" data-copy="${escapeHtml(s.id)}">📋 Copy</button>
+          <button class="chip good" type="button" data-share="${escapeHtml(s.id)}">📤 Share</button>
         </div>
       </div>
     `;
@@ -803,12 +854,41 @@ function renderCards(){
       }
     });
   });
+
+  [...document.querySelectorAll("[data-share]")].forEach(btn=>{
+    btn.addEventListener("click", async ()=>{
+      const id = btn.getAttribute("data-share");
+      const svc = allServices().find(x=>x.id===id);
+      if(!svc) return;
+
+      const u = new URL(location.href);
+      // keep current filters in link
+      if (state.category && state.category !== "All") u.searchParams.set("cat", state.category);
+      if (state.q) u.searchParams.set("q", state.q);
+      if (state.showFavs) u.searchParams.set("favs", "1");
+
+      const firstLink = (svc.links && svc.links[0]) ? svc.links[0].url : "";
+      const text = [svc.name, svc.desc || "", firstLink].filter(Boolean).join("\n");
+
+      try{
+        if(navigator.share){
+          await navigator.share({ title: "JerseyGo", text, url: u.toString() });
+        }else{
+          await navigator.clipboard.writeText(u.toString());
+          toast("Link copied");
+        }
+      }catch{
+        toast("Share cancelled");
+      }
+    });
+  });
 }
 
 function renderAll(rerenderCats=true){
   if(rerenderCats) renderCats();
   renderHeader();
   renderCards();
+  writeUrlState();
 }
 
 /* -------------------------
@@ -845,8 +925,54 @@ $("nearMeBtn").addEventListener("click", ()=>{
   );
 });
 
+$("shareAppBtn").addEventListener("click", async ()=>{
+  const u = new URL(location.href);
+  if (state.category && state.category !== "All") u.searchParams.set("cat", state.category);
+  if (state.q) u.searchParams.set("q", state.q);
+  if (state.showFavs) u.searchParams.set("favs", "1");
+
+  const text = "JerseyGo — Parking LIVE + essentials (free, no login).";
+  try{
+    if(navigator.share){
+      await navigator.share({ title:"JerseyGo", text, url:u.toString() });
+    }else{
+      await navigator.clipboard.writeText(u.toString());
+      toast("Link copied");
+    }
+  }catch{
+    toast("Share cancelled");
+  }
+});
+
+/* -------------------------
+   PWA Install (Add to Home Screen)
+   ------------------------- */
+let deferredPrompt = null;
+
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  const b = $("installBtn");
+  if (b) b.style.display = "inline-flex";
+});
+
+$("installBtn").addEventListener("click", async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  try { await deferredPrompt.userChoice; } catch {}
+  deferredPrompt = null;
+  $("installBtn").style.display = "none";
+});
+
+window.addEventListener("appinstalled", () => {
+  toast("Installed ✅");
+  const b = $("installBtn");
+  if (b) b.style.display = "none";
+});
+
 /* -------------------------
    TRUE LIVE parking fetch (same feed used by gov.je)
+   + cache fallback (localStorage)
    ------------------------- */
 async function loadLiveSpaces(){
   const GOV_JSON = "https://sojpublicdata.blob.core.windows.net/sojpublicdata/carpark-data.json";
@@ -874,19 +1000,40 @@ async function loadLiveSpaces(){
       };
     });
 
+    // Save last good result (for offline / gov feed down)
+    localStorage.setItem(LS_LIVE, JSON.stringify({
+      LIVE_SPACES,
+      LIVE_TIMESTAMP,
+      savedAt: new Date().toISOString()
+    }));
+
     $("liveStatus").textContent = "LIVE ✓";
     $("liveStatus").className = "badge liveOk";
     renderAll(true);
   }catch(e){
     console.log("Live parking failed:", e);
+
+    // Try cached live
+    const cached = localStorage.getItem(LS_LIVE);
+    if(cached){
+      try{
+        const c = JSON.parse(cached);
+        if(c?.LIVE_SPACES){
+          LIVE_SPACES = c.LIVE_SPACES;
+          LIVE_TIMESTAMP = c.LIVE_TIMESTAMP ? (c.LIVE_TIMESTAMP + " (cached)") : "Cached";
+          $("liveStatus").textContent = "LIVE (cached)";
+          $("liveStatus").className = "badge liveWait";
+          renderAll(true);
+          return;
+        }
+      }catch{}
+    }
+
     $("liveStatus").textContent = "LIVE ✕";
     $("liveStatus").className = "badge liveBad";
     renderAll(true);
   }
 }
-
-loadLiveSpaces();
-setInterval(loadLiveSpaces, 120000);
 
 /* -------------------------
    Service worker
@@ -897,7 +1044,14 @@ if("serviceWorker" in navigator){
   });
 }
 
+/* -------------------------
+   Boot
+   ------------------------- */
+readUrlState();
 renderAll(true);
+
+loadLiveSpaces();
+setInterval(loadLiveSpaces, 120000);
 </script>
 </body>
 </html>
