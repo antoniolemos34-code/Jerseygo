@@ -1,6 +1,7 @@
-/* JerseyGo Service Worker (offline cache) */
-const CACHE = "jerseygo-v1";
-const ASSETS = [
+const VERSION = "v1.0.1";
+const CACHE_NAME = `jerseygo-${VERSION}`;
+
+const APP_SHELL = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
@@ -11,34 +12,60 @@ const ASSETS = [
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE).then((cache) => cache.addAll(ASSETS)).then(() => self.skipWaiting())
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL))
   );
+  self.skipWaiting();
 });
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
-      Promise.all(keys.map((k) => (k !== CACHE ? caches.delete(k) : null)))
-    ).then(() => self.clients.claim())
+      Promise.all(
+        keys
+          .filter((k) => k.startsWith("jerseygo-") && k !== CACHE_NAME)
+          .map((k) => caches.delete(k))
+      )
+    )
   );
+  self.clients.claim();
 });
 
-// Cache-first for local assets, network-first for external requests
 self.addEventListener("fetch", (event) => {
   const req = event.request;
-  const url = new URL(req.url);
+  if (req.method !== "GET") return;
 
-  // Only handle same-origin files (your app)
-  if (url.origin === self.location.origin) {
+  const url = new URL(req.url);
+  if (url.origin !== self.location.origin) return;
+
+  const isNavigation =
+    req.mode === "navigate" ||
+    (req.headers.get("accept") || "").includes("text/html");
+
+  if (isNavigation) {
     event.respondWith(
-      caches.match(req).then((cached) => cached || fetch(req).then((res) => {
-        const copy = res.clone();
-        caches.open(CACHE).then((cache) => cache.put(req, copy)).catch(()=>{});
-        return res;
-      }).catch(()=> cached))
+      fetch(req)
+        .then((res) => {
+          const copy = res.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
+          return res;
+        })
+        .catch(() =>
+          caches.match(req, { ignoreSearch: true }).then((cached) => cached || caches.match("./index.html"))
+        )
     );
     return;
   }
 
-  // For external links (gov.je, google maps, etc.) just pass through
+  event.respondWith(
+    caches.match(req).then((cached) => {
+      if (cached) return cached;
+
+      return fetch(req).then((res) => {
+        if (!res || res.status !== 200) return res;
+        const copy = res.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
+        return res;
+      });
+    })
+  );
 });
