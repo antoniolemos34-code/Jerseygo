@@ -1,78 +1,58 @@
-const VERSION = "jerseygo-v1.2.0";
-const CORE_CACHE = `core-${VERSION}`;
-const RUNTIME_CACHE = `runtime-${VERSION}`;
-
-const CORE_ASSETS = [
+/* JerseyGo Service Worker (simple + reliable)
+   - Caches app shell for offline use
+   - Uses network-first for HTML, cache-first for assets
+*/
+const CACHE = "jerseygo-cache-v4";
+const ASSETS = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
-  "./sw.js",
-  "./icon.svg"
+  "./icon.svg",
+  "./logo.svg",
+  "./icon-192.png",
+  "./icon-512.png",
+  "./apple-touch-icon.png"
 ];
 
 self.addEventListener("install", (event) => {
-  event.waitUntil(caches.open(CORE_CACHE).then((cache) => cache.addAll(CORE_ASSETS)));
-  self.skipWaiting();
+  event.waitUntil(
+    caches.open(CACHE).then((cache) => cache.addAll(ASSETS)).then(() => self.skipWaiting())
+  );
 });
 
 self.addEventListener("activate", (event) => {
-  event.waitUntil((async () => {
-    const keys = await caches.keys();
-    await Promise.all(keys.map(k => (![CORE_CACHE, RUNTIME_CACHE].includes(k) ? caches.delete(k) : undefined)));
-    await self.clients.claim();
-  })());
+  event.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(keys.map(k => (k !== CACHE ? caches.delete(k) : Promise.resolve())))
+    ).then(() => self.clients.claim())
+  );
 });
-
-function isNavigationRequest(req){
-  return req.mode === "navigate" || (req.method === "GET" && req.headers.get("accept")?.includes("text/html"));
-}
-
-async function networkFirst(req){
-  const cache = await caches.open(RUNTIME_CACHE);
-  try{
-    const res = await fetch(req);
-    if(res && res.ok) cache.put(req, res.clone());
-    return res;
-  }catch{
-    return (await cache.match(req)) || null;
-  }
-}
-
-async function cacheFirst(req){
-  const cache = await caches.open(RUNTIME_CACHE);
-  const cached = await cache.match(req);
-  if(cached) return cached;
-  const res = await fetch(req);
-  if(res && res.ok) cache.put(req, res.clone());
-  return res;
-}
 
 self.addEventListener("fetch", (event) => {
   const req = event.request;
   const url = new URL(req.url);
 
-  if(req.method !== "GET") return;
+  // Only handle same-origin
+  if (url.origin !== self.location.origin) return;
 
-  // GOV live json: network-first
-  if(url.href === "https://sojpublicdata.blob.core.windows.net/sojpublicdata/carpark-data.json"){
-    event.respondWith((async ()=> (await networkFirst(req)) || fetch(req))());
+  // Network-first for HTML navigation
+  if (req.mode === "navigate") {
+    event.respondWith(
+      fetch(req).then((res) => {
+        const copy = res.clone();
+        caches.open(CACHE).then((cache) => cache.put("./index.html", copy));
+        return res;
+      }).catch(() => caches.match("./index.html"))
+    );
     return;
   }
 
-  // Navigation fallback
-  if(isNavigationRequest(req)){
-    event.respondWith((async ()=>{
-      const res = await networkFirst(req);
-      if(res) return res;
-      const cache = await caches.open(CORE_CACHE);
-      return (await cache.match("./index.html")) || new Response("Offline", { status:200, headers:{ "Content-Type":"text/plain" }});
-    })());
-    return;
-  }
-
-  // Same-origin assets cache-first
-  if(url.origin === self.location.origin){
-    event.respondWith(cacheFirst(req));
-    return;
-  }
+  // Cache-first for other assets
+  event.respondWith(
+    caches.match(req).then((cached) => cached || fetch(req).then((res) => {
+      const copy = res.clone();
+      caches.open(CACHE).then((cache) => cache.put(req, copy));
+      return res;
+    }))
+  );
 });
