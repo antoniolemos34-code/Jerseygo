@@ -1,10 +1,9 @@
-const CACHE = "jerseygo-cache-v2";
+const CACHE = "jerseygo-cache-v3";
 const ASSETS = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
-  "./icon.svg",
-  "./logo.svg"
+  "./icon.svg"
 ];
 
 self.addEventListener("install", (event) => {
@@ -27,6 +26,7 @@ self.addEventListener("fetch", (event) => {
   const req = event.request;
   const url = new URL(req.url);
 
+  // Only cache same-origin
   if (url.origin !== self.location.origin) return;
 
   // navigation: network-first, fallback to cached index.html
