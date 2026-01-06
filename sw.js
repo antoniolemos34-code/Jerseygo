@@ -1,82 +1,79 @@
-/* JerseyGo Service Worker
-   - App-shell cache (offline)
-   - Stale-while-revalidate for HTML
-   - Cache-first for assets
-*/
-
-const VERSION = "jerseygo-v7"; // muda quando fizeres updates grandes
-const APP_SHELL = [
+/* JerseyGo Service Worker */
+const VERSION = "jerseygo-v7";
+const CORE = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
   "./icon.svg",
-  "./sw.js",
+  "./logo.svg",
   "./advertise/",
   "./advertise/index.html"
 ];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(VERSION).then((cache) => cache.addAll(APP_SHELL))
+    caches.open(VERSION).then((cache) => cache.addAll(CORE)).then(() => self.skipWaiting())
   );
-  self.skipWaiting();
 });
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(
-        keys
-          .filter((k) => k.startsWith("jerseygo-") && k !== VERSION)
-          .map((k) => caches.delete(k))
-      )
-    )
+    (async () => {
+      const keys = await caches.keys();
+      await Promise.all(keys.map((k) => (k !== VERSION ? caches.delete(k) : Promise.resolve())));
+      await self.clients.claim();
+    })()
   );
-  self.clients.claim();
 });
 
+/* Allow page to force update */
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "SKIP_WAITING") self.skipWaiting();
+});
+
+function isHTMLRequest(req) {
+  return req.mode === "navigate" || (req.headers.get("accept") || "").includes("text/html");
+}
+
+/* Network-first for HTML, cache-first for assets */
 self.addEventListener("fetch", (event) => {
   const req = event.request;
-
-  if (req.method !== "GET") return;
-
   const url = new URL(req.url);
 
-  // ignore external requests (gov.je, google maps, etc.)
+  // Only handle same-origin
   if (url.origin !== self.location.origin) return;
 
-  const isHTML =
-    req.destination === "document" ||
-    req.headers.get("accept")?.includes("text/html");
-
-  if (isHTML) {
-    event.respondWith(staleWhileRevalidate(req));
+  // HTML: network-first
+  if (isHTMLRequest(req)) {
+    event.respondWith(
+      (async () => {
+        try {
+          const fresh = await fetch(req);
+          const cache = await caches.open(VERSION);
+          cache.put(req, fresh.clone());
+          return fresh;
+        } catch (e) {
+          const cached = await caches.match(req);
+          return cached || caches.match("./index.html");
+        }
+      })()
+    );
     return;
   }
 
-  event.respondWith(cacheFirst(req));
+  // Assets: cache-first, then network
+  event.respondWith(
+    (async () => {
+      const cached = await caches.match(req);
+      if (cached) return cached;
+      try {
+        const fresh = await fetch(req);
+        const cache = await caches.open(VERSION);
+        cache.put(req, fresh.clone());
+        return fresh;
+      } catch (e) {
+        return cached;
+      }
+    })()
+  );
 });
-
-async function cacheFirst(req) {
-  const cached = await caches.match(req);
-  if (cached) return cached;
-
-  const fresh = await fetch(req);
-  const cache = await caches.open(VERSION);
-  cache.put(req, fresh.clone());
-  return fresh;
-}
-
-async function staleWhileRevalidate(req) {
-  const cache = await caches.open(VERSION);
-  const cached = await cache.match(req);
-
-  const networkPromise = fetch(req)
-    .then((fresh) => {
-      cache.put(req, fresh.clone());
-      return fresh;
-    })
-    .catch(() => cached);
-
-  return cached || networkPromise;
-}
