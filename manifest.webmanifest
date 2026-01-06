@@ -1,19 +1,24 @@
 {
   "name": "JerseyGo",
   "short_name": "JerseyGo",
-  "description": "Quick links for Jersey (residents & tourists).",
-  "start_url": "./?source=pwa&lang=en",
+  "description": "Quick links for Jersey — residents & tourists (parking, taxis, tides, toilets, transport, emergency).",
+  "start_url": "./?source=pwa",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#070A12",
+  "background_color": "#0B1220",
   "theme_color": "#0B1220",
-  "orientation": "portrait",
   "icons": [
     {
       "src": "./icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
     }
   ]
 }
