@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#0B1220" />
-  <meta name="description" content="JerseyGo — quick links for Jersey: residents & tourists. Parking, taxis, tides, toilets, transport, emergency." />
+  <meta name="description" content="JerseyGo — quick links for Jersey: residents & tourists. Parking, taxis, GP, toilets, pharmacies, transport, emergency." />
   <title>JerseyGo</title>
 
   <link rel="manifest" href="./manifest.webmanifest" />
@@ -241,7 +241,7 @@
     <div class="actionsTop">
       <div class="search">
         <span style="opacity:.9">🔎</span>
-        <input id="q" placeholder="Search: parking, taxi, tides, toilets…" autocomplete="off" />
+        <input id="q" placeholder="Search: parking, taxi, GP, toilets…" autocomplete="off" />
       </div>
 
       <div class="langWrap">
@@ -291,9 +291,9 @@
 
         <div class="quick">
           <a id="quickParking" class="chip primary" target="_blank" rel="noopener">🅿️ Parking</a>
-          <a id="quickTaxis" class="chip" target="_blank" rel="noopener">🚕 Taxis</a>
-          <a id="quickTides" class="chip" target="_blank" rel="noopener">🌊 Tides</a>
-          <a id="quickToilets" class="chip" target="_blank" rel="noopener">🚻 Toilets</a>
+          <a id="quickTaxiNear" class="chip" target="_blank" rel="noopener">🚕 Taxi near me</a>
+          <a id="quickToiletsNear" class="chip" target="_blank" rel="noopener">🚻 Toilets near me</a>
+          <a id="quickGpNear" class="chip" target="_blank" rel="noopener">🩺 GP near me</a>
         </div>
       </div>
 
@@ -327,13 +327,29 @@ const telHref = (phone)=>{
   const cleaned = (phone||"").replace(/[^\d+]/g,"");
   return cleaned ? ("tel:" + cleaned) : "#";
 };
-const mapsUrl = (query)=> `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query || "Jersey")}`;
+
+/* ✅ Ultra-stable Maps links ("near me") */
+const mapsSearch = (query)=> `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+const mapsNear = (query)=> mapsSearch(`${query} near me`); // works fine; Maps uses location
+
+/* ✅ Official-ish / stable links */
+const LINKS = {
+  parkingOfficial: "https://www.gov.je/Travel/Motoring/Parking/pages/carparkspaces.aspx",
+  parkingPay: "https://www.gov.je/Travel/Motoring/Parking/PayForParking/pages/paybyphoneapp.aspx",
+  met: "https://www.gov.je/weather/",
+  tidesGov: "https://www.gov.je/weather/tidetimes/",
+  libertyBus: "https://libertybus.je/",
+  busesGov: "https://www.gov.je/Travel/Buses/Pages/RoutesTimetables.aspx",
+  portsContact: "https://www.ports.je/about-us/contact/",
+  airportContact: "https://www.jerseyairport.com/contact/contact-us/",
+  policeContact: "https://www.jersey.police.je/s/contact-us"
+};
 
 const url = new URL(location.href);
 const initialLang = (url.searchParams.get("lang") || localStorage.getItem("jerseygo:lang") || "en").toLowerCase();
 const initialCat  = url.searchParams.get("cat") || "All";
 
-const LS_FAVS = "jerseygo:favs:v1";
+const LS_FAVS = "jerseygo:favs:v2";
 const state = {
   lang: ["en","pt","pl","fr"].includes(initialLang) ? initialLang : "en",
   q: "",
@@ -343,33 +359,41 @@ const state = {
 };
 
 const I18N = {
-  en:{sub:"Quick links for Jersey — residents & tourists",lang:"Language",cats:"Categories",tipT:"Tip",tip:"Tap “Install” or “Add to Home Screen” to use JerseyGo like an app.",
+  en:{sub:"Quick links for Jersey — residents & tourists",lang:"Language",cats:"Categories",tipT:"Tip",
+      tip:"Tap “Install” or “Add to Home Screen” to use JerseyGo like an app.",
       fav:"★ Favourites",near:"📍 Near me",share:"🔗 Share",install:"⬇ Install",reset:"Reset",all:"All services",
-      desc:"One-tap actions: Call • Maps • Official pages.",no:"No results",try:"Try: “taxi”, “toilets”, “tides”, “parking”.",
+      desc:"One-tap actions: Call • Maps • Official pages.",
+      no:"No results",try:"Try: “taxi”, “toilets”, “gp”, “pharmacy”.",
       copied:"Copied",copyFail:"Copy not supported",saved:"Saved to favourites",removed:"Removed from favourites",
       blocked:"Location blocked in browser settings",geos:"Geolocation not supported",getting:"Getting location…",
       showing:(n)=>`Showing ${n}`,emergencyFoot:"Emergency: call 999 / 112 • JerseyGo (unofficial directory; uses public sources)",
       howInstall:"How to install",open:"Open",copy:"📋 Copy"
   },
-  pt:{sub:"Links rápidos para Jersey — residentes e turistas",lang:"Idioma",cats:"Categorias",tipT:"Dica",tip:"Toca em “Instalar” ou “Adicionar ao ecrã inicial” para usar o JerseyGo como app.",
+  pt:{sub:"Links rápidos para Jersey — residentes e turistas",lang:"Idioma",cats:"Categorias",tipT:"Dica",
+      tip:"Toca em “Instalar” ou “Adicionar ao ecrã inicial” para usar o JerseyGo como app.",
       fav:"★ Favoritos",near:"📍 Perto de mim",share:"🔗 Partilhar",install:"⬇ Instalar",reset:"Repor",all:"Todos os serviços",
-      desc:"Ações rápidas: Chamar • Mapas • Sites oficiais.",no:"Sem resultados",try:"Experimenta: “táxi”, “toiletes”, “marés”, “parking”.",
+      desc:"Ações rápidas: Chamar • Mapas • Sites oficiais.",
+      no:"Sem resultados",try:"Experimenta: “táxi”, “toiletes”, “médico”, “farmácia”.",
       copied:"Copiado",copyFail:"Copiar não suportado",saved:"Guardado nos favoritos",removed:"Removido dos favoritos",
       blocked:"Localização bloqueada nas definições do browser",geos:"Geolocalização não suportada",getting:"A obter localização…",
       showing:(n)=>`A mostrar ${n}`,emergencyFoot:"Emergência: liga 999 / 112 • JerseyGo (diretório não-oficial; usa fontes públicas)",
       howInstall:"Como instalar",open:"Abrir",copy:"📋 Copiar"
   },
-  pl:{sub:"Szybkie linki dla Jersey — mieszkańcy i turyści",lang:"Język",cats:"Kategorie",tipT:"Wskazówka",tip:"Kliknij „Zainstaluj” lub „Dodaj do ekranu głównego”, aby używać JerseyGo jak aplikacji.",
+  pl:{sub:"Szybkie linki dla Jersey — mieszkańcy i turyści",lang:"Język",cats:"Kategorie",tipT:"Wskazówka",
+      tip:"Kliknij „Zainstaluj” lub „Dodaj do ekranu głównego”, aby używać JerseyGo jak aplikacji.",
       fav:"★ Ulubione",near:"📍 W pobliżu",share:"🔗 Udostępnij",install:"⬇ Zainstaluj",reset:"Reset",all:"Wszystkie usługi",
-      desc:"Szybkie akcje: Telefon • Mapy • Oficjalne strony.",no:"Brak wyników",try:"Spróbuj: „taxi”, „toilets”, „tides”, „parking”.",
+      desc:"Szybkie akcje: Telefon • Mapy • Oficjalne strony.",
+      no:"Brak wyników",try:"Spróbuj: „taxi”, „toilets”, „gp”, „pharmacy”.",
       copied:"Skopiowano",copyFail:"Kopiowanie niedostępne",saved:"Dodano do ulubionych",removed:"Usunięto z ulubionych",
       blocked:"Lokalizacja zablokowana w ustawieniach przeglądarki",geos:"Geolokalizacja nieobsługiwana",getting:"Pobieranie lokalizacji…",
       showing:(n)=>`Wyświetlono ${n}`,emergencyFoot:"Nagłe: 999 / 112 • JerseyGo (nieoficjalny katalog; publiczne źródła)",
       howInstall:"Jak zainstalować",open:"Otwórz",copy:"📋 Kopiuj"
   },
-  fr:{sub:"Liens rapides pour Jersey — résidents & touristes",lang:"Langue",cats:"Catégories",tipT:"Astuce",tip:"Appuyez sur « Installer » ou « Ajouter à l’écran d’accueil » pour utiliser JerseyGo comme une app.",
+  fr:{sub:"Liens rapides pour Jersey — résidents & touristes",lang:"Langue",cats:"Catégories",tipT:"Astuce",
+      tip:"Appuyez sur « Installer » ou « Ajouter à l’écran d’accueil » pour utiliser JerseyGo comme une app.",
       fav:"★ Favoris",near:"📍 Près de moi",share:"🔗 Partager",install:"⬇ Installer",reset:"Réinitialiser",all:"Tous les services",
-      desc:"Actions rapides : Appeler • Cartes • Sites officiels.",no:"Aucun résultat",try:"Essayez : « taxi », « toilettes », « marées », « parking ».",
+      desc:"Actions rapides : Appeler • Cartes • Sites officiels.",
+      no:"Aucun résultat",try:"Essayez : « taxi », « toilettes », « médecin », « pharmacie ».",
       copied:"Copié",copyFail:"Copie non prise en charge",saved:"Ajouté aux favoris",removed:"Retiré des favoris",
       blocked:"Localisation bloquée dans les paramètres du navigateur",geos:"Géolocalisation non prise en charge",getting:"Localisation…",
       showing:(n)=>`Affichage ${n}`,emergencyFoot:"Urgence : 999 / 112 • JerseyGo (annuaire non officiel ; sources publiques)",
@@ -382,195 +406,168 @@ function catIcon(cat){
   switch(cat){
     case "All": return "🧭";
     case "Essentials": return "⭐";
+    case "Near me": return "📍";
     case "Parking": return "🅿️";
-    case "Taxis": return "🚕";
-    case "Tides": return "🌊";
-    case "Toilets": return "🚻";
     case "Transport": return "🚌";
-    case "Airport & Harbour": return "✈️";
     case "Weather": return "🌦️";
+    case "Airport & Harbour": return "✈️";
     case "Emergency": return "🚨";
     default: return "•";
   }
 }
 
-/* ✅ LINKS (Toilets = PDF oficial direto) */
-const LINKS = {
-  parkingOfficial: "https://www.gov.je/Travel/Motoring/Parking/pages/carparkspaces.aspx",
-  parkingPay: "https://www.gov.je/Travel/Motoring/Parking/PayForParking/pages/paybyphoneapp.aspx",
-
-  // Public Toilet Locations (PDF) — opens reliably on mobile
-  toiletsPdf: "https://www.gov.je/Freedom%20of%20Information%20library/ID%20FOI%207535%20Jersey%20Public%20Toilet%20Locations%2020240627.pdf",
-
-  tidesGov: "https://www.gov.je/weather/tidetimes/",
-  tidesPorts: "https://www.ports.je/tides/",
-
-  citi: "https://citicabs.je/",
-  yellow: "https://www.yellowcabs.je/888-888",
-  liberty: "https://libertycabs.je/home/",
-
-  libertyBus: "https://libertybus.je/",
-  busesGov: "https://www.gov.je/Travel/Buses/Pages/RoutesTimetables.aspx",
-
-  portsContact: "https://www.ports.je/about-us/contact/",
-  airportContact: "https://www.jerseyairport.com/contact/contact-us/",
-  met: "https://www.gov.je/weather/",
-
-  policeContact: "https://www.jersey.police.je/s/contact-us",
-  policeNonEmergInfo: "https://www.gov.je/LifeEvents/MovingToJersey/WhenYouArrive/pages/contactemergencyservices.aspx"
-};
-
 const SERVICES = [
-  { id:"ess-parking", category:"Essentials",
+  /* ✅ Essentials */
+  {
+    id:"ess-parking",
+    category:"Essentials",
     name:{en:"Live parking (official)",pt:"Parking ao vivo (oficial)",pl:"Parking na żywo (oficjalnie)",fr:"Parkings en direct (officiel)"},
-    desc:{en:"Open official live spaces + PayByPhone info.",pt:"Vagas ao vivo + PayByPhone.",pl:"Wolne miejsca + PayByPhone.",fr:"Places + PayByPhone."},
+    desc:{en:"Official live spaces + PayByPhone info.",pt:"Vagas ao vivo + PayByPhone.",pl:"Wolne miejsca + PayByPhone.",fr:"Places + PayByPhone."},
     tags:["parking","spaces"],
     links:[
       {label:{en:"Open live parking",pt:"Abrir parking",pl:"Otwórz parking",fr:"Ouvrir parkings"}, url:LINKS.parkingOfficial},
       {label:{en:"PayByPhone info",pt:"Info PayByPhone",pl:"PayByPhone info",fr:"Infos PayByPhone"}, url:LINKS.parkingPay}
     ],
-    mapsQuery:"St Helier car park"
+    mapsQuery:"car park st helier"
   },
 
-  { id:"ess-taxis", category:"Essentials",
-    name:{en:"Taxis (call now)",pt:"Táxis (ligar já)",pl:"Taxi (zadzwoń)",fr:"Taxis (appeler)"},
-    desc:{en:"Quick booking numbers + websites.",pt:"Números rápidos + sites.",pl:"Numery + strony.",fr:"Numéros + sites."},
-    tags:["taxi","cab"],
-    links:[
-      {label:{en:"Citi Cabs",pt:"Citi Cabs",pl:"Citi Cabs",fr:"Citi Cabs"}, url:LINKS.citi},
-      {label:{en:"Yellow Cabs",pt:"Yellow Cabs",pl:"Yellow Cabs",fr:"Yellow Cabs"}, url:LINKS.yellow},
-      {label:{en:"Liberty Cabs",pt:"Liberty Cabs",pl:"Liberty Cabs",fr:"Liberty Cabs"}, url:LINKS.liberty}
-    ],
-    mapsQuery:"Taxi rank St Helier"
+  /* ✅ Near me (MOST USED on mobile) */
+  {
+    id:"near-toilets",
+    category:"Near me",
+    name:{en:"Public toilets (near me)",pt:"WC públicos (perto de mim)",pl:"Toalety publiczne (w pobliżu)",fr:"Toilettes publiques (à proximité)"},
+    desc:{en:"Opens Google Maps with nearby public toilets.",pt:"Abre o Google Maps com WC perto de ti.",pl:"Otwiera Mapy z toaletami w pobliżu.",fr:"Ouvre Google Maps avec les toilettes proches."},
+    tags:["toilets","wc","near me"],
+    links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("public toilets")}],
+    mapsQuery:"public toilets"
+  },
+  {
+    id:"near-taxi",
+    category:"Near me",
+    name:{en:"Taxi (near me)",pt:"Táxi (perto de mim)",pl:"Taxi (w pobliżu)",fr:"Taxi (à proximité)"},
+    desc:{en:"Open Google Maps showing nearby taxis / taxi ranks.",pt:"Abre o Google Maps com táxis perto.",pl:"Otwiera Mapy z taxi w pobliżu.",fr:"Ouvre Maps avec taxis proches."},
+    tags:["taxi","near me"],
+    links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("taxi")}],
+    mapsQuery:"taxi"
+  },
+  {
+    id:"near-gp",
+    category:"Near me",
+    name:{en:"GP / Doctor (near me)",pt:"Médico / GP (perto de mim)",pl:"Lekarz / GP (w pobliżu)",fr:"Médecin / GP (à proximité)"},
+    desc:{en:"Open Google Maps with nearby GP/doctor clinics.",pt:"Abre o Google Maps com médicos perto.",pl:"Otwiera Mapy z lekarzami w pobliżu.",fr:"Ouvre Maps avec médecins proches."},
+    tags:["gp","doctor","clinic","near me"],
+    links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("doctor clinic")}],
+    mapsQuery:"doctor clinic"
+  },
+  {
+    id:"near-pharmacy",
+    category:"Near me",
+    name:{en:"Pharmacy (near me)",pt:"Farmácia (perto de mim)",pl:"Apteka (w pobliżu)",fr:"Pharmacie (à proximité)"},
+    desc:{en:"Open Google Maps with nearby pharmacies.",pt:"Abre o Google Maps com farmácias perto.",pl:"Otwiera Mapy z aptekami w pobliżu.",fr:"Ouvre Maps avec pharmacies proches."},
+    tags:["pharmacy","chemist","near me"],
+    links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("pharmacy")}],
+    mapsQuery:"pharmacy"
+  },
+  {
+    id:"near-atm",
+    category:"Near me",
+    name:{en:"ATM / Cashpoint (near me)",pt:"ATM / Multibanco (perto de mim)",pl:"Bankomat (w pobliżu)",fr:"Distributeur (à proximité)"},
+    desc:{en:"Find the nearest cashpoint.",pt:"Encontra o multibanco mais perto.",pl:"Znajdź najbliższy bankomat.",fr:"Trouvez le distributeur le plus proche."},
+    tags:["atm","cash","near me"],
+    links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("ATM")}],
+    mapsQuery:"ATM"
+  },
+  {
+    id:"near-ev",
+    category:"Near me",
+    name:{en:"EV chargers (near me)",pt:"Carregadores elétricos (perto de mim)",pl:"Ładowarki EV (w pobliżu)",fr:"Bornes de recharge (à proximité)"},
+    desc:{en:"Find nearby EV charging points.",pt:"Encontra carregadores elétricos perto.",pl:"Znajdź ładowarki EV.",fr:"Trouvez des bornes proches."},
+    tags:["ev","charger","near me"],
+    links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("EV charger")}],
+    mapsQuery:"EV charger"
+  },
+  {
+    id:"near-police",
+    category:"Near me",
+    name:{en:"Police station (near me)",pt:"Esquadra da polícia (perto de mim)",pl:"Komisariat (w pobliżu)",fr:"Commissariat (à proximité)"},
+    desc:{en:"Open Google Maps with nearby police stations.",pt:"Abre o Google Maps com esquadras perto.",pl:"Otwiera Mapy z komisariatami.",fr:"Ouvre Maps avec commissariats proches."},
+    tags:["police","near me"],
+    links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("police station")}],
+    mapsQuery:"police station"
   },
 
-  { id:"ess-tides", category:"Essentials",
-    name:{en:"Tide times (St Helier)",pt:"Marés (St Helier)",pl:"Pływy (St Helier)",fr:"Marées (St Helier)"},
-    desc:{en:"Check tides before beaches & coastal walks.",pt:"Verifica as marés antes das praias.",pl:"Sprawdź pływy.",fr:"Vérifiez les marées."},
-    tags:["tides","beach"],
-    links:[
-      {label:{en:"Gov.je tides",pt:"Marés gov.je",pl:"Pływy gov.je",fr:"Marées gov.je"}, url:LINKS.tidesGov},
-      {label:{en:"Ports.je tides",pt:"Marés Ports.je",pl:"Pływy Ports.je",fr:"Marées Ports.je"}, url:LINKS.tidesPorts}
-    ],
-    mapsQuery:"St Helier"
-  },
-
-  { id:"ess-toilets", category:"Essentials",
-    name:{en:"Public toilets (locations)",pt:"WC públicos (localizações)",pl:"Toalety publiczne (lokalizacje)",fr:"Toilettes publiques (emplacements)"},
-    desc:{en:"Official locations PDF. Use Maps for nearest.",pt:"PDF oficial. Usa Mapas para o mais perto.",pl:"PDF oficjalny. Użyj Map.",fr:"PDF officiel. Utilisez Cartes."},
-    tags:["toilets","wc","public"],
-    links:[
-      {label:{en:"Open official PDF",pt:"Abrir PDF oficial",pl:"Otwórz PDF",fr:"Ouvrir PDF officiel"}, url:LINKS.toiletsPdf}
-    ],
-    mapsQuery:"public toilets Jersey"
-  },
-
-  { id:"park-links", category:"Parking",
-    name:{en:"Official live parking",pt:"Parking ao vivo (oficial)",pl:"Oficjalny parking na żywo",fr:"Parkings en direct (officiel)"},
-    desc:{en:"Live spaces + PayByPhone info.",pt:"Vagas ao vivo + PayByPhone.",pl:"Wolne miejsca + PayByPhone.",fr:"Places + PayByPhone."},
-    tags:["parking"],
-    links:[
-      {label:{en:"Live spaces",pt:"Vagas ao vivo",pl:"Wolne miejsca",fr:"Places en direct"}, url:LINKS.parkingOfficial},
-      {label:{en:"PayByPhone",pt:"PayByPhone",pl:"PayByPhone",fr:"PayByPhone"}, url:LINKS.parkingPay}
-    ],
-    mapsQuery:"St Helier"
-  },
-
-  { id:"taxi-citi", category:"Taxis",
-    name:{en:"Citi Cabs",pt:"Citi Cabs",pl:"Citi Cabs",fr:"Citi Cabs"},
-    desc:{en:"Call 01534 499999",pt:"Ligar 01534 499999",pl:"Zadzwoń 01534 499999",fr:"Appelez 01534 499999"},
-    tags:["taxi"], phone:"01534 499999",
-    links:[{label:{en:"Open website",pt:"Abrir site",pl:"Otwórz stronę",fr:"Ouvrir le site"}, url:LINKS.citi}],
-    mapsQuery:"Citi Cabs Jersey"
-  },
-  { id:"taxi-yellow", category:"Taxis",
-    name:{en:"Yellow Cabs",pt:"Yellow Cabs",pl:"Yellow Cabs",fr:"Yellow Cabs"},
-    desc:{en:"Call 01534 888888",pt:"Ligar 01534 888888",pl:"Zadzwoń 01534 888888",fr:"Appelez 01534 888888"},
-    tags:["taxi"], phone:"01534 888888",
-    links:[{label:{en:"Open website",pt:"Abrir site",pl:"Otwórz stronę",fr:"Ouvrir le site"}, url:LINKS.yellow}],
-    mapsQuery:"Yellow Cabs Jersey"
-  },
-  { id:"taxi-liberty", category:"Taxis",
-    name:{en:"Liberty Cabs",pt:"Liberty Cabs",pl:"Liberty Cabs",fr:"Liberty Cabs"},
-    desc:{en:"Call 01534 767700",pt:"Ligar 01534 767700",pl:"Zadzwoń 01534 767700",fr:"Appelez 01534 767700"},
-    tags:["taxi"], phone:"01534 767700",
-    links:[{label:{en:"Open website",pt:"Abrir site",pl:"Otwórz stronę",fr:"Ouvrir le site"}, url:LINKS.liberty}],
-    mapsQuery:"Liberty Cabs Jersey"
-  },
-
-  { id:"tides-gov", category:"Tides",
-    name:{en:"Tide times (gov.je)",pt:"Marés (gov.je)",pl:"Pływy (gov.je)",fr:"Marées (gov.je)"},
-    desc:{en:"Official tide times.",pt:"Marés oficiais.",pl:"Oficjalne pływy.",fr:"Marées officielles."},
-    tags:["tides"],
-    links:[{label:{en:"Open tide times",pt:"Abrir marés",pl:"Otwórz pływy",fr:"Ouvrir marées"}, url:LINKS.tidesGov}],
-    mapsQuery:"St Helier"
-  },
-  { id:"tides-ports", category:"Tides",
-    name:{en:"Tides (Ports of Jersey)",pt:"Marés (Ports of Jersey)",pl:"Pływy (Ports of Jersey)",fr:"Marées (Ports of Jersey)"},
-    desc:{en:"Tide heights + marina info.",pt:"Alturas das marés + info marina.",pl:"Wysokość pływów + marina.",fr:"Hauteurs + marina."},
-    tags:["tides"],
-    links:[{label:{en:"Open ports tides",pt:"Abrir marés",pl:"Otwórz pływy",fr:"Ouvrir marées"}, url:LINKS.tidesPorts}],
-    mapsQuery:"St Helier Marina"
-  },
-
-  { id:"toilets-pdf", category:"Toilets",
-    name:{en:"Public toilet locations (official PDF)",pt:"Localizações WC públicos (PDF oficial)",pl:"Toalety (PDF oficjalny)",fr:"Toilettes (PDF officiel)"},
-    desc:{en:"Opens the official locations PDF.",pt:"Abre o PDF oficial das localizações.",pl:"Otwiera oficjalny PDF.",fr:"Ouvre le PDF officiel."},
-    tags:["toilets","pdf"],
-    links:[{label:{en:"Open PDF",pt:"Abrir PDF",pl:"Otwórz PDF",fr:"Ouvrir PDF"}, url:LINKS.toiletsPdf}],
-    mapsQuery:"public toilets Jersey"
-  },
-
-  { id:"transport-libertybus", category:"Transport",
-    name:{en:"LibertyBus",pt:"LibertyBus",pl:"LibertyBus",fr:"LibertyBus"},
-    desc:{en:"Routes, timetables, tickets.",pt:"Rotas, horários, bilhetes.",pl:"Trasy, rozkłady, bilety.",fr:"Lignes, horaires, billets."},
-    tags:["bus"],
+  /* ✅ Transport / Weather / Airport */
+  {
+    id:"transport-bus",
+    category:"Transport",
+    name:{en:"LibertyBus (official)",pt:"LibertyBus (oficial)",pl:"LibertyBus (oficjalnie)",fr:"LibertyBus (officiel)"},
+    desc:{en:"Routes, timetables and tickets.",pt:"Rotas, horários e bilhetes.",pl:"Trasy, rozkłady i bilety.",fr:"Lignes, horaires et billets."},
+    tags:["bus","timetable"],
     links:[
       {label:{en:"Open LibertyBus",pt:"Abrir LibertyBus",pl:"Otwórz LibertyBus",fr:"Ouvrir LibertyBus"}, url:LINKS.libertyBus},
       {label:{en:"Gov routes & timetables",pt:"Horários gov.je",pl:"Rozkłady gov.je",fr:"Horaires gov.je"}, url:LINKS.busesGov}
     ],
     mapsQuery:"Liberation Station St Helier"
   },
-
-  { id:"weather-met", category:"Weather",
-    name:{en:"Jersey weather forecast (Jersey Met)",pt:"Previsão do tempo (Jersey Met)",pl:"Pogoda (Jersey Met)",fr:"Météo (Jersey Met)"},
-    desc:{en:"Official forecast and updates.",pt:"Previsão oficial e atualizações.",pl:"Oficjalna prognoza.",fr:"Prévisions officielles."},
+  {
+    id:"weather",
+    category:"Weather",
+    name:{en:"Weather forecast",pt:"Previsão do tempo",pl:"Prognoza pogody",fr:"Prévisions météo"},
+    desc:{en:"Official weather updates.",pt:"Atualizações oficiais do tempo.",pl:"Oficjalne aktualizacje pogody.",fr:"Mises à jour météo officielles."},
     tags:["weather"],
-    links:[{label:{en:"Open forecast",pt:"Abrir previsão",pl:"Otwórz prognozę",fr:"Ouvrir météo"}, url:LINKS.met}],
+    links:[
+      {label:{en:"Open forecast",pt:"Abrir previsão",pl:"Otwórz prognozę",fr:"Ouvrir météo"}, url:LINKS.met},
+      {label:{en:"Tide times",pt:"Marés",pl:"Pływy",fr:"Marées"}, url:LINKS.tidesGov}
+    ],
     mapsQuery:"Jersey"
   },
-
-  { id:"airport", category:"Airport & Harbour",
+  {
+    id:"airport",
+    category:"Airport & Harbour",
     name:{en:"Jersey Airport — contact",pt:"Aeroporto de Jersey — contacto",pl:"Lotnisko Jersey — kontakt",fr:"Aéroport de Jersey — contact"},
     desc:{en:"Official contact page.",pt:"Página oficial de contacto.",pl:"Oficjalny kontakt.",fr:"Contact officiel."},
     tags:["airport"],
     links:[{label:{en:"Open contact",pt:"Abrir contacto",pl:"Otwórz kontakt",fr:"Ouvrir contact"}, url:LINKS.airportContact}],
     mapsQuery:"Jersey Airport"
   },
+  {
+    id:"ports",
+    category:"Airport & Harbour",
+    name:{en:"Ports of Jersey — contact",pt:"Ports of Jersey — contacto",pl:"Ports of Jersey — kontakt",fr:"Ports of Jersey — contact"},
+    desc:{en:"Harbours & airport customer relations.",pt:"Portos e aeroporto (apoio ao cliente).",pl:"Porty i lotnisko (kontakt).",fr:"Ports et aéroport (contact)."},
+    tags:["ports","harbour"],
+    links:[{label:{en:"Open contact",pt:"Abrir contacto",pl:"Otwórz kontakt",fr:"Ouvrir contact"}, url:LINKS.portsContact}],
+    mapsQuery:"Ports of Jersey"
+  },
 
-  { id:"emergency", category:"Emergency",
+  /* ✅ Emergency */
+  {
+    id:"emergency",
+    category:"Emergency",
     name:{en:"Emergency (999 / 112)",pt:"Emergência (999 / 112)",pl:"Nagłe (999 / 112)",fr:"Urgence (999 / 112)"},
     desc:{en:"Life-threatening emergencies.",pt:"Emergências com risco de vida.",pl:"Zagrażające życiu.",fr:"Urgences vitales."},
     tags:["999","112"],
-    links:[{label:{en:"Official info",pt:"Info oficial",pl:"Info",fr:"Info officielle"}, url:LINKS.policeNonEmergInfo}],
+    links:[{label:{en:"Police contact page",pt:"Página polícia",pl:"Kontakt policji",fr:"Contact police"}, url:LINKS.policeContact}],
     mapsQuery:"Jersey General Hospital"
   },
-  { id:"police-nonemerg", category:"Emergency",
+  {
+    id:"police-nonemerg",
+    category:"Emergency",
     name:{en:"Police (non-emergency)",pt:"Polícia (não emergência)",pl:"Policja (nie nagłe)",fr:"Police (non-urgence)"},
     desc:{en:"Call 01534 612612",pt:"Ligar 01534 612612",pl:"Zadzwoń 01534 612612",fr:"Appelez 01534 612612"},
     tags:["police"], phone:"01534 612612",
-    links:[{label:{en:"Police contact page",pt:"Página de contacto",pl:"Kontakt",fr:"Contact"}, url:LINKS.policeContact}],
-    mapsQuery:"States of Jersey Police Headquarters"
+    links:[{label:{en:"Open contact",pt:"Abrir contacto",pl:"Otwórz kontakt",fr:"Ouvrir contact"}, url:LINKS.policeContact}],
+    mapsQuery:"States of Jersey Police"
   }
 ];
 
-const CATEGORY_ORDER = ["Essentials","Parking","Taxis","Tides","Toilets","Transport","Airport & Harbour","Weather","Emergency"];
+const CATEGORY_ORDER = ["Essentials","Near me","Parking","Transport","Weather","Airport & Harbour","Emergency"];
 
 function setQuickLinks(){
   $("quickParking").href = LINKS.parkingOfficial;
-  $("quickTaxis").href   = LINKS.yellow;
-  $("quickTides").href   = LINKS.tidesGov;
-  $("quickToilets").href = LINKS.toiletsPdf;
+  $("quickTaxiNear").href = mapsSearch("taxi");
+  $("quickToiletsNear").href = mapsSearch("public toilets");
+  $("quickGpNear").href = mapsSearch("doctor clinic");
 }
 
 function matchesQuery(svc, q){
@@ -578,7 +575,10 @@ function matchesQuery(svc, q){
   const lang = state.lang;
   const name = svc.name?.[lang] || svc.name?.en || "";
   const desc = svc.desc?.[lang] || svc.desc?.en || "";
-  const hay = [name, desc, svc.category, ...(svc.tags||[]), svc.phone||"",
+  const hay = [
+    name, desc, svc.category,
+    ...(svc.tags||[]),
+    svc.phone||"",
     ...(svc.links||[]).map(l=>{
       const lbl = l.label ? (l.label[lang] || l.label.en || "") : "";
       return lbl + " " + (l.url||"");
@@ -670,7 +670,7 @@ function renderCards(){
     const tags = (s.tags||[]).slice(0,10).map(tt=>`<span class="tag">${escapeHtml(String(tt))}</span>`).join("");
 
     const callBtn = s.phone ? `<a class="chip" href="${telHref(s.phone)}">📞 ${escapeHtml(t().open)}</a>` : "";
-    const mapsBtn = `<a class="chip" href="${mapsUrl(s.mapsQuery || (name + " Jersey"))}" target="_blank" rel="noopener">🗺️ Maps</a>`;
+    const mapsBtn = `<a class="chip" href="${mapsSearch(s.mapsQuery || name)}" target="_blank" rel="noopener">🗺️ Maps</a>`;
 
     const links = (s.links||[]).slice(0,4).map(l=>{
       const label = l.label ? (l.label[lang] || l.label.en || "Open") : "Open";
