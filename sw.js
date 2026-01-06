@@ -1,20 +1,12 @@
-// JerseyGo Service Worker (simple + stable)
 const CACHE_NAME = "jerseygo-cache-v1";
-const CORE_ASSETS = [
-  "./",
-  "./index.html",
-  "./manifest.webmanifest",
-  "./icon.svg",
-];
+const CORE_ASSETS = ["./", "./index.html", "./manifest.webmanifest", "./icon.svg"];
 
-// Install
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => cache.addAll(CORE_ASSETS)).then(() => self.skipWaiting())
   );
 });
 
-// Activate
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
@@ -23,15 +15,11 @@ self.addEventListener("activate", (event) => {
   );
 });
 
-// Fetch: cache-first for same-origin, network for others
 self.addEventListener("fetch", (event) => {
   const req = event.request;
   const url = new URL(req.url);
-
-  // Only handle GET
   if (req.method !== "GET") return;
 
-  // Same origin: cache-first + update
   if (url.origin === self.location.origin) {
     event.respondWith(
       caches.match(req).then((cached) => {
@@ -49,6 +37,5 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Cross-origin: network-first (don’t cache)
   event.respondWith(fetch(req).catch(() => caches.match("./index.html")));
 });
