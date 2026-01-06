@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#0B1220" />
-  <meta name="description" content="JerseyGo — quick links for Jersey (residents & tourists). Parking LIVE, buses, roadworks, airport/harbour, weather, waste & recycling, schools, health, museums & activities." />
+  <meta name="description" content="JerseyGo — quick links for Jersey (residents & tourists). Parking, buses, roadworks, airport/harbour, weather, waste & recycling, schools, health, tourism, emergency." />
   <title>JerseyGo</title>
 
   <link rel="manifest" href="./manifest.webmanifest" />
@@ -317,7 +317,7 @@
           <button class="chip primary" type="button" data-open="parkingLivePage">🅿️ Live parking</button>
           <button class="chip" type="button" data-open="busTracker">🚌 Bus live</button>
           <button class="chip" type="button" data-open="airportArrivals">✈️ Airport</button>
-          <button class="chip" type="button" data-open="roadClosures">🚧 Roadworks</button>
+          <button class="chip" type="button" data-open="roadworksMap">🚧 Roadworks map</button>
         </div>
       </div>
 
@@ -336,7 +336,6 @@
 /* =========================================================
    JerseyGo — CLEAN + MULTILANG + WORKING LINKS + PWA
    EN / PT / PL / FR
-   Deep links: ?lang=pt&cat=Health&q=pharmacy&favs=1
    ========================================================= */
 const $ = (id)=>document.getElementById(id);
 const norm = (s)=> (s||"").toLowerCase().trim();
@@ -368,7 +367,7 @@ const mapsUrl = (query)=> `https://www.google.com/maps/search/?api=1&query=${enc
 /* -------------------------
    Language
    ------------------------- */
-const LS_LANG = "jerseygo:lang:v7";
+const LS_LANG = "jerseygo:lang:v8";
 const params = new URLSearchParams(location.search);
 
 let lang = (params.get("lang") || localStorage.getItem(LS_LANG) || "en").toLowerCase();
@@ -459,9 +458,9 @@ function applyLangUI(){
 }
 
 /* -------------------------
-   App state (deep links)
+   State
    ------------------------- */
-const LS_FAVS = "jerseygo:favs:v7";
+const LS_FAVS = "jerseygo:favs:v8";
 const state = {
   q: params.get("q") || "",
   category: params.get("cat") || "All",
@@ -506,7 +505,7 @@ function catIcon(cat){
 }
 
 /* -------------------------
-   Links (FIXED / WORKING)
+   Links (WORKING)
    ------------------------- */
 const LINKS = {
   // Parking
@@ -518,7 +517,7 @@ const LINKS = {
   contactsAZ: "https://www.gov.je/pages/contacts.aspx",
   customerHubWait: "https://www.gov.je/Government/Departments/EmploymentSocialSecurityHousing/pages/waitingtimes.aspx",
   jobs: "https://www.gov.je/Working/JobCareerAdvice/pages/jobs.aspx",
-  bankHolidays: "https://www.gov.je/Leisure/SportAndCulture/Publicholidays/pages/index.aspx",
+  bankHolidays: "https://www.gov.je/Leisure/Events/WhatsOn/pages/bankholidaydates.aspx", // FIXED :contentReference[oaicite:1]{index=1}
 
   // Bus / Transport
   busTracker: "https://m.gov.je/Bus/Tracker",
@@ -541,12 +540,12 @@ const LINKS = {
   tides: "https://www.gov.je/weather/tidetimes/",
   radar: "https://www.gov.je/weather/radar/",
 
-  // Waste & recycling (FIXED)
+  // Waste & recycling
   wasteCollection: "https://www.gov.je/Environment/WasteReduceReuseRecycle/WhyRecycle/pages/rubbishcollections.aspx",
   recycling: "https://www.gov.je/Environment/WasteReduceReuseRecycle/WhyRecycle/pages/index.aspx",
   glassCollection: "https://www.gov.je/Environment/WasteReduceReuseRecycle/WhyRecycle/pages/glasscollection.aspx",
 
-  // Schools (FIXED)
+  // Schools
   termDates: "https://www.gov.je/Education/Schools/SchoolLife/pages/termdates.aspx",
 
   // Health
@@ -562,7 +561,7 @@ const LINKS = {
 };
 
 /* -------------------------
-   Services (directory)
+   Services
    ------------------------- */
 function svc({id, category, name, desc, tags=[], phone="", links=[], mapsQuery=""}){
   return { id, category, name, desc, tags, phone, links, mapsQuery };
@@ -580,7 +579,7 @@ const SERVICES = [
     mapsQuery:"Jersey General Hospital Emergency Department"
   }),
 
-  // Non-emergency contacts (NEW)
+  // Non-emergency contacts (you requested)
   svc({
     id:"ne-police",
     category:"Emergency",
@@ -588,9 +587,7 @@ const SERVICES = [
     desc:{en:"Call for non-emergency incidents and advice.", pt:"Ligar para situações não urgentes.", pl:"Zadzwoń w sprawach niepilnych.", fr:"Appel pour les situations non urgentes."},
     phone:"01534 612612",
     tags:["police","non-emergency","612612"],
-    links:[
-      {label:{en:"Police contact page",pt:"Página de contacto",pl:"Kontakt",fr:"Contact"}, url:"https://www.jersey.police.je/s/contact-us"}
-    ],
+    links:[{label:{en:"Police contact page",pt:"Página de contacto",pl:"Kontakt",fr:"Contact"}, url:"https://www.jersey.police.je/s/contact-us"}],
     mapsQuery:"States of Jersey Police Headquarters"
   }),
   svc({
@@ -600,9 +597,7 @@ const SERVICES = [
     desc:{en:"General administration / non-emergency contact.", pt:"Contacto geral / não-emergência.", pl:"Kontakt ogólny / niepilny.", fr:"Contact général / non urgent."},
     phone:"01534 445906",
     tags:["fire","non-emergency","445906"],
-    links:[
-      {label:{en:"Fire & Rescue contact",pt:"Contacto",pl:"Kontakt",fr:"Contact"}, url:"https://jerseyfire.je/contact"}
-    ],
+    links:[{label:{en:"Fire & Rescue contact",pt:"Contacto",pl:"Kontakt",fr:"Contact"}, url:"https://jerseyfire.je/contact"}],
     mapsQuery:"Jersey Fire and Rescue Service Rouge Bouillon"
   }),
   svc({
@@ -612,9 +607,7 @@ const SERVICES = [
     desc:{en:"Non-emergency contact number.", pt:"Número para não-emergência.", pl:"Numer niepilny.", fr:"Numéro non urgent."},
     phone:"01534 444710",
     tags:["ambulance","non-emergency","444710"],
-    links:[
-      {label:{en:"Directory listing",pt:"Listagem",pl:"Wpis",fr:"Annuaire"}, url:"https://www.jod.je/kb5/jersey/directory/service.page?id=ORwuxfYubz4"}
-    ],
+    links:[{label:{en:"Directory listing",pt:"Listagem",pl:"Wpis",fr:"Annuaire"}, url:"https://www.jod.je/kb5/jersey/directory/service.page?id=ORwuxfYubz4"}],
     mapsQuery:"Ambulance Service Rouge Bouillon Jersey"
   }),
 
@@ -643,7 +636,7 @@ const SERVICES = [
     name:{en:"Customer Hub waiting times (gov.je)", pt:"Customer Hub — tempos de espera", pl:"Customer Hub — czasy", fr:"Customer Hub — temps d’attente"},
     desc:{en:"Check waiting times before you go.", pt:"Verifica antes de ires.", pl:"Sprawdź przed wizytą.", fr:"Vérifiez avant."},
     tags:["waiting times"],
-    links:[{label:{en:"Open waiting times",pt:"Abrir tempos",pl:"Otwórz czasy",fr:"Ouvrir temps"}, url:LINKS.customerHubWait}],
+    links:[{label:{en:"Open waiting times",pt:"Abrir tempos",pl:"Otwórz",fr:"Ouvrir"}, url:LINKS.customerHubWait}],
     mapsQuery:"Customer Hub St Helier"
   }),
   svc({
@@ -658,14 +651,14 @@ const SERVICES = [
   svc({
     id:"ess-bank",
     category:"Essentials",
-    name:{en:"Bank holidays (gov.je)", pt:"Feriados (gov.je)", pl:"Święta (gov.je)", fr:"Jours fériés (gov.je)"},
-    desc:{en:"Public holiday dates.", pt:"Datas dos feriados.", pl:"Daty świąt.", fr:"Dates des jours fériés."},
-    tags:["holidays"],
+    name:{en:"Bank holiday dates (gov.je)", pt:"Feriados (datas) (gov.je)", pl:"Święta (daty) (gov.je)", fr:"Jours fériés (dates) (gov.je)"},
+    desc:{en:"Official bank holiday dates.", pt:"Datas oficiais dos feriados.", pl:"Oficjalne daty świąt.", fr:"Dates officielles des jours fériés."},
+    tags:["bank holidays","holidays"],
     links:[{label:{en:"Open bank holidays",pt:"Abrir feriados",pl:"Otwórz",fr:"Ouvrir"}, url:LINKS.bankHolidays}],
     mapsQuery:"Jersey"
   }),
 
-  // Parking LIVE (directory only)
+  // Parking LIVE (directory only: no numbers)
   ...[
     ["Charles Street","Charles Street car park St Helier Jersey"],
     ["Green Street","Green Street car park St Helier Jersey"],
@@ -793,7 +786,7 @@ const SERVICES = [
     id:"wx-forecast",
     category:"Weather",
     name:{en:"Weather forecast (gov.je)", pt:"Previsão (gov.je)", pl:"Pogoda (gov.je)", fr:"Météo (gov.je)"},
-    desc:{en:"Official forecast and live data.", pt:"Previsão oficial.", pl:"Prognoza oficjalna.", fr:"Prévisions officielles."},
+    desc:{en:"Official forecast + radar + tides.", pt:"Previsão + radar + marés.", pl:"Prognoza + radar + pływy.", fr:"Prévisions + radar + marées."},
     tags:["weather","forecast"],
     links:[
       {label:{en:"Open forecast",pt:"Abrir previsão",pl:"Otwórz",fr:"Ouvrir"}, url:LINKS.weatherHome},
@@ -803,12 +796,12 @@ const SERVICES = [
     mapsQuery:"St Helier Jersey"
   }),
 
-  // Waste & Recycling (FIXED)
+  // Waste & Recycling
   svc({
     id:"wr-collection",
     category:"Waste & Recycling",
     name:{en:"Waste collection (gov.je)", pt:"Recolha de lixo (gov.je)", pl:"Odbiór odpadów (gov.je)", fr:"Collecte déchets (gov.je)"},
-    desc:{en:"Collection days by parish + missed bin reporting.", pt:"Dias por paróquia + falta de recolha.", pl:"Dni odbioru + zgłoszenie.", fr:"Jours + signaler un oubli."},
+    desc:{en:"Collection days by parish + missed bin reporting.", pt:"Dias por paróquia + falhas.", pl:"Dni + zgłoszenia.", fr:"Jours + signalement."},
     tags:["waste","collection"],
     links:[{label:{en:"Open waste collection",pt:"Abrir recolha",pl:"Otwórz",fr:"Ouvrir"}, url:LINKS.wasteCollection}],
     mapsQuery:"St Helier Jersey"
@@ -817,7 +810,7 @@ const SERVICES = [
     id:"wr-glass",
     category:"Waste & Recycling",
     name:{en:"Glass collection (gov.je)", pt:"Recolha de vidro (gov.je)", pl:"Odbiór szkła (gov.je)", fr:"Collecte verre (gov.je)"},
-    desc:{en:"Glass recycling info and parish collection dates.", pt:"Info e datas por paróquia.", pl:"Info i daty.", fr:"Infos et dates."},
+    desc:{en:"Glass recycling info + parish dates.", pt:"Info + datas por paróquia.", pl:"Info + daty.", fr:"Infos + dates."},
     tags:["glass","collection"],
     links:[{label:{en:"Open glass collection",pt:"Abrir vidro",pl:"Otwórz",fr:"Ouvrir"}, url:LINKS.glassCollection}],
     mapsQuery:"Glass recycling Jersey"
@@ -832,7 +825,7 @@ const SERVICES = [
     mapsQuery:"Recycling centre Jersey"
   }),
 
-  // Schools (FIXED)
+  // Schools
   svc({
     id:"sch-term",
     category:"Schools & Holidays",
@@ -916,7 +909,7 @@ async function loadLiveParkingStatus(){
 }
 
 /* -------------------------
-   Filtering
+   Filter
    ------------------------- */
 function matchesQuery(svc, q){
   if(!q) return true;
@@ -1019,7 +1012,7 @@ function renderCards(){
     `;
   }).join("");
 
-  // fav
+  // favourites
   [...document.querySelectorAll("[data-fav]")].forEach(btn=>{
     btn.addEventListener("click", ()=>{
       const id = btn.getAttribute("data-fav");
@@ -1075,7 +1068,7 @@ function renderAll(rerenderCats=true){
 }
 
 /* -------------------------
-   URL sync (deep link)
+   URL sync
    ------------------------- */
 function syncUrl(){
   const u = new URL(location.href);
