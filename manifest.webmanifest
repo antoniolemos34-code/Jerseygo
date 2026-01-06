@@ -1,7 +1,7 @@
 {
   "name": "JerseyGo",
   "short_name": "JerseyGo",
-  "description": "Parking LIVE + essentials for Jersey (residents & tourists).",
+  "description": "Quick links for Jersey (residents & tourists).",
   "start_url": "./?source=pwa&lang=en",
   "scope": "./",
   "display": "standalone",
