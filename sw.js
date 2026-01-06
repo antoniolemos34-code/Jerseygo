@@ -1,4 +1,4 @@
-const CACHE = "jerseygo-cache-v1";
+const CACHE = "jerseygo-cache-v2";
 const ASSETS = [
   "./",
   "./index.html",
@@ -27,10 +27,9 @@ self.addEventListener("fetch", (event) => {
   const req = event.request;
   const url = new URL(req.url);
 
-  // only handle same-origin
   if (url.origin !== self.location.origin) return;
 
-  // SPA-like navigation: prefer network, fallback to cached index.html
+  // navigation: network-first, fallback to cached index.html
   if (req.mode === "navigate") {
     event.respondWith(
       fetch(req).then(res => {
@@ -42,7 +41,7 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // cache-first for assets
+  // assets: cache-first
   event.respondWith(
     caches.match(req).then(cached => cached || fetch(req).then(res => {
       const copy = res.clone();
