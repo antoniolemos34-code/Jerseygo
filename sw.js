@@ -31,7 +31,7 @@ self.addEventListener("fetch", (event) => {
   // Only handle same-origin
   if (url.origin !== location.origin) return;
 
-  // SPA/PWA navigation fallback to index.html
+  // Navigation fallback to index
   if (req.mode === "navigate") {
     event.respondWith(
       fetch(req).catch(() => caches.match("./index.html"))
