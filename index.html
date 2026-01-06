@@ -331,9 +331,7 @@
 <div id="toast" class="toast"></div>
 
 <script>
-/* =========
-   Helpers
-========= */
+/* ========= Helpers ========= */
 const $ = (id)=>document.getElementById(id);
 const norm = (s)=> (s||"").toLowerCase().trim();
 const toast = (msg)=>{
@@ -345,9 +343,7 @@ const toast = (msg)=>{
 };
 const mapsSearch = (query)=> `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
 
-/* =========
-   Verified official links
-========= */
+/* ========= Links ========= */
 const LINKS = {
   govHome: "https://www.gov.je/",
   parkingLive: "https://www.gov.je/Travel/Motoring/Parking/pages/carparkspaces.aspx",
@@ -356,11 +352,9 @@ const LINKS = {
   tides: "https://www.gov.je/weather/tidetimes/",
   libertyBus: "https://libertybus.je/",
   busesGov: "https://www.gov.je/Travel/Buses/Pages/RoutesTimetables.aspx",
-
   policeContact: "https://www.jersey.police.je/s/contact-us",
   portsContact: "https://www.ports.je/about-us/contact/",
   airportContact: "https://www.jerseyairport.com/contact/contact-us/",
-
   bankHolidays: "https://www.gov.je/Leisure/Events/WhatsOn/pages/bankholidaydates.aspx",
   roadClosures: "https://www.gov.je/Travel/Roads/RoadClosures/pages/index.aspx",
   roadworksMobile: "https://m.gov.je/Traffic/Roadworks",
@@ -368,9 +362,7 @@ const LINKS = {
   trafficReport: "https://roadworks.gov.je/trafficreport/"
 };
 
-/* =========
-   State (URL + localStorage)
-========= */
+/* ========= State ========= */
 const url = new URL(location.href);
 const LS_LANG = "jerseygo:lang:v1";
 const LS_MODE = "jerseygo:mode:v1";
@@ -390,9 +382,7 @@ const state = {
   favs: new Set(JSON.parse(localStorage.getItem(LS_FAVS) || "[]"))
 };
 
-/* =========
-   i18n
-========= */
+/* ========= i18n ========= */
 const I18N = {
   en:{
     sub:"Quick links for Jersey — residents & tourists",
@@ -525,9 +515,7 @@ const I18N = {
 };
 const t = ()=> I18N[state.lang] || I18N.en;
 
-/* =========
-   Categories
-========= */
+/* ========= Categories ========= */
 function catIcon(cat){
   switch(cat){
     case "All": return "🧭";
@@ -551,9 +539,7 @@ const CATEGORY_ORDER = [
   "Beaches & Sea","Things to do","Airport & Harbour","Emergency"
 ];
 
-/* =========
-   Services (no cafes/restaurants)
-========= */
+/* ========= Services (no cafes/restaurants) ========= */
 const SERVICES = [
   /* ⭐ Essentials */
   {
@@ -845,9 +831,7 @@ const SERVICES = [
   }
 ];
 
-/* =========
-   Derived helpers
-========= */
+/* ========= Derived helpers ========= */
 function getLabel(obj){
   if(!obj) return "";
   return obj[state.lang] || obj.en || "";
@@ -858,19 +842,11 @@ function serviceText(s){
   const tags = (s.tags||[]).join(" ");
   return norm([name, desc, tags].join(" "));
 }
-function matchesMode(s){
-  return (s.audience||[]).includes(state.mode);
-}
-function matchesCat(s){
-  return state.category==="All" || s.category===state.category;
-}
-function matchesFav(s){
-  return !state.showFavs || state.favs.has(s.id);
-}
-function matchesQuery(s){
-  if(!state.q) return true;
-  return serviceText(s).includes(state.q);
-}
+function matchesMode(s){ return (s.audience||[]).includes(state.mode); }
+function matchesCat(s){ return state.category==="All" || s.category===state.category; }
+function matchesFav(s){ return !state.showFavs || state.favs.has(s.id); }
+function matchesQuery(s){ return !state.q || serviceText(s).includes(state.q); }
+
 function visibleServices(){
   return SERVICES
     .filter(matchesMode)
@@ -879,9 +855,7 @@ function visibleServices(){
     .filter(matchesQuery);
 }
 
-/* =========
-   URL sync
-========= */
+/* ========= URL sync + persistence ========= */
 function syncUrl(){
   const u = new URL(location.href);
   u.searchParams.set("lang", state.lang);
@@ -897,9 +871,7 @@ function persist(){
   localStorage.setItem(LS_FAVS, JSON.stringify([...state.favs]));
 }
 
-/* =========
-   UI render
-========= */
+/* ========= UI render ========= */
 function setLangUI(){
   document.documentElement.lang = (state.lang==="pt") ? "pt-PT" : state.lang;
   $("subline").textContent = t().sub;
@@ -919,40 +891,14 @@ function setLangUI(){
   $("viewDesc").textContent = t().desc;
   $("foot").innerHTML = t().emergencyFoot;
 
-  $("q").placeholder = (state.lang==="pt")
-    ? "Pesquisar: parking, taxi, GP, toilets…"
-    : "Search: parking, taxi, GP, toilets…";
-
-  // language pills
   [...document.querySelectorAll('[data-lang]')].forEach(b=>{
     b.classList.toggle("on", b.dataset.lang===state.lang);
   });
 
-  // mode pills
   $("modeResidents").textContent = t().residents;
   $("modeTourists").textContent = t().tourists;
   $("modeResidents").classList.toggle("on", state.mode==="residents");
   $("modeTourists").classList.toggle("on", state.mode==="tourists");
-}
-
-function renderCats(){
-  const counts = {};
-  CATEGORY_ORDER.forEach(c=>counts[c]=0);
-  SERVICES.filter(matchesMode).forEach(s=>{
-    counts[s.category] = (counts[s.category]||0)+1;
-  });
-
-  const catsEl = $("cats");
-  catsEl.innerHTML = "";
-
-  const allCount = SERVICES.filter(matchesMode).length;
-  const allRow = makeCatRow("All", allCount);
-  catsEl.appendChild(allRow);
-
-  CATEGORY_ORDER.forEach(cat=>{
-    const row = makeCatRow(cat, counts[cat]||0);
-    catsEl.appendChild(row);
-  });
 }
 
 function makeCatRow(cat, count){
@@ -974,6 +920,24 @@ function makeCatRow(cat, count){
     render();
   });
   return row;
+}
+
+function renderCats(){
+  const counts = {};
+  CATEGORY_ORDER.forEach(c=>counts[c]=0);
+  SERVICES.filter(matchesMode).forEach(s=>{
+    counts[s.category] = (counts[s.category]||0)+1;
+  });
+
+  const catsEl = $("cats");
+  catsEl.innerHTML = "";
+
+  const allCount = SERVICES.filter(matchesMode).length;
+  catsEl.appendChild(makeCatRow("All", allCount));
+
+  CATEGORY_ORDER.forEach(cat=>{
+    catsEl.appendChild(makeCatRow(cat, counts[cat]||0));
+  });
 }
 
 function renderCards(){
@@ -1002,7 +966,6 @@ function renderCards(){
     const title = getLabel(s.name);
     const desc = (s.desc && (s.desc[state.lang] || s.desc.en)) || "";
     const tags = (s.tags||[]).slice(0,6);
-
     const favOn = state.favs.has(s.id);
 
     const details = (s.details && (s.details[state.lang] || s.details.en)) || [];
@@ -1012,7 +975,6 @@ function renderCards(){
 
     const links = (s.links||[]).map((lnk, idx)=>{
       const lbl = getLabel(lnk.label);
-      const safeUrl = lnk.url || "#";
       const openId = `open_${s.id}_${idx}`;
       const copyId = `copy_${s.id}_${idx}`;
       return `
@@ -1040,7 +1002,6 @@ function renderCards(){
       </div>
     `;
 
-    // fav toggle
     card.querySelector(".favBtn").addEventListener("click", ()=>{
       if(state.favs.has(s.id)){
         state.favs.delete(s.id);
@@ -1050,16 +1011,13 @@ function renderCards(){
         toast(t().saved);
       }
       persist();
-      if(state.showFavs) renderCards(); else render(); // update counts + cats nicely
+      if(state.showFavs) renderCards(); else render();
     });
 
-    // open/copy buttons
     (s.links||[]).forEach((lnk, idx)=>{
       const openBtn = card.querySelector(`#open_${s.id}_${idx}`);
       const copyBtn = card.querySelector(`#copy_${s.id}_${idx}`);
-      if(openBtn){
-        openBtn.addEventListener("click", ()=> window.open(lnk.url, "_blank", "noopener"));
-      }
+      if(openBtn) openBtn.addEventListener("click", ()=> window.open(lnk.url, "_blank", "noopener"));
       if(copyBtn){
         copyBtn.addEventListener("click", async ()=>{
           try{
@@ -1079,17 +1037,10 @@ function renderCards(){
 function render(){
   setLangUI();
   renderCats();
-  // update active class in cats after rebuild:
-  [...document.querySelectorAll(".cat")].forEach(row=>{
-    const name = row.querySelector(".catName")?.textContent || "";
-    // we rebuild anyway; keep simple
-  });
   renderCards();
 }
 
-/* =========
-   Quick links + Near me
-========= */
+/* ========= Quick links + Near me ========= */
 function setQuickLinks(){
   $("quickParking").href = LINKS.parkingLive;
   $("quickTaxiNear").href = mapsSearch("taxi near me");
@@ -1097,40 +1048,32 @@ function setQuickLinks(){
   $("quickPharmacyNear").href = mapsSearch("pharmacy near me");
 }
 
-async function doNearMe(){
-  if(!("geolocation" in navigator)){
-    toast(t().geos); return;
-  }
+function doNearMe(){
+  if(!("geolocation" in navigator)){ toast(t().geos); return; }
   toast(t().getting);
   navigator.geolocation.getCurrentPosition(
     (pos)=>{
       const {latitude, longitude} = pos.coords;
       const q = `${latitude},${longitude}`;
-      // Open a useful overview: "things to do" near location
       window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent("things to do near "+q)}`, "_blank", "noopener");
     },
     (err)=>{
       if(err && err.code===1) toast(t().blocked);
       else toast(t().geos);
     },
-    {enableHighAccuracy:true, timeout:12000, maximumAge: 15000}
+    {enableHighAccuracy:true, timeout:12000, maximumAge:15000}
   );
 }
 
-/* =========
-   Install (PWA)
-========= */
+/* ========= Install (PWA) ========= */
 let deferredPrompt = null;
-
 window.addEventListener("beforeinstallprompt", (e)=>{
   e.preventDefault();
   deferredPrompt = e;
   $("installBtn").disabled = false;
 });
-
 $("installBtn").addEventListener("click", async ()=>{
   if(!deferredPrompt){
-    // fallback tip
     alert(t().howInstall + ":\n\nAndroid Chrome: ⋮ menu → “Install app” / “Add to Home screen”\nSafari iPhone: Share → “Add to Home Screen”");
     return;
   }
@@ -1140,30 +1083,19 @@ $("installBtn").addEventListener("click", async ()=>{
   $("installBtn").disabled = true;
 });
 
-/* =========
-   Share
-========= */
+/* ========= Share ========= */
 $("shareBtn").addEventListener("click", async ()=>{
   const shareUrl = location.href;
   const title = "JerseyGo";
   if(navigator.share){
-    try{
-      await navigator.share({title, text:"JerseyGo — quick links for Jersey", url: shareUrl});
-    }catch(e){}
+    try{ await navigator.share({title, text:"JerseyGo — quick links for Jersey", url: shareUrl}); }catch(e){}
     return;
   }
-  // fallback copy link
-  try{
-    await navigator.clipboard.writeText(shareUrl);
-    toast(t().copied);
-  }catch(e){
-    toast(t().copyFail);
-  }
+  try{ await navigator.clipboard.writeText(shareUrl); toast(t().copied); }
+  catch(e){ toast(t().copyFail); }
 });
 
-/* =========
-   Search + toggles
-========= */
+/* ========= Search + toggles ========= */
 $("q").value = url.searchParams.get("q") || "";
 state.q = norm($("q").value);
 
@@ -1183,66 +1115,44 @@ $("favToggle").addEventListener("click", ()=>{
 $("modeResidents").addEventListener("click", ()=>{
   state.mode = "residents";
   localStorage.setItem(LS_MODE, state.mode);
-  state.category = "All";
-  state.q = "";
-  $("q").value = "";
-  syncUrl();
-  render();
+  state.category = "All"; state.q = ""; $("q").value = "";
+  syncUrl(); render();
 });
 $("modeTourists").addEventListener("click", ()=>{
   state.mode = "tourists";
   localStorage.setItem(LS_MODE, state.mode);
-  state.category = "All";
-  state.q = "";
-  $("q").value = "";
-  syncUrl();
-  render();
+  state.category = "All"; state.q = ""; $("q").value = "";
+  syncUrl(); render();
 });
 
 [...document.querySelectorAll("[data-lang]")].forEach(btn=>{
   btn.addEventListener("click", ()=>{
     state.lang = btn.dataset.lang;
     localStorage.setItem(LS_LANG, state.lang);
-    syncUrl();
-    render();
+    syncUrl(); render();
   });
 });
 
 $("nearMeBtn").addEventListener("click", doNearMe);
 
 $("resetBtn").addEventListener("click", ()=>{
-  state.lang = "en";
-  state.mode = "residents";
-  state.q = "";
-  state.category = "All";
-  state.showFavs = false;
-  state.favs = new Set();
-  localStorage.removeItem(LS_LANG);
-  localStorage.removeItem(LS_MODE);
-  localStorage.removeItem(LS_FAVS);
-  $("q").value = "";
-  syncUrl();
-  render();
+  state.lang="en"; state.mode="residents"; state.q=""; state.category="All"; state.showFavs=false; state.favs=new Set();
+  localStorage.removeItem(LS_LANG); localStorage.removeItem(LS_MODE); localStorage.removeItem(LS_FAVS);
+  $("q").value="";
+  syncUrl(); render();
 });
 
-/* =========
-   Service Worker
-========= */
+/* ========= Service Worker ========= */
 if("serviceWorker" in navigator){
   window.addEventListener("load", ()=>{
     navigator.serviceWorker.register("./sw.js").catch(()=>{});
   });
 }
 
-/* =========
-   Init
-========= */
+/* ========= Init ========= */
 function initFromUrl(){
-  // optional favs toggle from URL
   state.showFavs = url.searchParams.get("favs")==="1";
   $("favToggle").classList.toggle("primary", state.showFavs);
-
-  // category
   const cat = url.searchParams.get("cat");
   if(cat) state.category = cat;
 }
@@ -1254,4 +1164,4 @@ persist();
 render();
 </script>
 </body>
-          </html>
+</html>
