@@ -1,18 +1,17 @@
-const CACHE = "jerseygo-cache-v5";
+const CACHE = "jerseygo-cache-v1";
 const ASSETS = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
   "./icon.svg",
-  "./logo.svg",
-  "./icon-192.png",
-  "./icon-512.png",
-  "./apple-touch-icon.png"
+  "./logo.svg"
 ];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE).then(cache => cache.addAll(ASSETS)).then(() => self.skipWaiting())
+    caches.open(CACHE)
+      .then(cache => cache.addAll(ASSETS))
+      .then(() => self.skipWaiting())
   );
 });
 
@@ -28,8 +27,10 @@ self.addEventListener("fetch", (event) => {
   const req = event.request;
   const url = new URL(req.url);
 
+  // only handle same-origin
   if (url.origin !== self.location.origin) return;
 
+  // SPA-like navigation: prefer network, fallback to cached index.html
   if (req.mode === "navigate") {
     event.respondWith(
       fetch(req).then(res => {
@@ -41,6 +42,7 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
+  // cache-first for assets
   event.respondWith(
     caches.match(req).then(cached => cached || fetch(req).then(res => {
       const copy = res.clone();
