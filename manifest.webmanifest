@@ -1,14 +1,19 @@
 {
   "name": "JerseyGo",
   "short_name": "JerseyGo",
-  "description": "Quick links for Jersey — residents & tourists (parking, taxis, GP, toilets, pharmacies).",
-  "start_url": "./?source=pwa",
+  "description": "JerseyGo — quick links for Jersey: residents & tourists. Parking, taxis, GP, toilets, pharmacies, transport, emergency, dates.",
+  "start_url": "./?lang=en&mode=residents",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#0B1220",
+  "background_color": "#070A12",
   "theme_color": "#0B1220",
+  "orientation": "portrait",
   "icons": [
-    { "src": "./icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
-    { "src": "./icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
   ]
 }
