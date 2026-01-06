@@ -4,18 +4,13 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#0B1220" />
-  <meta name="description" content="JerseyGo — Parking LIVE + essentials for residents & tourists (weather, transport, health, events)." />
+  <meta name="description" content="JerseyGo — Parking LIVE, weather, transport, health, museums, activities, essentials." />
+
   <title>JerseyGo</title>
 
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="./icon.svg">
-
-  <meta property="og:title" content="JerseyGo — Parking LIVE + essentials" />
-  <meta property="og:description" content="Parking LIVE, weather, transport, health, museums, activities, ports & airport, pharmacies, emergency." />
-  <meta property="og:type" content="website" />
-  <meta property="og:image" content="./icon.svg" />
-  <meta name="twitter:card" content="summary" />
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png">
 
   <style>
     :root{
@@ -67,6 +62,7 @@
     .brand .t{line-height:1.05}
     .brand .t .name{font-weight:950; font-size:18px}
     .brand .t .sub{margin-top:4px; font-size:12px; color:var(--muted)}
+
     .actionsTop{display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end; width:100%}
     @media (min-width: 760px){ .actionsTop{width:auto} }
 
@@ -76,7 +72,7 @@
       background: rgba(255,255,255,.04);
       padding:12px 14px;
       border-radius:999px;
-      width:min(94vw, 560px);
+      width:min(94vw, 520px);
     }
     .search input{
       width:100%;
@@ -94,40 +90,34 @@
       cursor:pointer;
       font-weight:900;
       letter-spacing:.2px;
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      white-space:nowrap;
     }
     .btn:hover{background: rgba(255,255,255,.08)}
     .btn.primary{border-color: rgba(77,163,255,.35); background: rgba(77,163,255,.14)}
     .btn.good{border-color: rgba(53,208,127,.35); background: rgba(53,208,127,.12)}
     .btn.ghost{background: rgba(255,255,255,.03)}
 
-    .langPill{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.04);
-      padding:8px 10px;
-      border-radius:999px;
-      font-size:12px;
-      color:var(--muted);
-    }
-    .langBtns{display:flex; gap:6px}
-    .langBtn{
+    .lang{
+      display:flex; align-items:center; gap:8px;
       border:1px solid var(--line);
       background: rgba(255,255,255,.03);
+      padding:10px 12px;
+      border-radius:999px;
+    }
+    .lang small{color:var(--muted); font-weight:900; letter-spacing:.2px}
+    .lang button{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.04);
       color:var(--text);
-      padding:7px 10px;
+      padding:8px 10px;
       border-radius:999px;
       cursor:pointer;
       font-weight:950;
       font-size:12px;
     }
-    .langBtn.on{border-color: rgba(77,163,255,.35); background: rgba(77,163,255,.14)}
-    .langBtn:hover{background: rgba(255,255,255,.08)}
+    .lang button.on{
+      border-color: rgba(77,163,255,.45);
+      background: rgba(77,163,255,.16);
+    }
 
     .grid{
       display:grid;
@@ -158,7 +148,6 @@
       letter-spacing:.35px;
       text-transform:uppercase;
     }
-
     .badge{
       font-size:12px;
       color:var(--muted);
@@ -218,12 +207,10 @@
       font-size:13px;
       cursor:pointer;
       user-select:none;
-      white-space:nowrap;
     }
     .chip:hover{background: rgba(255,255,255,.08)}
     .chip.primary{border-color: rgba(77,163,255,.35); background: rgba(77,163,255,.12)}
     .chip.good{border-color: rgba(53,208,127,.35); background: rgba(53,208,127,.10)}
-    .chip:disabled{opacity:.6; cursor:not-allowed}
 
     .cards{
       margin-top:12px;
@@ -309,28 +296,28 @@
       <img src="./icon.svg" alt="JerseyGo icon">
       <div class="t">
         <div class="name">JerseyGo</div>
-        <div id="brandSub" class="sub">Parking LIVE • Weather • Transport • Health • Museums • Activities</div>
+        <div id="subLine" class="sub">Parking LIVE • Weather • Transport • Health • Museums • Activities</div>
       </div>
     </div>
 
     <div class="actionsTop">
       <div class="search">
         <span style="opacity:.9">🔎</span>
-        <input id="q" autocomplete="off" />
+        <input id="q" placeholder="Search: parking, weather, GP, taxi…" autocomplete="off" />
       </div>
 
-      <span class="langPill">
-        🌐 <span id="langLabel">Language</span>
-        <span class="langBtns">
-          <button class="langBtn" id="langEN" type="button">EN</button>
-          <button class="langBtn" id="langPT" type="button">PT</button>
-          <button class="langBtn" id="langPL" type="button">PL</button>
-        </span>
-      </span>
+      <div class="lang" title="Language">
+        <small id="langLbl">Language</small>
+        <button data-lang="en" class="on">EN</button>
+        <button data-lang="pt">PT</button>
+        <button data-lang="pl">PL</button>
+        <button data-lang="fr">FR</button>
+      </div>
 
       <button id="favToggle" class="btn good">★ Favourites</button>
       <button id="nearMeBtn" class="btn primary">📍 Near me</button>
-      <button id="installBtn" class="btn primary" style="display:none">⬇ Install</button>
+      <button id="installBtn" class="btn primary" style="display:none;">⬇ Install</button>
+      <button id="shareBtn" class="btn ghost">🔗 Share</button>
       <button id="resetBtn" class="btn ghost">Reset</button>
     </div>
   </div>
@@ -348,7 +335,7 @@
       <h2 id="liveTitle">Live parking</h2>
       <span id="liveStatus" class="badge liveWait">LIVE…</span>
     </div>
-    <div id="liveHelp" style="padding:12px 14px; color:var(--muted); font-size:12px; line-height:1.45;">
+    <div id="liveHint" style="padding:12px 14px; color:var(--muted); font-size:12px; line-height:1.45;">
       Parking LIVE uses the official government JSON feed. Auto-refresh ~2 minutes.
     </div>
   </aside>
@@ -358,17 +345,15 @@
       <div class="hero">
         <div>
           <h1 id="viewTitle">All services</h1>
-          <p id="viewDesc">One-tap actions: Call • Email • Maps • Official pages.</p>
+          <p id="viewDesc">One-tap actions: Maps • Official pages • Call/Email when available.</p>
           <div id="statsLine" class="mini">Loading…</div>
-          <div id="freeLine" class="mini">Free • No login • Installable (offline-friendly)</div>
         </div>
 
         <div class="quick">
-          <button class="chip primary" type="button" data-open="https://www.gov.je/Travel/Motoring/Parking/pages/carparkspaces.aspx">🅿️ Live</button>
-          <button class="chip" type="button" data-open="https://www.gov.je/weather/">🌦️ Weather</button>
-          <button class="chip" type="button" data-open="https://www.jersey.com/things-to-do/">✨ Visit</button>
-          <button class="chip" type="button" data-open="https://www.jersey.com/things-to-do/events/">📅 Events</button>
-          <button id="shareAppBtn" class="chip good" type="button">📤 Share JerseyGo</button>
+          <button class="chip primary" type="button" data-open="govLivePage">🅿️ Live parking</button>
+          <button class="chip" type="button" data-open="weatherHome">🌦 Weather</button>
+          <button class="chip" type="button" data-open="roadClosures">🚧 Roadworks</button>
+          <button class="chip" type="button" data-open="contactsAZ">☎ Contacts</button>
         </div>
       </div>
 
@@ -385,7 +370,8 @@
 
 <script>
 /* =========================================================
-   JerseyGo — 100% functional links (PWA safe) + EN/PT/PL
+   JerseyGo — Multilang PWA directory + Parking LIVE
+   EN / PT / PL / FR
    ========================================================= */
 const $ = (id)=>document.getElementById(id);
 const norm = (s)=> (s||"").toLowerCase().trim();
@@ -398,15 +384,16 @@ const toast = (msg)=>{
   t.textContent = msg;
   t.classList.add("show");
   clearTimeout(window.__toast);
-  window.__toast = setTimeout(()=>t.classList.remove("show"), 1600);
+  window.__toast = setTimeout(()=>t.classList.remove("show"), 1700);
 };
 
+// Always open external links reliably (PWA-safe)
 function openUrl(url){
-  if(!url) return;
-  // Try opening a new tab/window first (works in browser)
-  const w = window.open(url, "_blank", "noopener,noreferrer");
-  // If blocked (often in PWA standalone), fallback to same-tab navigation
-  if(!w) window.location.href = url;
+  try{
+    window.open(url, "_blank", "noopener,noreferrer");
+  }catch{
+    location.href = url;
+  }
 }
 
 const telHref = (phone)=>{
@@ -417,171 +404,104 @@ const mailHref = (email)=> email ? ("mailto:" + email) : "#";
 const mapsUrl = (query)=> `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query || "Jersey")}`;
 
 /* -------------------------
-   i18n strings (EN/PT/PL)
+   Language
    ------------------------- */
-const I18N = {
-  en: {
-    language: "Language",
-    brandSub: "Parking LIVE • Weather • Transport • Health • Museums • Activities",
-    searchPH: "Search: parking, weather, GP, bus, taxi, museum…",
-    favourites: "★ Favourites",
-    nearMe: "📍 Near me",
-    install: "⬇ Install",
-    reset: "Reset",
-    categories: "Categories",
-    liveParking: "Live parking",
-    liveHelp: "Parking LIVE uses the official government JSON feed. Auto-refresh ~2 minutes.",
-    allServices: "All services",
-    viewDescDefault: "One-tap actions: Call • Email • Maps • Official pages.",
-    freeLine: "Free • No login • Installable (offline-friendly)",
-    shareApp: "📤 Share JerseyGo",
-    noResultsTitle: "No results",
-    noResultsDesc: "Try: “parking”, “weather”, “GP”, “tides”, “events”, “airport”.",
-    copied: "Copied",
-    copyNotSupported: "Copy not supported",
-    shareCancelled: "Share cancelled",
-    removedFav: "Removed from favourites",
-    savedFav: "Saved to favourites",
-    gettingLocation: "Getting location…",
-    geoNotSupported: "Geolocation not supported",
-    locationBlocked: "Location blocked in browser settings",
-    installed: "Installed ✅",
-    linkCopied: "Link copied",
-    footer: 'Emergency: call <b>999</b> / <b>112</b> • JerseyGo (unofficial directory; uses public sources)',
-    descByCat: {
-      "Essentials": "Most-used official services for residents & tourists.",
-      "Parking LIVE": "Official live spaces (auto-refresh). Tap each car park for maps + official links.",
-      "Weather & Tides": "Weather and tides (official sources).",
-      "Transport": "Buses, ports, airport, roadworks and travel info.",
-      "Health": "GPs, hospital, pharmacy info and key health services.",
-      "Museums & Heritage": "Museums, castles and heritage sites (official sources).",
-      "Activities": "Attractions and what’s on (official tourism site).",
-      "Emergency": "Emergency numbers and guidance."
-    },
-    cats: {
-      "All": "All",
-      "Essentials": "Essentials",
-      "Emergency": "Emergency",
-      "Parking LIVE": "Parking LIVE",
-      "Weather & Tides": "Weather & Tides",
-      "Transport": "Transport",
-      "Health": "Health",
-      "Museums & Heritage": "Museums & Heritage",
-      "Activities": "Activities"
-    },
-    actions: { call:"📞 Call", email:"✉️ Email", maps:"🗺️ Maps", copy:"📋 Copy", share:"📤 Share" },
-    live: { open:"Open", closed:"Closed", spaces:"spaces" }
+const LS_LANG = "jerseygo:lang:v1";
+const urlLang = new URLSearchParams(location.search).get("lang");
+let lang = (urlLang || localStorage.getItem(LS_LANG) || "en").toLowerCase();
+if(!["en","pt","pl","fr"].includes(lang)) lang = "en";
+
+function t(obj){
+  // obj can be string or {en,pt,pl,fr}
+  if(typeof obj === "string") return obj;
+  return (obj && (obj[lang] || obj.en)) || "";
+}
+
+const UI = {
+  subLine: {
+    en:"Parking LIVE • Weather • Transport • Health • Museums • Activities",
+    pt:"Parking LIVE • Tempo • Transportes • Saúde • Museus • Atividades",
+    pl:"Parking LIVE • Pogoda • Transport • Zdrowie • Muzea • Atrakcje",
+    fr:"Parking LIVE • Météo • Transports • Santé • Musées • Activités"
   },
-  pt: {
-    language: "Idioma",
-    brandSub: "Parking LIVE • Tempo • Transportes • Saúde • Museus • Atividades",
-    searchPH: "Pesquisar: estacionamento, tempo, médico, autocarro, táxi…",
-    favourites: "★ Favoritos",
-    nearMe: "📍 Perto de mim",
-    install: "⬇ Instalar",
-    reset: "Repor",
-    categories: "Categorias",
-    liveParking: "Estacionamento ao vivo",
-    liveHelp: "Parking LIVE usa o feed JSON oficial do governo. Atualiza ~2 minutos.",
-    allServices: "Todos os serviços",
-    viewDescDefault: "Ações rápidas: Ligar • Email • Mapas • Páginas oficiais.",
-    freeLine: "Grátis • Sem login • Instalável (funciona offline)",
-    shareApp: "📤 Partilhar JerseyGo",
-    noResultsTitle: "Sem resultados",
-    noResultsDesc: "Tenta: “estacionamento”, “tempo”, “médico”, “marés”, “eventos”, “aeroporto”.",
-    copied: "Copiado",
-    copyNotSupported: "Copiar não suportado",
-    shareCancelled: "Partilha cancelada",
-    removedFav: "Removido dos favoritos",
-    savedFav: "Guardado nos favoritos",
-    gettingLocation: "A obter localização…",
-    geoNotSupported: "Geolocalização não suportada",
-    locationBlocked: "Localização bloqueada no navegador",
-    installed: "Instalado ✅",
-    linkCopied: "Link copiado",
-    footer: 'Emergência: ligar <b>999</b> / <b>112</b> • JerseyGo (diretório não oficial; usa fontes públicas)',
-    descByCat: {
-      "Essentials": "Serviços oficiais mais usados para residentes e turistas.",
-      "Parking LIVE": "Lugares ao vivo (auto-refresh). Toca em cada parque para Mapas + links oficiais.",
-      "Weather & Tides": "Tempo e marés (fontes oficiais).",
-      "Transport": "Autocarros, porto, aeroporto, obras/estradas e viagens.",
-      "Health": "Médicos (GP), hospital, farmácias e serviços de saúde.",
-      "Museums & Heritage": "Museus, castelos e património (fontes oficiais).",
-      "Activities": "Atrações e o que fazer (site oficial de turismo).",
-      "Emergency": "Números e orientação de emergência."
-    },
-    cats: {
-      "All": "Tudo",
-      "Essentials": "Essenciais",
-      "Emergency": "Emergência",
-      "Parking LIVE": "Parking LIVE",
-      "Weather & Tides": "Tempo & Marés",
-      "Transport": "Transportes",
-      "Health": "Saúde",
-      "Museums & Heritage": "Museus & Património",
-      "Activities": "Atividades"
-    },
-    actions: { call:"📞 Ligar", email:"✉️ Email", maps:"🗺️ Mapas", copy:"📋 Copiar", share:"📤 Partilhar" },
-    live: { open:"Aberto", closed:"Fechado", spaces:"lugares" }
+  searchPH: {
+    en:"Search: parking, weather, GP, taxi…",
+    pt:"Pesquisar: parking, tempo, médico, táxi…",
+    pl:"Szukaj: parking, pogoda, lekarz, taxi…",
+    fr:"Rechercher : parking, météo, médecin, taxi…"
   },
-  pl: {
-    language: "Język",
-    brandSub: "Parking LIVE • Pogoda • Transport • Zdrowie • Muzea • Atrakcje",
-    searchPH: "Szukaj: parking, pogoda, lekarz, autobus, taxi…",
-    favourites: "★ Ulubione",
-    nearMe: "📍 W pobliżu",
-    install: "⬇ Zainstaluj",
-    reset: "Reset",
-    categories: "Kategorie",
-    liveParking: "Parking na żywo",
-    liveHelp: "Parking LIVE korzysta z oficjalnego feedu JSON rządu. Odświeżanie ~2 minuty.",
-    allServices: "Wszystkie usługi",
-    viewDescDefault: "Szybkie akcje: Zadzwoń • Email • Mapy • Oficjalne strony.",
-    freeLine: "Darmowe • Bez logowania • Instalowalne (offline)",
-    shareApp: "📤 Udostępnij JerseyGo",
-    noResultsTitle: "Brak wyników",
-    noResultsDesc: "Spróbuj: „parking”, „pogoda”, „lekarz”, „pływy”, „wydarzenia”, „lotnisko”.",
-    copied: "Skopiowano",
-    copyNotSupported: "Kopiowanie niedostępne",
-    shareCancelled: "Udostępnianie anulowane",
-    removedFav: "Usunięto z ulubionych",
-    savedFav: "Zapisano w ulubionych",
-    gettingLocation: "Pobieranie lokalizacji…",
-    geoNotSupported: "Geolokalizacja nieobsługiwana",
-    locationBlocked: "Lokalizacja zablokowana w ustawieniach przeglądarki",
-    installed: "Zainstalowano ✅",
-    linkCopied: "Skopiowano link",
-    footer: 'Alarm: zadzwoń <b>999</b> / <b>112</b> • JerseyGo (nieoficjalny katalog; publiczne źródła)',
-    descByCat: {
-      "Essentials": "Najczęściej używane usługi oficjalne dla mieszkańców i turystów.",
-      "Parking LIVE": "Oficjalne wolne miejsca (auto). Kliknij parking: Mapy + linki oficjalne.",
-      "Weather & Tides": "Pogoda i pływy (oficjalne źródła).",
-      "Transport": "Autobusy, porty, lotnisko, roboty drogowe i podróże.",
-      "Health": "Lekarze (GP), szpital, apteki i usługi zdrowotne.",
-      "Museums & Heritage": "Muzea, zamki i dziedzictwo (oficjalne źródła).",
-      "Activities": "Atrakcje i wydarzenia (oficjalna turystyka).",
-      "Emergency": "Numery alarmowe i wskazówki."
-    },
-    cats: {
-      "All": "Wszystko",
-      "Essentials": "Podstawowe",
-      "Emergency": "Alarm",
-      "Parking LIVE": "Parking LIVE",
-      "Weather & Tides": "Pogoda i Pływy",
-      "Transport": "Transport",
-      "Health": "Zdrowie",
-      "Museums & Heritage": "Muzea i Dziedzictwo",
-      "Activities": "Atrakcje"
-    },
-    actions: { call:"📞 Zadzwoń", email:"✉️ Email", maps:"🗺️ Mapy", copy:"📋 Kopiuj", share:"📤 Udostępnij" },
-    live: { open:"Otwarte", closed:"Zamknięte", spaces:"miejsc" }
+  categories: { en:"Categories", pt:"Categorias", pl:"Kategorie", fr:"Catégories" },
+  liveParking: { en:"Live parking", pt:"Parking ao vivo", pl:"Parking na żywo", fr:"Parking en direct" },
+  liveHint: {
+    en:"Parking LIVE uses the official government JSON feed. Auto-refresh ~2 minutes.",
+    pt:"Parking LIVE usa o feed oficial do governo. Atualiza ~2 minutos.",
+    pl:"Parking LIVE używa oficjalnego źródła rządowego JSON. Odświeżanie ~2 min.",
+    fr:"Parking LIVE utilise le flux JSON officiel. Actualisation ~2 minutes."
+  },
+  favs: { en:"★ Favourites", pt:"★ Favoritos", pl:"★ Ulubione", fr:"★ Favoris" },
+  nearMe: { en:"📍 Near me", pt:"📍 Perto de mim", pl:"📍 Blisko mnie", fr:"📍 Près de moi" },
+  install: { en:"⬇ Install", pt:"⬇ Instalar", pl:"⬇ Zainstaluj", fr:"⬇ Installer" },
+  share: { en:"🔗 Share", pt:"🔗 Partilhar", pl:"🔗 Udostępnij", fr:"🔗 Partager" },
+  reset: { en:"Reset", pt:"Reset", pl:"Reset", fr:"Réinitialiser" },
+  allServices: { en:"All services", pt:"Todos os serviços", pl:"Wszystkie usługi", fr:"Tous les services" },
+  oneTap: {
+    en:"One-tap actions: Maps • Official pages • Call/Email when available.",
+    pt:"Ações rápidas: Mapas • Sites oficiais • Chamar/Email quando disponível.",
+    pl:"Szybkie akcje: Mapy • Strony oficjalne • Telefon/E-mail, gdy dostępne.",
+    fr:"Actions rapides : Cartes • Pages officielles • Appel/E-mail si disponible."
+  },
+  stats: {
+    en:(n,ts)=>`Showing ${n} • Live refresh ~2 minutes${ts ? " • Updated: "+ts : ""}`,
+    pt:(n,ts)=>`A mostrar ${n} • Atualiza ~2 minutos${ts ? " • Atualizado: "+ts : ""}`,
+    pl:(n,ts)=>`Wyświetlam ${n} • Odświeżanie ~2 min${ts ? " • Aktualizacja: "+ts : ""}`,
+    fr:(n,ts)=>`Affichage ${n} • Actualisation ~2 min${ts ? " • Mis à jour: "+ts : ""}`
+  },
+  noResultsTitle: { en:"No results", pt:"Sem resultados", pl:"Brak wyników", fr:"Aucun résultat" },
+  noResultsHint: {
+    en:'Try: “parking”, “weather”, “GP”, “roadworks”, “museum”.',
+    pt:'Tenta: “parking”, “tempo”, “médico”, “roadworks”, “museu”.',
+    pl:'Spróbuj: “parking”, “pogoda”, “lekarz”, “roadworks”, “muzeum”.',
+    fr:'Essayez : “parking”, “météo”, “médecin”, “roadworks”, “musée”.'
+  },
+  copied: { en:"Copied", pt:"Copiado", pl:"Skopiowano", fr:"Copié" },
+  copyNo: { en:"Copy not supported", pt:"Copiar não suportado", pl:"Kopiowanie niedostępne", fr:"Copie non supportée" },
+  savedFav: { en:"Saved to favourites", pt:"Guardado nos favoritos", pl:"Dodano do ulubionych", fr:"Ajouté aux favoris" },
+  removedFav: { en:"Removed from favourites", pt:"Removido dos favoritos", pl:"Usunięto z ulubionych", fr:"Retiré des favoris" },
+  geoNo: { en:"Geolocation not supported", pt:"Geolocalização não suportada", pl:"Geolokalizacja niedostępna", fr:"Géolocalisation non supportée" },
+  geoGetting: { en:"Getting location…", pt:"A obter localização…", pl:"Pobieranie lokalizacji…", fr:"Récupération de la position…" },
+  geoBlocked: { en:"Location blocked in browser settings", pt:"Localização bloqueada no browser", pl:"Lokalizacja zablokowana w przeglądarce", fr:"Localisation bloquée dans le navigateur" },
+  footer: {
+    en:'Emergency: call 999 / 112 • JerseyGo (unofficial directory; uses public sources)',
+    pt:'Emergência: 999 / 112 • JerseyGo (diretório não-oficial; fontes públicas)',
+    pl:'Alarm: 999 / 112 • JerseyGo (nieoficjalny katalog; źródła publiczne)',
+    fr:'Urgence : 999 / 112 • JerseyGo (annuaire non officiel; sources publiques)'
   }
 };
 
+function applyLangUI(){
+  $("subLine").textContent = t(UI.subLine);
+  $("q").placeholder = t(UI.searchPH);
+  $("catsTitle").textContent = t(UI.categories);
+  $("liveTitle").textContent = t(UI.liveParking);
+  $("liveHint").textContent = t(UI.liveHint);
+  $("favToggle").textContent = t(UI.favs);
+  $("nearMeBtn").textContent = t(UI.nearMe);
+  $("installBtn").textContent = t(UI.install);
+  $("shareBtn").textContent = t(UI.share);
+  $("resetBtn").textContent = t(UI.reset);
+  $("footerLine").innerHTML = t(UI.footer).replaceAll("999","<b>999</b>").replaceAll("112","<b>112</b>");
+  [...document.querySelectorAll(".lang button[data-lang]")].forEach(b=>{
+    b.classList.toggle("on", b.getAttribute("data-lang")===lang);
+  });
+}
+
+/* -------------------------
+   Categories
+   ------------------------- */
 const CATEGORY_ORDER = [
   "Essentials",
   "Parking LIVE",
-  "Weather & Tides",
+  "Weather",
   "Transport",
   "Health",
   "Museums & Heritage",
@@ -589,74 +509,14 @@ const CATEGORY_ORDER = [
   "Emergency"
 ];
 
-const LS_FAVS = "jerseygo:favs:v3";
-const LS_LIVE = "jerseygo:lastLive:v1";
-const LS_LANG = "jerseygo:lang:v1";
+const LS_FAVS = "jerseygo:favs:v4";
 
 const state = {
   q: "",
   category: "All",
   showFavs: false,
-  lang: localStorage.getItem(LS_LANG) || "en",
   favs: new Set(JSON.parse(localStorage.getItem(LS_FAVS) || "[]"))
 };
-
-function t(){ return I18N[state.lang] || I18N.en; }
-function pickLang(obj){ return (obj && (obj[state.lang] || obj.en)) || ""; }
-function pickTags(tags){
-  const arr = (tags && (tags[state.lang] || tags.en)) || [];
-  return Array.isArray(arr) ? arr : [];
-}
-
-function readUrlState(){
-  try{
-    const u = new URL(location.href);
-    const q = u.searchParams.get("q");
-    const cat = u.searchParams.get("cat");
-    const favs = u.searchParams.get("favs");
-    const lang = u.searchParams.get("lang");
-    if(lang && I18N[lang]) state.lang = lang;
-    if(q !== null){ state.q = q; $("q").value = q; }
-    if(cat) state.category = cat;
-    if(favs === "1") state.showFavs = true;
-  }catch{}
-}
-let __urlTimer=null;
-function writeUrlState(){
-  clearTimeout(__urlTimer);
-  __urlTimer=setTimeout(()=>{
-    const u = new URL(location.href);
-    if(state.q) u.searchParams.set("q", state.q); else u.searchParams.delete("q");
-    if(state.category && state.category!=="All") u.searchParams.set("cat", state.category); else u.searchParams.delete("cat");
-    if(state.showFavs) u.searchParams.set("favs","1"); else u.searchParams.delete("favs");
-    u.searchParams.set("lang", state.lang);
-    history.replaceState({}, "", u.toString());
-  }, 120);
-}
-
-function applyI18n(){
-  const L=t();
-  $("langLabel").textContent=L.language;
-  $("brandSub").textContent=L.brandSub;
-  $("q").placeholder=L.searchPH;
-  $("favToggle").textContent=L.favourites;
-  $("nearMeBtn").textContent=L.nearMe;
-  $("installBtn").textContent=L.install;
-  $("resetBtn").textContent=L.reset;
-  $("catsTitle").textContent=L.categories;
-  $("liveTitle").textContent=L.liveParking;
-  $("liveHelp").textContent=L.liveHelp;
-  $("freeLine").textContent=L.freeLine;
-  $("shareAppBtn").textContent=L.shareApp;
-  $("footerLine").innerHTML=L.footer;
-
-  $("langEN").classList.toggle("on", state.lang==="en");
-  $("langPT").classList.toggle("on", state.lang==="pt");
-  $("langPL").classList.toggle("on", state.lang==="pl");
-
-  document.documentElement.lang = state.lang;
-  localStorage.setItem(LS_LANG, state.lang);
-}
 
 function catIcon(cat){
   switch(cat){
@@ -664,9 +524,9 @@ function catIcon(cat){
     case "Essentials": return "⭐";
     case "Emergency": return "🚨";
     case "Parking LIVE": return "🅿️";
-    case "Weather & Tides": return "🌦️";
-    case "Transport": return "🚌";
-    case "Health": return "🏥";
+    case "Weather": return "🌦";
+    case "Transport": return "🚧";
+    case "Health": return "🩺";
     case "Museums & Heritage": return "🏛️";
     case "Activities": return "✨";
     default: return "•";
@@ -674,228 +534,158 @@ function catIcon(cat){
 }
 
 /* -------------------------
-   LINKS (updated + working)
+   LINKS (official)
    ------------------------- */
 const LINKS = {
+  // Most popular
+  formsAZ: "https://www.gov.je/Forms/pages/a-zforms.aspx",
+  contactsAZ: "https://www.gov.je/pages/contacts.aspx",
+  customerHubWait: "https://www.gov.je/pages/customerhubwaitingtimes.aspx",
+  jobs: "https://www.gov.je/Working/Pages/Working.aspx",
+
   // Parking
   govLivePage: "https://www.gov.je/Travel/Motoring/Parking/pages/carparkspaces.aspx",
   payByPhone: "https://www.gov.je/Travel/Motoring/Parking/PayForParking/pages/paybyphoneapp.aspx",
 
-  // Weather (fixed)
-  govWeather: "https://www.gov.je/weather/",
-  govRadar: "https://www.gov.je/weather/radar/",
+  // Weather (correct)
+  weatherHome: "https://www.gov.je/weather/",
+  weather5day: "https://m.gov.je/Weather/FiveDay",
+  tides: "https://www.gov.je/weather/tidetimes/",
+  radar: "https://www.gov.je/weather/radar/",
 
-  // Tides (official)
-  govTides: "https://www.gov.je/weather/tidetimes/",
+  // Transport / Roadworks (correct)
+  roadClosures: "https://www.gov.je/Travel/Roads/RoadClosures/pages/index.aspx",
+  roadworksMap: "https://roadworks.gov.je/JSW/roadworks.htm",
+  trafficReport: "https://roadworks.gov.je/trafficreport/",
 
-  // Customer Hub wait times
-  govHubWait: "https://www.gov.je/Government/Departments/EmploymentSocialSecurityHousing/pages/waitingtimes.aspx",
+  // Health / GPs (correct)
+  gps: "https://www.gov.je/Health/DoctorDentist/Doctors/pages/index.aspx",
+  gpList: "https://www.gov.je/Health/DoctorDentist/Doctors/pages/gpsurgerylist.aspx",
+  gpOOH: "https://www.gov.je/Health/DoctorDentist/Doctors/pages/outhours.aspx",
 
-  // Jobs
-  govJobs: "https://www.gov.je/Working/JobCareerAdvice/pages/jobs.aspx",
-
-  // Waste / recycling
-  govWaste: "https://www.gov.je/Environment/WasteReduction/pages/default.aspx",
-
-  // Roadworks / traffic
-  govRoadworks: "https://www.gov.je/Travel/Motoring/Roadworks/pages/default.aspx",
-
-  // Health services
-  govGPs: "https://www.gov.je/Health/DoctorDentist/pages/gp.aspx",
-  govHospital: "https://www.gov.je/Health/Hospitals/Pages/default.aspx",
-  govPharmHours: "https://www.gov.je/Health/DoctorDentist/PharmacistsChemists/pages/pharmacyopeninghours.aspx",
-
-  // Museums & tourism
-  heritagePlaces: "https://www.jerseyheritage.org/visit/places-to-visit/",
+  // Tourism
   visitThings: "https://www.jersey.com/things-to-do/",
-  visitEvents: "https://www.jersey.com/things-to-do/events/",
   visitAttractions: "https://www.jersey.com/things-to-do/attractions/",
-
-  // Transport
-  libertyBus: "https://libertybus.je/",
-  govBusRoutes: "https://www.gov.je/Travel/Buses/Pages/RoutesTimetables.aspx",
-  portsContact: "https://www.ports.je/about-us/contact/",
-  airportContact: "https://www.jerseyairport.com/contact/contact-us/"
+  visitEvents: "https://www.jersey.com/things-to-do/events/",
+  heritagePlaces: "https://www.jerseyheritage.org/visit/places-to-visit/"
 };
 
 /* -------------------------
-   Static directory (tri-language)
+   Directory entries (multilang)
    ------------------------- */
 const DIRECTORY_STATIC = [
-  // Essentials
-  {
-    id:"ess-live",
-    category:"Essentials",
-    name:{en:"Parking LIVE (official)", pt:"Parking LIVE (oficial)", pl:"Parking LIVE (oficjalne)"},
-    desc:{en:"Live car park spaces (gov feed).", pt:"Lugares ao vivo (feed gov).", pl:"Wolne miejsca (feed rządu)."},
-    tags:{en:["parking","spaces","live"], pt:["estacionamento","lugares","ao vivo"], pl:["parking","miejsca","na żywo"]},
-    links:[{label:{en:"Open live page", pt:"Abrir página live", pl:"Otwórz live"}, url: LINKS.govLivePage}],
-    mapsQuery:"St Helier car parks"
-  },
-  {
-    id:"ess-weather",
-    category:"Essentials",
-    name:{en:"Weather (official)", pt:"Tempo (oficial)", pl:"Pogoda (oficjalna)"},
-    desc:{en:"Forecast and warnings (gov.je).", pt:"Previsão e avisos (gov.je).", pl:"Prognoza i ostrzeżenia (gov.je)."},
-    tags:{en:["weather","forecast"], pt:["tempo","previsão"], pl:["pogoda","prognoza"]},
-    links:[
-      {label:{en:"Open weather", pt:"Abrir tempo", pl:"Otwórz pogodę"}, url: LINKS.govWeather},
-      {label:{en:"Radar", pt:"Radar", pl:"Radar"}, url: LINKS.govRadar}
-    ],
-    mapsQuery:"St Helier Jersey"
-  },
-  {
-    id:"ess-tides",
-    category:"Essentials",
-    name:{en:"Tides (official)", pt:"Marés (oficial)", pl:"Pływy (oficjalne)"},
-    desc:{en:"Tide times for Jersey (gov.je).", pt:"Tabelas de marés (gov.je).", pl:"Godziny pływów (gov.je)."},
-    tags:{en:["tides","beach"], pt:["marés","praia"], pl:["pływy","plaża"]},
-    links:[{label:{en:"Open tides", pt:"Abrir marés", pl:"Otwórz pływy"}, url: LINKS.govTides}],
-    mapsQuery:"St Helier tides"
-  },
-  {
-    id:"res-hubwait",
-    category:"Essentials",
-    name:{en:"Customer Hub waiting times (gov.je)", pt:"Tempos de espera (Customer Hub)", pl:"Czas oczekiwania (Customer Hub)"},
-    desc:{en:"Check waiting times before you go.", pt:"Vê os tempos antes de ires.", pl:"Sprawdź czas przed wizytą."},
-    tags:{en:["waiting times","customer hub"], pt:["tempos de espera","customer hub"], pl:["czas oczekiwania","customer hub"]},
-    links:[{label:{en:"Open waiting times", pt:"Abrir tempos", pl:"Otwórz czasy"}, url: LINKS.govHubWait}],
-    mapsQuery:"Customer Hub St Helier"
-  },
-  {
-    id:"res-jobs",
-    category:"Essentials",
-    name:{en:"Jobs (gov.je)", pt:"Empregos (gov.je)", pl:"Praca (gov.je)"},
-    desc:{en:"Find public sector jobs and listings.", pt:"Vê vagas e oportunidades.", pl:"Oferty pracy i ogłoszenia."},
-    tags:{en:["jobs","work"], pt:["empregos","trabalho"], pl:["praca","oferty"]},
-    links:[{label:{en:"Open jobs", pt:"Abrir empregos", pl:"Otwórz pracę"}, url: LINKS.govJobs}],
-    mapsQuery:"St Helier Jersey"
-  },
-  {
-    id:"res-waste",
-    category:"Essentials",
-    name:{en:"Waste & recycling (gov.je)", pt:"Lixo e reciclagem (gov.je)", pl:"Odpady i recykling (gov.je)"},
-    desc:{en:"Recycling guidance and services.", pt:"Guia de reciclagem e serviços.", pl:"Informacje o recyklingu i usługach."},
-    tags:{en:["waste","recycling"], pt:["lixo","reciclagem"], pl:["odpady","recykling"]},
-    links:[{label:{en:"Open waste & recycling", pt:"Abrir lixo/reciclagem", pl:"Otwórz odpady"}, url: LINKS.govWaste}],
-    mapsQuery:"Household recycling Jersey"
-  },
-
   // Emergency
   {
     id:"emg-999",
     category:"Emergency",
-    name:{en:"Emergency services (999 / 112)", pt:"Serviços de emergência (999 / 112)", pl:"Służby ratunkowe (999 / 112)"},
-    desc:{en:"Police, Fire & Ambulance (life-threatening emergencies).", pt:"Polícia, Bombeiros e Ambulância (emergências graves).", pl:"Policja, Straż Pożarna i Pogotowie (zagrożenie życia)."},
-    tags:{en:["999","112","emergency"], pt:["999","112","emergência"], pl:["999","112","alarm"]},
+    name:{en:"Emergency services (999 / 112)", pt:"Emergência (999 / 112)", pl:"Alarm (999 / 112)", fr:"Urgences (999 / 112)"},
+    desc:{en:"Police, Fire & Ambulance (life-threatening emergencies).", pt:"Polícia, Bombeiros e Ambulância (emergência).", pl:"Policja, Straż Pożarna i Pogotowie (nagłe).", fr:"Police, pompiers et ambulance (urgence)."},
+    tags:["999","112","emergency"],
     phone:"999",
-    links:[{label:{en:"Official info (gov.je)", pt:"Info oficial (gov.je)", pl:"Info oficjalne (gov.je)"}, url:"https://www.gov.je/LifeEvents/MovingToJersey/WhenYouArrive/pages/contactemergencyservices.aspx"}],
+    links:[{label:{en:"Official info (gov.je)",pt:"Info oficial (gov.je)",pl:"Info oficjalne (gov.je)",fr:"Info officielle (gov.je)"}, url:"https://www.gov.je/LifeEvents/MovingToJersey/WhenYouArrive/pages/contactemergencyservices.aspx"}],
     mapsQuery:"Jersey General Hospital Emergency Department"
   },
 
-  // Weather & Tides
+  // Essentials (Most popular)
   {
-    id:"wx-weather",
-    category:"Weather & Tides",
-    name:{en:"Weather forecast (gov.je)", pt:"Previsão do tempo (gov.je)", pl:"Prognoza pogody (gov.je)"},
-    desc:{en:"Forecast, warnings and updates.", pt:"Previsão, avisos e atualizações.", pl:"Prognoza, ostrzeżenia i aktualizacje."},
-    tags:{en:["weather","warnings"], pt:["tempo","avisos"], pl:["pogoda","ostrzeżenia"]},
+    id:"ess-forms",
+    category:"Essentials",
+    name:{en:"A to Z: forms & online services (gov.je)", pt:"A a Z: formulários e serviços (gov.je)", pl:"A–Z: formularze i usługi (gov.je)", fr:"A à Z : formulaires & services (gov.je)"},
+    desc:{en:"Find official forms and online services quickly.", pt:"Encontra formulários e serviços oficiais.", pl:"Szybko znajdź formularze i usługi.", fr:"Trouvez rapidement les formulaires et services."},
+    tags:["forms","online","services"],
+    links:[{label:{en:"Open A–Z",pt:"Abrir A–Z",pl:"Otwórz A–Z",fr:"Ouvrir A–Z"}, url:LINKS.formsAZ}],
+    mapsQuery:"Union Street St Helier"
+  },
+  {
+    id:"ess-contacts",
+    category:"Essentials",
+    name:{en:"Contacts A–Z (gov.je)", pt:"Contactos A–Z (gov.je)", pl:"Kontakty A–Z (gov.je)", fr:"Contacts A–Z (gov.je)"},
+    desc:{en:"Official phone numbers and emails.", pt:"Telefones e emails oficiais.", pl:"Oficjalne telefony i e-maile.", fr:"Numéros et e-mails officiels."},
+    tags:["contacts","phone","email"],
+    links:[{label:{en:"Open contacts",pt:"Abrir contactos",pl:"Otwórz kontakty",fr:"Ouvrir contacts"}, url:LINKS.contactsAZ}],
+    mapsQuery:"St Helier Jersey"
+  },
+  {
+    id:"ess-customerhub",
+    category:"Essentials",
+    name:{en:"Customer Hub waiting times (gov.je)", pt:"Tempos de espera Customer Hub (gov.je)", pl:"Czasy oczekiwania Customer Hub (gov.je)", fr:"Temps d’attente Customer Hub (gov.je)"},
+    desc:{en:"Check waiting times before you go.", pt:"Verifica os tempos de espera.", pl:"Sprawdź czas oczekiwania.", fr:"Vérifiez les temps d’attente."},
+    tags:["waiting times","customer hub"],
+    links:[{label:{en:"Open waiting times",pt:"Abrir tempos de espera",pl:"Otwórz czasy",fr:"Ouvrir temps d’attente"}, url:LINKS.customerHubWait}],
+    mapsQuery:"Customer Hub St Helier"
+  },
+  {
+    id:"ess-jobs",
+    category:"Essentials",
+    name:{en:"Jobs (gov.je)", pt:"Empregos (gov.je)", pl:"Praca (gov.je)", fr:"Emplois (gov.je)"},
+    desc:{en:"Public sector jobs and listings.", pt:"Ofertas e anúncios de emprego.", pl:"Oferty pracy w sektorze publicznym.", fr:"Offres d’emploi secteur public."},
+    tags:["jobs","work"],
+    links:[{label:{en:"Open jobs",pt:"Abrir empregos",pl:"Otwórz oferty",fr:"Ouvrir emplois"}, url:LINKS.jobs}],
+    mapsQuery:"St Helier Jersey"
+  },
+
+  // Weather
+  {
+    id:"wx-home",
+    category:"Weather",
+    name:{en:"Jersey weather forecast (Jersey Met)", pt:"Previsão do tempo (Jersey Met)", pl:"Prognoza pogody (Jersey Met)", fr:"Prévisions météo (Jersey Met)"},
+    desc:{en:"Official forecast and live data.", pt:"Previsão oficial e dados ao vivo.", pl:"Oficjalna prognoza i dane na żywo.", fr:"Prévisions officielles et données en direct."},
+    tags:["weather","forecast"],
     links:[
-      {label:{en:"Open weather", pt:"Abrir tempo", pl:"Otwórz pogodę"}, url: LINKS.govWeather},
-      {label:{en:"Radar", pt:"Radar", pl:"Radar"}, url: LINKS.govRadar}
+      {label:{en:"Open forecast",pt:"Abrir previsão",pl:"Otwórz prognozę",fr:"Ouvrir prévisions"}, url:LINKS.weatherHome},
+      {label:{en:"5-day forecast",pt:"Previsão 5 dias",pl:"5 dni",fr:"Prévisions 5 jours"}, url:LINKS.weather5day},
+      {label:{en:"Radar",pt:"Radar",pl:"Radar",fr:"Radar"}, url:LINKS.radar}
     ],
-    mapsQuery:"Jersey weather"
+    mapsQuery:"Maison St Louis Observatory Jersey"
   },
   {
     id:"wx-tides",
-    category:"Weather & Tides",
-    name:{en:"Tide times (gov.je)", pt:"Horários de marés (gov.je)", pl:"Godziny pływów (gov.je)"},
-    desc:{en:"Tide times for Jersey.", pt:"Horários de marés em Jersey.", pl:"Godziny pływów na Jersey."},
-    tags:{en:["tides"], pt:["marés"], pl:["pływy"]},
-    links:[{label:{en:"Open tides", pt:"Abrir marés", pl:"Otwórz pływy"}, url: LINKS.govTides}],
-    mapsQuery:"Jersey tides"
+    category:"Weather",
+    name:{en:"Tide times (St Helier)", pt:"Marés (St Helier)", pl:"Pływy (St Helier)", fr:"Marées (St Helier)"},
+    desc:{en:"Tide times for today and week ahead.", pt:"Horários das marés (hoje e semana).", pl:"Godziny pływów (dziś i tydzień).", fr:"Horaires des marées (aujourd’hui + semaine)."},
+    tags:["tides","sea"],
+    links:[{label:{en:"Open tide times",pt:"Abrir marés",pl:"Otwórz pływy",fr:"Ouvrir marées"}, url:LINKS.tides}],
+    mapsQuery:"St Helier Harbour"
   },
 
-  // Transport
+  // Transport / Roadworks
   {
-    id:"tr-bus",
+    id:"tr-roadclosures",
     category:"Transport",
-    name:{en:"LibertyBus (official)", pt:"LibertyBus (oficial)", pl:"LibertyBus (oficjalne)"},
-    desc:{en:"Routes, timetables, tickets.", pt:"Rotas, horários, bilhetes.", pl:"Trasy, rozkłady, bilety."},
-    tags:{en:["bus","timetable"], pt:["autocarro","horários"], pl:["autobus","rozkład"]},
+    name:{en:"Road closures & delays (gov.je)", pt:"Cortes de estrada & atrasos (gov.je)", pl:"Zamknięcia dróg i opóźnienia (gov.je)", fr:"Fermetures & retards (gov.je)"},
+    desc:{en:"Current and upcoming roadworks / diversions.", pt:"Roadworks e desvios (atuais e futuros).", pl:"Bieżące i planowane roboty / objazdy.", fr:"Travaux et déviations (actuels et à venir)."},
+    tags:["roadworks","closures","delays"],
     links:[
-      {label:{en:"libertybus.je", pt:"libertybus.je", pl:"libertybus.je"}, url: LINKS.libertyBus},
-      {label:{en:"Routes & timetables (gov.je)", pt:"Rotas e horários (gov.je)", pl:"Trasy i rozkłady (gov.je)"}, url: LINKS.govBusRoutes}
+      {label:{en:"Open list",pt:"Abrir lista",pl:"Otwórz listę",fr:"Ouvrir liste"}, url:LINKS.roadClosures},
+      {label:{en:"Traffic report",pt:"Relatório de tráfego",pl:"Raport ruchu",fr:"Rapport trafic"}, url:LINKS.trafficReport},
+      {label:{en:"Roadworks map",pt:"Mapa roadworks",pl:"Mapa robót",fr:"Carte travaux"}, url:LINKS.roadworksMap}
     ],
-    mapsQuery:"Liberation Station St Helier"
-  },
-  {
-    id:"tr-roadworks",
-    category:"Transport",
-    name:{en:"Roadworks (gov.je)", pt:"Obras nas estradas (gov.je)", pl:"Roboty drogowe (gov.je)"},
-    desc:{en:"Current roadworks and traffic updates.", pt:"Obras atuais e info de trânsito.", pl:"Bieżące roboty i informacje."},
-    tags:{en:["roadworks","traffic"], pt:["obras","trânsito"], pl:["roboty","ruch"]},
-    links:[{label:{en:"Open roadworks", pt:"Abrir roadworks", pl:"Otwórz roboty"}, url: LINKS.govRoadworks}],
-    mapsQuery:"Jersey roadworks"
-  },
-  {
-    id:"tr-ports",
-    category:"Transport",
-    name:{en:"Ports of Jersey — contact", pt:"Ports of Jersey — contacto", pl:"Ports of Jersey — kontakt"},
-    desc:{en:"Airport & Harbours general enquiries.", pt:"Informações gerais do aeroporto e portos.", pl:"Informacje ogólne: lotnisko i porty."},
-    tags:{en:["ports","harbour"], pt:["portos","marina"], pl:["porty"]},
-    phone:"+44 1534 446000",
-    email:"customerrelations@ports.je",
-    links:[{label:{en:"ports.je contact", pt:"Contacto ports.je", pl:"Kontakt ports.je"}, url: LINKS.portsContact}],
-    mapsQuery:"Ports of Jersey"
-  },
-  {
-    id:"tr-airport",
-    category:"Transport",
-    name:{en:"Jersey Airport — contact", pt:"Aeroporto de Jersey — contacto", pl:"Lotnisko Jersey — kontakt"},
-    desc:{en:"Official airport contact page.", pt:"Página oficial de contacto do aeroporto.", pl:"Oficjalna strona kontaktu lotniska."},
-    tags:{en:["airport"], pt:["aeroporto"], pl:["lotnisko"]},
-    links:[{label:{en:"Airport contact", pt:"Contacto aeroporto", pl:"Kontakt lotniska"}, url: LINKS.airportContact}],
-    mapsQuery:"Jersey Airport"
+    mapsQuery:"St Helier Jersey"
   },
 
   // Health
   {
     id:"hl-gps",
     category:"Health",
-    name:{en:"GPs & Surgeries (gov.je)", pt:"Médicos de família / Centros (gov.je)", pl:"Lekarze (GP) i przychodnie (gov.je)"},
-    desc:{en:"Find GP surgeries and guidance.", pt:"Encontra centros de saúde e informação.", pl:"Znajdź przychodnie i informacje."},
-    tags:{en:["GP","doctor"], pt:["médico","GP"], pl:["lekarz","GP"]},
-    links:[{label:{en:"Open GP services", pt:"Abrir GP", pl:"Otwórz GP"}, url: LINKS.govGPs}],
+    name:{en:"Doctors (GPs) (gov.je)", pt:"Médicos (GPs) (gov.je)", pl:"Lekarze (GP) (gov.je)", fr:"Médecins (généralistes) (gov.je)"},
+    desc:{en:"Official GP info and services.", pt:"Info oficial sobre GPs.", pl:"Oficjalne informacje o GP.", fr:"Infos officielles sur les généralistes."},
+    tags:["gp","doctor","health"],
+    links:[
+      {label:{en:"GP info",pt:"Info GP",pl:"Info GP",fr:"Info médecins"}, url:LINKS.gps},
+      {label:{en:"GP surgery list",pt:"Lista de centros/GPs",pl:"Lista przychodni",fr:"Liste des cabinets"}, url:LINKS.gpList},
+      {label:{en:"Out of hours GP",pt:"GP fora de horas",pl:"Lekarz nocny",fr:"Médecin de garde"}, url:LINKS.gpOOH}
+    ],
     mapsQuery:"GP surgery St Helier"
-  },
-  {
-    id:"hl-hospital",
-    category:"Health",
-    name:{en:"Hospitals & services (gov.je)", pt:"Hospitais e serviços (gov.je)", pl:"Szpitale i usługi (gov.je)"},
-    desc:{en:"Hospital services, departments and info.", pt:"Serviços, departamentos e informação.", pl:"Usługi szpitalne i informacje."},
-    tags:{en:["hospital"], pt:["hospital"], pl:["szpital"]},
-    links:[{label:{en:"Open hospitals", pt:"Abrir hospitais", pl:"Otwórz szpitale"}, url: LINKS.govHospital}],
-    mapsQuery:"Jersey General Hospital"
-  },
-  {
-    id:"hl-pharm",
-    category:"Health",
-    name:{en:"Pharmacy opening hours (official list)", pt:"Horários de farmácias (lista oficial)", pl:"Godziny aptek (lista oficjalna)"},
-    desc:{en:"Search opening hours by pharmacy.", pt:"Pesquisa horários por farmácia.", pl:"Sprawdź godziny otwarcia aptek."},
-    tags:{en:["pharmacy","opening hours"], pt:["farmácia","horários"], pl:["apteka","godziny"]},
-    links:[{label:{en:"Open list", pt:"Abrir lista", pl:"Otwórz listę"}, url: LINKS.govPharmHours}],
-    mapsQuery:"Pharmacy St Helier Jersey"
   },
 
   // Museums & Heritage
   {
     id:"mh-places",
     category:"Museums & Heritage",
-    name:{en:"Jersey Heritage — places to visit", pt:"Jersey Heritage — locais a visitar", pl:"Jersey Heritage — miejsca do odwiedzenia"},
-    desc:{en:"Official list of museums, castles and heritage sites.", pt:"Lista oficial de museus, castelos e locais históricos.", pl:"Oficjalna lista muzeów, zamków i miejsc historycznych."},
-    tags:{en:["museums","castles"], pt:["museus","castelos"], pl:["muzea","zamki"]},
-    links:[{label:{en:"Open places list", pt:"Abrir lista", pl:"Otwórz listę"}, url: LINKS.heritagePlaces}],
+    name:{en:"Jersey Heritage — places to visit", pt:"Jersey Heritage — locais", pl:"Jersey Heritage — miejsca", fr:"Jersey Heritage — lieux à visiter"},
+    desc:{en:"Museums, castles and heritage sites (official).", pt:"Museus, castelos e património (oficial).", pl:"Muzea, zamki i dziedzictwo (oficjalnie).", fr:"Musées, châteaux et patrimoine (officiel)."},
+    tags:["heritage","museums","castles"],
+    links:[{label:{en:"Open list",pt:"Abrir lista",pl:"Otwórz listę",fr:"Ouvrir liste"}, url:LINKS.heritagePlaces}],
     mapsQuery:"Jersey Museum St Helier"
   },
 
@@ -903,23 +693,15 @@ const DIRECTORY_STATIC = [
   {
     id:"act-things",
     category:"Activities",
-    name:{en:"Things to do (Visit Jersey)", pt:"O que fazer (Visit Jersey)", pl:"Co robić (Visit Jersey)"},
-    desc:{en:"Official tourism guide: indoor/outdoor ideas.", pt:"Guia oficial: ideias indoor/outdoor.", pl:"Oficjalny przewodnik: pomysły na atrakcje."},
-    tags:{en:["things to do"], pt:["o que fazer"], pl:["atrakcje"]},
+    name:{en:"Things to do (Visit Jersey)", pt:"O que fazer (Visit Jersey)", pl:"Atrakcje (Visit Jersey)", fr:"À faire (Visit Jersey)"},
+    desc:{en:"Official tourism guide: inspiration and ideas.", pt:"Guia oficial de turismo: ideias e inspiração.", pl:"Oficjalny przewodnik turystyczny.", fr:"Guide touristique officiel."},
+    tags:["things to do","guide"],
     links:[
-      {label:{en:"Open things to do", pt:"Abrir guia", pl:"Otwórz przewodnik"}, url: LINKS.visitThings},
-      {label:{en:"Top attractions", pt:"Atrações", pl:"Atrakcje"}, url: LINKS.visitAttractions}
+      {label:{en:"Things to do",pt:"O que fazer",pl:"Atrakcje",fr:"À faire"}, url:LINKS.visitThings},
+      {label:{en:"Attractions",pt:"Atrações",pl:"Atrakcje",fr:"Attractions"}, url:LINKS.visitAttractions},
+      {label:{en:"Events",pt:"Eventos",pl:"Wydarzenia",fr:"Événements"}, url:LINKS.visitEvents}
     ],
     mapsQuery:"Jersey attractions"
-  },
-  {
-    id:"act-events",
-    category:"Activities",
-    name:{en:"Events (Visit Jersey)", pt:"Eventos (Visit Jersey)", pl:"Wydarzenia (Visit Jersey)"},
-    desc:{en:"What’s on + listings.", pt:"Agenda + listagens.", pl:"Co się dzieje + lista."},
-    tags:{en:["events"], pt:["eventos"], pl:["wydarzenia"]},
-    links:[{label:{en:"Open events", pt:"Abrir eventos", pl:"Otwórz wydarzenia"}, url: LINKS.visitEvents}],
-    mapsQuery:"St Helier events"
   }
 ];
 
@@ -951,45 +733,34 @@ function spacesBadgeHTML(n){
 }
 
 function buildLiveParkingServices(){
-  const L=t();
   const sorted = [...LIVE_SPACES].sort((a,b)=> spacesNum(b) - spacesNum(a));
   return sorted.map(x => {
     const n = spacesNum(x);
-    const openText = x.open ? L.live.open : L.live.closed;
+    const openText = x.open ? {en:"Open",pt:"Aberto",pl:"Otwarte",fr:"Ouvert"} : {en:"Closed",pt:"Fechado",pl:"Zamknięte",fr:"Fermé"};
     const typeText = x.type ? ` • ${x.type}` : "";
     return ({
       id: "live-" + x.code,
       category: "Parking LIVE",
-      nameText: `${x.name}`,
-      descText: `${openText}${typeText} • ${x.spaces} ${L.live.spaces}`,
+      name: {en:x.name, pt:x.name, pl:x.name, fr:x.name},
+      desc: {en:`${t(openText)}${typeText} • ${x.spaces} spaces`, pt:`${t(openText)}${typeText} • ${x.spaces} lugares`, pl:`${t(openText)}${typeText} • ${x.spaces} miejsc`, fr:`${t(openText)}${typeText} • ${x.spaces} places`},
       tags: ["live", "spaces", x.type || ""].filter(Boolean),
       pillHTML: spacesBadgeHTML(n),
       links: [
-        { labelText: (state.lang==="pt"?"LIVE oficial (gov.je)":state.lang==="pl"?"LIVE oficjalne (gov.je)":"Official LIVE page (gov.je)"), url: LINKS.govLivePage },
-        { labelText: (state.lang==="pt"?"PayByPhone (gov.je)":state.lang==="pl"?"PayByPhone (gov.je)":"PayByPhone info (gov.je)"), url: LINKS.payByPhone }
+        { label:{en:"Official LIVE (gov.je)",pt:"LIVE oficial (gov.je)",pl:"LIVE oficjalne (gov.je)",fr:"LIVE officiel (gov.je)"}, url: LINKS.govLivePage },
+        { label:{en:"PayByPhone info",pt:"PayByPhone info",pl:"PayByPhone info",fr:"Info PayByPhone"}, url: LINKS.payByPhone }
       ],
       mapsQuery: x.mapsQuery
     });
   });
 }
 
-function normalizeSvcForLang(s){
-  return {
-    ...s,
-    nameText: typeof s.name === "object" ? pickLang(s.name) : (s.name||""),
-    descText: typeof s.desc === "object" ? pickLang(s.desc) : (s.desc||""),
-    tags: typeof s.tags === "object" ? pickTags(s.tags) : (s.tags||[]),
-    links: (s.links||[]).map(l => ({
-      labelText: typeof l.label === "object" ? pickLang(l.label) : (l.label||""),
-      url: l.url
-    }))
-  };
-}
-
+/* -------------------------
+   All services
+   ------------------------- */
 function allServices(){
   return [
     ...buildLiveParkingServices(),
-    ...DIRECTORY_STATIC.map(normalizeSvcForLang)
+    ...DIRECTORY_STATIC
   ];
 }
 
@@ -999,11 +770,11 @@ function allServices(){
 function matchesQuery(svc, q){
   if(!q) return true;
   const hay = [
-    svc.nameText, svc.descText, svc.category,
+    t(svc.name), t(svc.desc), svc.category,
     ...(svc.tags||[]),
     svc.phone||"",
     svc.email||"",
-    ...(svc.links||[]).map(x=>x.labelText+" "+x.url),
+    ...(svc.links||[]).map(x=>t(x.label)+" "+x.url),
     svc.mapsQuery||""
   ].join(" ");
   return norm(hay).includes(norm(q));
@@ -1024,16 +795,14 @@ function renderCats(){
   const counts = merged.reduce((acc, s)=>{ acc[s.category]=(acc[s.category]||0)+1; return acc; },{});
   const cats = ["All", ...CATEGORY_ORDER.filter(c => counts[c])];
 
-  const L=t();
   $("cats").innerHTML = cats.map(cat=>{
     const count = cat==="All" ? merged.length : (counts[cat]||0);
     const active = (state.category===cat) ? "active" : "";
-    const label = (L.cats[cat] || cat);
     return `
       <div class="cat ${active}" data-cat="${escapeHtml(cat)}">
         <div class="catLeft">
           <div class="catIcon">${catIcon(cat)}</div>
-          <div class="catName">${escapeHtml(label)}</div>
+          <div class="catName">${escapeHtml(cat)}</div>
         </div>
         <div class="badge catCount">${count}</div>
       </div>
@@ -1050,29 +819,61 @@ function renderCats(){
 
 function renderHeader(){
   const list = visibleServices();
-  const L=t();
-  const title = (state.category==="All") ? L.allServices : (L.cats[state.category] || state.category);
+  const title = (state.category==="All") ? t(UI.allServices) : state.category;
   $("viewTitle").textContent = `${title} (${list.length})`;
 
-  $("viewDesc").textContent = state.showFavs
-    ? (L.favourites + " — " + L.viewDescDefault)
-    : (L.descByCat[state.category] || L.viewDescDefault);
+  const descByCat = {
+    "Essentials": {
+      en:"Most-used official services in Jersey (forms, contacts, jobs, waiting times).",
+      pt:"Serviços oficiais mais usados (formulários, contactos, empregos, tempos).",
+      pl:"Najczęściej używane usługi (formularze, kontakty, praca, kolejki).",
+      fr:"Services officiels les plus utilisés (formulaires, contacts, emplois, files)."
+    },
+    "Parking LIVE": {
+      en:"Official live spaces (auto-refresh). Tap each car park for maps + official links.",
+      pt:"Lugares ao vivo (auto). Toca para mapas + links oficiais.",
+      pl:"Miejsca na żywo (auto). Kliknij po mapę + linki.",
+      fr:"Places en direct (auto). Cliquez pour carte + liens officiels."
+    },
+    "Weather": {
+      en:"Official Jersey Met forecast, radar and tides.",
+      pt:"Previsão Jersey Met, radar e marés.",
+      pl:"Prognoza Jersey Met, radar i pływy.",
+      fr:"Prévisions Jersey Met, radar et marées."
+    },
+    "Transport": {
+      en:"Roadworks, closures and traffic info (official).",
+      pt:"Roadworks, cortes e tráfego (oficial).",
+      pl:"Roboty, zamknięcia i ruch (oficjalnie).",
+      fr:"Travaux, fermetures et trafic (officiel)."
+    },
+    "Health": {
+      en:"GP info, GP list and out-of-hours GP (official).",
+      pt:"Info GP, lista e GP fora de horas (oficial).",
+      pl:"GP info, lista i lekarz dyżurny (oficjalnie).",
+      fr:"Infos médecins, liste et médecin de garde (officiel)."
+    }
+  };
 
-  const liveText = LIVE_TIMESTAMP ? ` • Updated: ${LIVE_TIMESTAMP}` : "";
-  $("statsLine").textContent = `Showing ${list.length} • Live refresh ~2 minutes${liveText}`;
+  $("viewDesc").textContent = state.showFavs
+    ? {en:"Your saved services for one-tap access.",pt:"Os teus serviços guardados.",pl:"Twoje zapisane usługi.",fr:"Vos services enregistrés."}[lang]
+    : t(descByCat[state.category] || UI.oneTap);
+
+  const liveText = LIVE_TIMESTAMP ? LIVE_TIMESTAMP : "";
+  $("statsLine").textContent = UI.stats[lang](list.length, liveText);
+
   $("countVisible").textContent = list.length;
 }
 
 function renderCards(){
   const list = visibleServices();
   const el = $("cards");
-  const L=t();
 
   if(!list.length){
     el.innerHTML = `
       <div class="card" style="grid-column:1/-1;">
-        <div class="name">${escapeHtml(L.noResultsTitle)}</div>
-        <div class="meta">${escapeHtml(L.noResultsDesc)}</div>
+        <div class="name">${t(UI.noResultsTitle)}</div>
+        <div class="meta">${t(UI.noResultsHint)}</div>
       </div>
     `;
     return;
@@ -1080,14 +881,12 @@ function renderCards(){
 
   el.innerHTML = list.map(s=>{
     const isFav = state.favs.has(s.id);
-    const tags = (s.tags||[]).slice(0,10).map(t=>`<span class="tag">${escapeHtml(String(t))}</span>`).join("");
+    const tags = (s.tags||[]).slice(0,10).map(tg=>`<span class="tag">${escapeHtml(String(tg))}</span>`).join("");
 
-    const phoneBtn = s.phone ? `<button class="chip" type="button" data-open="${escapeHtml(telHref(s.phone))}">${escapeHtml(L.actions.call)}</button>` : "";
-    const emailBtn = s.email ? `<button class="chip" type="button" data-open="${escapeHtml(mailHref(s.email))}">${escapeHtml(L.actions.email)}</button>` : "";
-    const mapsBtn  = `<button class="chip" type="button" data-open="${escapeHtml(mapsUrl(s.mapsQuery || (s.nameText + " Jersey")))}">${escapeHtml(L.actions.maps)}</button>`;
-    const links = (s.links||[]).slice(0,4).map(l=>
-      `<button class="chip primary" type="button" data-open="${escapeHtml(l.url)}">↗ ${escapeHtml(l.labelText)}</button>`
-    ).join("");
+    const phoneBtn = s.phone ? `<a class="chip" href="${telHref(s.phone)}">📞 ${lang==="pt"?"Ligar":lang==="pl"?"Zadzwoń":lang==="fr"?"Appeler":"Call"}</a>` : "";
+    const emailBtn = s.email ? `<a class="chip" href="${mailHref(s.email)}">✉️ Email</a>` : "";
+    const mapsBtn = `<button class="chip" type="button" data-maps="${escapeHtml(s.mapsQuery || (t(s.name) + " Jersey"))}">🗺️ Maps</button>`;
+    const links = (s.links||[]).slice(0,4).map(l=>`<button class="chip primary" type="button" data-link="${escapeHtml(l.url)}">↗ ${escapeHtml(t(l.label))}</button>`).join("");
 
     const pill = s.pillHTML ? `<div style="margin-top:6px;">${s.pillHTML}</div>` : "";
 
@@ -1095,8 +894,8 @@ function renderCards(){
       <div class="card">
         <div class="row">
           <div>
-            <div class="name">${escapeHtml(s.nameText)}</div>
-            <div class="meta">${escapeHtml(s.descText || "")}</div>
+            <div class="name">${escapeHtml(t(s.name))}</div>
+            <div class="meta">${escapeHtml(t(s.desc) || "")}</div>
             ${pill}
           </div>
           <button class="favBtn ${isFav ? "on" : ""}" data-fav="${escapeHtml(s.id)}">${isFav ? "★" : "☆"}</button>
@@ -1109,40 +908,47 @@ function renderCards(){
           ${emailBtn}
           ${mapsBtn}
           ${links}
-          <button class="chip" type="button" data-copy="${escapeHtml(s.id)}">${escapeHtml(L.actions.copy)}</button>
-          <button class="chip good" type="button" data-share="${escapeHtml(s.id)}">${escapeHtml(L.actions.share)}</button>
+          <button class="chip" type="button" data-copy="${escapeHtml(s.id)}">📋 ${lang==="pt"?"Copiar":lang==="pl"?"Kopiuj":lang==="fr"?"Copier":"Copy"}</button>
+          <button class="chip good" type="button" data-share="${escapeHtml(s.id)}">🔗 ${lang==="pt"?"Partilhar":lang==="pl"?"Udostępnij":lang==="fr"?"Partager":"Share"}</button>
         </div>
       </div>
     `;
   }).join("");
 
-  // FAV
+  // fav
   [...document.querySelectorAll("[data-fav]")].forEach(btn=>{
     btn.addEventListener("click", ()=>{
       const id = btn.getAttribute("data-fav");
       if(state.favs.has(id)){
         state.favs.delete(id);
-        toast(t().removedFav);
+        toast(t(UI.removedFav));
       }else{
         state.favs.add(id);
-        toast(t().savedFav);
+        toast(t(UI.savedFav));
       }
       localStorage.setItem(LS_FAVS, JSON.stringify([...state.favs]));
       renderAll(false);
     });
   });
 
-  // COPY
+  // maps + links always open
+  [...document.querySelectorAll("[data-link]")].forEach(btn=>{
+    btn.addEventListener("click", ()=> openUrl(btn.getAttribute("data-link")));
+  });
+  [...document.querySelectorAll("[data-maps]")].forEach(btn=>{
+    btn.addEventListener("click", ()=> openUrl(mapsUrl(btn.getAttribute("data-maps"))));
+  });
+
+  // copy
   [...document.querySelectorAll("[data-copy]")].forEach(btn=>{
     btn.addEventListener("click", async ()=>{
       const id = btn.getAttribute("data-copy");
       const svc = allServices().find(x=>x.id===id);
       if(!svc) return;
-
       const firstLink = (svc.links && svc.links[0]) ? svc.links[0].url : "";
       const text = [
-        svc.nameText || "",
-        svc.descText || "",
+        t(svc.name),
+        t(svc.desc) || "",
         svc.phone ? ("Call: " + svc.phone) : "",
         svc.email ? ("Email: " + svc.email) : "",
         firstLink
@@ -1150,57 +956,36 @@ function renderCards(){
 
       try{
         await navigator.clipboard.writeText(text);
-        toast(t().copied);
+        toast(t(UI.copied));
       }catch{
-        toast(t().copyNotSupported);
+        toast(t(UI.copyNo));
       }
     });
   });
 
-  // SHARE SERVICE
+  // share
   [...document.querySelectorAll("[data-share]")].forEach(btn=>{
     btn.addEventListener("click", async ()=>{
       const id = btn.getAttribute("data-share");
       const svc = allServices().find(x=>x.id===id);
-      if(!svc) return;
+      const url = location.href.split("#")[0];
+      const text = svc ? `${t(svc.name)}\n${t(svc.desc)}\n${url}` : url;
 
-      const u = new URL(location.href);
-      if (state.category && state.category !== "All") u.searchParams.set("cat", state.category);
-      if (state.q) u.searchParams.set("q", state.q);
-      if (state.showFavs) u.searchParams.set("favs", "1");
-      u.searchParams.set("lang", state.lang);
-
-      const firstLink = (svc.links && svc.links[0]) ? svc.links[0].url : "";
-      const text = [svc.nameText, svc.descText || "", firstLink].filter(Boolean).join("\n");
-
-      try{
-        if(navigator.share){
-          await navigator.share({ title: "JerseyGo", text, url: u.toString() });
-        }else{
-          await navigator.clipboard.writeText(u.toString());
-          toast(t().linkCopied);
-        }
-      }catch{
-        toast(t().shareCancelled);
+      if(navigator.share){
+        try{ await navigator.share({ title:"JerseyGo", text, url }); }
+        catch{}
+      }else{
+        try{ await navigator.clipboard.writeText(url); toast(t(UI.copied)); }
+        catch{ toast(t(UI.copyNo)); }
       }
-    });
-  });
-
-  // OPEN LINKS (PWA safe)
-  [...document.querySelectorAll("[data-open]")].forEach(btn=>{
-    btn.addEventListener("click", ()=>{
-      const url = btn.getAttribute("data-open");
-      openUrl(url);
     });
   });
 }
 
 function renderAll(rerenderCats=true){
-  applyI18n();
   if(rerenderCats) renderCats();
   renderHeader();
   renderCards();
-  writeUrlState();
 }
 
 /* -------------------------
@@ -1224,79 +1009,70 @@ $("resetBtn").addEventListener("click", ()=>{
 });
 
 $("nearMeBtn").addEventListener("click", ()=>{
-  const L=t();
-  if(!navigator.geolocation){ toast(L.geoNotSupported); return; }
-  toast(L.gettingLocation);
+  if(!navigator.geolocation){ toast(t(UI.geoNo)); return; }
+  toast(t(UI.geoGetting));
   navigator.geolocation.getCurrentPosition(
     (pos)=>{
       const { latitude, longitude } = pos.coords;
       const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent("things to do")}&center=${latitude},${longitude}`;
       openUrl(url);
     },
-    ()=> toast(L.locationBlocked),
+    ()=> toast(t(UI.geoBlocked)),
     { enableHighAccuracy:true, timeout: 10000 }
   );
 });
 
-$("shareAppBtn").addEventListener("click", async ()=>{
-  const u = new URL(location.href);
-  if (state.category && state.category !== "All") u.searchParams.set("cat", state.category);
-  if (state.q) u.searchParams.set("q", state.q);
-  if (state.showFavs) u.searchParams.set("favs", "1");
-  u.searchParams.set("lang", state.lang);
-
-  const text = "JerseyGo — Parking LIVE + essentials (free, no login).";
-  try{
-    if(navigator.share){
-      await navigator.share({ title:"JerseyGo", text, url:u.toString() });
-    }else{
-      await navigator.clipboard.writeText(u.toString());
-      toast(t().linkCopied);
-    }
-  }catch{
-    toast(t().shareCancelled);
-  }
+// quick open buttons
+[...document.querySelectorAll("[data-open]")].forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    const key = btn.getAttribute("data-open");
+    if(LINKS[key]) openUrl(LINKS[key]);
+  });
 });
 
-/* Language buttons */
-$("langEN").addEventListener("click", ()=>{ state.lang="en"; renderAll(true); });
-$("langPT").addEventListener("click", ()=>{ state.lang="pt"; renderAll(true); });
-$("langPL").addEventListener("click", ()=>{ state.lang="pl"; renderAll(true); });
+// language buttons
+[...document.querySelectorAll(".lang button[data-lang]")].forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    lang = btn.getAttribute("data-lang");
+    localStorage.setItem(LS_LANG, lang);
+    applyLangUI();
+    renderAll(true);
+  });
+});
 
 /* -------------------------
-   PWA install
+   Install (PWA)
    ------------------------- */
-let deferredPrompt=null;
+let __deferredPrompt = null;
 window.addEventListener("beforeinstallprompt", (e)=>{
   e.preventDefault();
-  deferredPrompt=e;
-  $("installBtn").style.display="inline-flex";
+  __deferredPrompt = e;
+  $("installBtn").style.display = "inline-flex";
 });
 
 $("installBtn").addEventListener("click", async ()=>{
-  if(!deferredPrompt) return;
-  deferredPrompt.prompt();
-  try{ await deferredPrompt.userChoice; }catch{}
-  deferredPrompt=null;
-  $("installBtn").style.display="none";
+  if(!__deferredPrompt) return;
+  __deferredPrompt.prompt();
+  try{ await __deferredPrompt.userChoice; }catch{}
+  __deferredPrompt = null;
+  $("installBtn").style.display = "none";
 });
 
-window.addEventListener("appinstalled", ()=>{
-  toast(t().installed);
-  $("installBtn").style.display="none";
+// Share app button
+$("shareBtn").addEventListener("click", async ()=>{
+  const url = location.href.split("#")[0];
+  const text = "JerseyGo — quick links for Jersey (residents & tourists)";
+  if(navigator.share){
+    try{ await navigator.share({ title:"JerseyGo", text, url }); }
+    catch{}
+  }else{
+    try{ await navigator.clipboard.writeText(url); toast(t(UI.copied)); }
+    catch{ toast(t(UI.copyNo)); }
+  }
 });
 
 /* -------------------------
-   URL state
-   ------------------------- */
-function initUrl(){
-  readUrlState();
-  // keep lang in storage
-  localStorage.setItem(LS_LANG, state.lang);
-}
-
-/* -------------------------
-   Live parking fetch (gov JSON) + cache fallback
+   Parking LIVE fetch
    ------------------------- */
 async function loadLiveSpaces(){
   const GOV_JSON = "https://sojpublicdata.blob.core.windows.net/sojpublicdata/carpark-data.json";
@@ -1324,34 +1100,24 @@ async function loadLiveSpaces(){
       };
     });
 
-    localStorage.setItem(LS_LIVE, JSON.stringify({ LIVE_SPACES, LIVE_TIMESTAMP, savedAt:new Date().toISOString() }));
-
     $("liveStatus").textContent = "LIVE ✓";
     $("liveStatus").className = "badge liveOk";
     renderAll(true);
   }catch(e){
     console.log("Live parking failed:", e);
-
-    const cached = localStorage.getItem(LS_LIVE);
-    if(cached){
-      try{
-        const c = JSON.parse(cached);
-        if(c?.LIVE_SPACES){
-          LIVE_SPACES = c.LIVE_SPACES;
-          LIVE_TIMESTAMP = c.LIVE_TIMESTAMP ? (c.LIVE_TIMESTAMP + " (cached)") : "Cached";
-          $("liveStatus").textContent = "LIVE (cached)";
-          $("liveStatus").className = "badge liveWait";
-          renderAll(true);
-          return;
-        }
-      }catch{}
-    }
-
     $("liveStatus").textContent = "LIVE ✕";
     $("liveStatus").className = "badge liveBad";
     renderAll(true);
   }
 }
+
+/* -------------------------
+   Init
+   ------------------------- */
+applyLangUI();
+renderAll(true);
+loadLiveSpaces();
+setInterval(loadLiveSpaces, 120000);
 
 /* -------------------------
    Service worker
@@ -1361,17 +1127,6 @@ if("serviceWorker" in navigator){
     navigator.serviceWorker.register("./sw.js").catch(()=>{});
   });
 }
-
-/* Boot */
-initUrl();
-renderAll(true);
-loadLiveSpaces();
-setInterval(loadLiveSpaces, 120000);
-
-// Also bind quick buttons that are in the HTML header area
-document.querySelectorAll("[data-open]").forEach(btn=>{
-  btn.addEventListener("click", ()=> openUrl(btn.getAttribute("data-open")));
-});
 </script>
 </body>
 </html>
