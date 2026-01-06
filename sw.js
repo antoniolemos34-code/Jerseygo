@@ -4,13 +4,15 @@
    - Cache-first for assets
 */
 
-const VERSION = "jerseygo-v6"; // muda isto quando fizeres grandes updates
+const VERSION = "jerseygo-v7"; // muda quando fizeres updates grandes
 const APP_SHELL = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
   "./icon.svg",
-  "./sw.js"
+  "./sw.js",
+  "./advertise/",
+  "./advertise/index.html"
 ];
 
 self.addEventListener("install", (event) => {
@@ -36,15 +38,13 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   const req = event.request;
 
-  // Só GET
   if (req.method !== "GET") return;
 
   const url = new URL(req.url);
 
-  // Não mexer em requests externos (Google Maps, gov.je etc.)
+  // ignore external requests (gov.je, google maps, etc.)
   if (url.origin !== self.location.origin) return;
 
-  // HTML: stale-while-revalidate (rápido + atualiza em background)
   const isHTML =
     req.destination === "document" ||
     req.headers.get("accept")?.includes("text/html");
@@ -54,7 +54,6 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Assets (svg, css, js etc.): cache-first
   event.respondWith(cacheFirst(req));
 });
 
