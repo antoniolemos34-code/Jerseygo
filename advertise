@@ -4,11 +4,11 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#0B1220" />
-  <meta name="description" content="Advertise on JerseyGo — reach residents & tourists when they need you." />
-  <title>Advertise on JerseyGo</title>
+  <title>Advertise — JerseyGo</title>
+  <meta name="description" content="Advertise on JerseyGo — a quick-links PWA for residents & tourists in Jersey." />
 
   <link rel="icon" href="../icon.svg" type="image/svg+xml" />
-  <link rel="apple-touch-icon" href="../icon.svg" />
+  <link rel="manifest" href="../manifest.webmanifest" />
 
   <style>
     :root{
@@ -18,7 +18,6 @@
       --r2:22px; --shadow: 0 22px 50px rgba(0,0,0,.45);
     }
     *{box-sizing:border-box}
-    html,body{height:100%}
     body{
       margin:0;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
@@ -28,26 +27,18 @@
         radial-gradient(850px 520px at 88% 10%, rgba(53,208,127,.18), transparent 58%),
         radial-gradient(920px 720px at 50% 95%, rgba(255,176,32,.12), transparent 58%),
         linear-gradient(180deg, var(--bg), var(--bg2));
-      -webkit-font-smoothing:antialiased;
-      text-rendering:optimizeLegibility;
     }
     a{color:inherit; text-decoration:none}
-    .wrap{max-width:980px; margin:0 auto; padding:16px}
-    .topbar{
-      display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
-      position:sticky; top:0; z-index:50;
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      background: rgba(7,10,18,.72);
-      border-bottom:1px solid var(--line);
-      padding:12px 16px;
+    .wrap{max-width:980px; margin:0 auto; padding:18px}
+    .top{
+      display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+      border:1px solid var(--line); background: rgba(255,255,255,.03);
+      border-radius:22px; padding:12px 14px; box-shadow: var(--shadow);
     }
     .brand{display:flex; align-items:center; gap:12px}
-    .brand img{width:38px; height:38px; border-radius:14px; box-shadow: 0 12px 30px rgba(0,0,0,.35)}
-    .brand .t{line-height:1.1}
+    .brand img{width:40px; height:40px; border-radius:14px; box-shadow:0 12px 30px rgba(0,0,0,.35)}
     .brand .name{font-weight:950}
-    .brand .sub{font-size:12px; color:var(--muted); margin-top:4px}
-
+    .brand .sub{font-size:12px; color:var(--muted); margin-top:2px}
     .btn{
       border:1px solid var(--line);
       background: rgba(255,255,255,.05);
@@ -56,160 +47,109 @@
       border-radius:16px;
       cursor:pointer;
       font-weight:900;
-      letter-spacing:.2px;
-      display:inline-flex; align-items:center; gap:10px;
+      display:inline-flex; align-items:center; gap:8px;
     }
     .btn:hover{background: rgba(255,255,255,.08)}
     .btn.primary{border-color: rgba(53,208,127,.35); background: rgba(53,208,127,.12)}
-    .btn.ghost{background: rgba(255,255,255,.03)}
     .card{
-      margin-top:16px;
+      margin-top:14px;
       border:1px solid var(--line);
       background: rgba(255,255,255,.03);
       border-radius: var(--r2);
       box-shadow: var(--shadow);
-      overflow:hidden;
+      padding:16px;
     }
-    .hero{
-      padding:18px;
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
-      border-bottom:1px solid var(--line);
-      display:flex; align-items:flex-start; justify-content:space-between; gap:16px; flex-wrap:wrap;
+    h1{margin:0; font-size:26px}
+    p{margin:10px 0 0; color:var(--muted); line-height:1.5}
+    .grid{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:14px}
+    @media (max-width:820px){ .grid{grid-template-columns:1fr} }
+    .mini{
+      margin-top:12px;
+      font-size:12px;
+      color:rgba(169,180,199,.85);
+      line-height:1.5;
     }
-    h1{margin:0; font-size:22px}
-    .lead{margin:8px 0 0; color:var(--muted); line-height:1.45; max-width:60ch}
-    .grid{display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:16px}
-    @media (max-width: 820px){ .grid{grid-template-columns:1fr} }
-
     .box{
       border:1px solid var(--line);
-      background: rgba(255,255,255,.03);
-      border-radius: 18px;
+      background: rgba(255,255,255,.02);
+      border-radius:18px;
       padding:14px;
     }
-    .box h2{margin:0 0 8px; font-size:12px; color:var(--muted); letter-spacing:.35px; text-transform:uppercase}
-    .box .title{font-weight:950; font-size:16px; margin:0}
-    .box p{margin:8px 0 0; color:var(--muted); line-height:1.45}
-    ul{margin:10px 0 0; padding-left:18px; color:var(--muted); line-height:1.55}
-    .ctaRow{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:12px}
-    .note{font-size:12px; color:rgba(169,180,199,.85); padding:0 16px 16px; line-height:1.55}
-    .footer{
-      text-align:center; color:rgba(169,180,199,.8); font-size:12px;
-      padding:14px 0 22px;
-    }
+    .box h3{margin:0; font-size:14px; letter-spacing:.2px}
+    .list{margin:10px 0 0; padding:0 0 0 16px; color:var(--muted)}
+    .list li{margin:6px 0}
   </style>
 </head>
 
 <body>
-  <div class="topbar">
-    <a class="brand" href="../">
-      <img src="../icon.svg" alt="JerseyGo icon" />
-      <div class="t">
-        <div class="name">JerseyGo</div>
-        <div class="sub">Quick links for Jersey — residents & tourists</div>
-      </div>
-    </a>
-
-    <div style="display:flex; gap:10px; flex-wrap:wrap;">
-      <a class="btn ghost" href="../">← Back to app</a>
-      <button id="ctaTop" class="btn primary" type="button">💬 Message on WhatsApp</button>
-    </div>
-  </div>
-
   <div class="wrap">
-    <div class="card">
-      <div class="hero">
+    <div class="top">
+      <div class="brand">
+        <img src="../icon.svg" alt="JerseyGo">
         <div>
-          <h1>Advertise on JerseyGo</h1>
-          <p class="lead">
-            Get visibility in a simple, useful directory used by residents & tourists — exactly when they need a service.
-          </p>
-          <div class="ctaRow">
-            <button id="ctaHero" class="btn primary" type="button">💼 Get listed</button>
-            <button id="ctaSuggest" class="btn" type="button">➕ Suggest a link</button>
-          </div>
-        </div>
-        <div class="box" style="min-width:min(360px, 92vw);">
-          <h2>Quick info</h2>
-          <p class="title">No spam. Only useful services.</p>
-          <p>Sponsored placements are clearly labelled. We keep JerseyGo fast and helpful.</p>
+          <div class="name">JerseyGo</div>
+          <div class="sub">Advertising / featured listing</div>
         </div>
       </div>
+      <a class="btn" href="../">← Back to app</a>
+    </div>
+
+    <div class="card">
+      <h1>Advertise on JerseyGo</h1>
+      <p>
+        JerseyGo is a fast “one-tap links” app for residents & tourists.
+        If you want your business/service featured, message us and we’ll send options.
+      </p>
 
       <div class="grid">
         <div class="box">
-          <h2>How it works</h2>
-          <p class="title">Simple sponsored listing</p>
-          <ul>
-            <li>Your business appears in the right category.</li>
-            <li>One-tap actions (Call / Maps / Official page / WhatsApp).</li>
-            <li>Clear “Sponsored” label (trust & transparency).</li>
+          <h3>What you can get</h3>
+          <ul class="list">
+            <li>Featured placement in a category</li>
+            <li>Call / Maps / Website buttons</li>
+            <li>Simple “official + useful” style listing</li>
           </ul>
         </div>
 
         <div class="box">
-          <h2>Best for</h2>
-          <p class="title">Local services</p>
-          <ul>
-            <li>Taxis / private hire</li>
-            <li>Trades (plumber, electrician, locksmith)</li>
-            <li>Tourist services (bike hire, attractions)</li>
-            <li>Health & essentials</li>
+          <h3>We’ll ask for</h3>
+          <ul class="list">
+            <li>Business name</li>
+            <li>Category</li>
+            <li>Website / Google Maps / phone</li>
+            <li>Short description</li>
           </ul>
-        </div>
-
-        <div class="box">
-          <h2>Pricing</h2>
-          <p class="title">Flexible options</p>
-          <p>
-            We’ll suggest the best placement based on your category and area.
-            (You can start small and upgrade later.)
-          </p>
-          <ul>
-            <li>Monthly listings</li>
-            <li>Seasonal boosts (tourist mode)</li>
-            <li>Top placement (limited slots)</li>
-          </ul>
-        </div>
-
-        <div class="box">
-          <h2>Next step</h2>
-          <p class="title">Message us</p>
-          <p>Send your details and we’ll reply with available options.</p>
-          <div class="ctaRow">
-            <button id="ctaBottom" class="btn primary" type="button">💬 WhatsApp now</button>
-            <a class="btn ghost" href="../">Open JerseyGo</a>
-          </div>
         </div>
       </div>
 
-      <div class="note">
-        <b>Note:</b> JerseyGo is an unofficial directory using public sources. Sponsored listings are clearly marked.
+      <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
+        <button id="cta" class="btn primary" type="button">💬 Message on WhatsApp</button>
+        <button id="suggest" class="btn" type="button">➕ Suggest a useful link</button>
+      </div>
+
+      <div class="mini">
+        JerseyGo is an unofficial directory. Links should be helpful and public.
       </div>
     </div>
-
-    <div class="footer">© JerseyGo</div>
   </div>
 
-<script>
-  const WHATSAPP_NUMBER_INTL = "447700704591";
-  const waLink = (text)=> `https://wa.me/${WHATSAPP_NUMBER_INTL}?text=${encodeURIComponent(text)}`;
+  <script>
+    const WHATSAPP_NUMBER_INTL = "447700704591";
+    const waLink = (text)=> `https://wa.me/${WHATSAPP_NUMBER_INTL}?text=${encodeURIComponent(text)}`;
 
-  const msgAdvertise =
-    "Hi 👋 I want to advertise my business on JerseyGo.\n\n" +
-    "Business name:\nCategory:\nParish/area:\nWebsite/Instagram (optional):\nCall/WhatsApp button needed:\n\n" +
-    "Please send me the available options.";
+    document.getElementById("cta").addEventListener("click", ()=>{
+      const msg =
+        "Hi 👋 I want to advertise on JerseyGo.\n\n" +
+        "Business name:\nCategory:\nWebsite / link:\nGoogle Maps link:\nPhone (optional):\nShort description:\n";
+      window.open(waLink(msg), "_blank", "noopener");
+    });
 
-  const msgSuggest =
-    "Hi 👋 I want to suggest a link for JerseyGo.\n\n" +
-    "Title:\nCategory:\nLink (URL):\nWhy it’s useful:\nLanguage (EN/PT/PL/FR):\n";
-
-  const openWa = (msg)=> window.open(waLink(msg), "_blank", "noopener");
-
-  document.getElementById("ctaTop").addEventListener("click", ()=> openWa(msgAdvertise));
-  document.getElementById("ctaHero").addEventListener("click", ()=> openWa(msgAdvertise));
-  document.getElementById("ctaBottom").addEventListener("click", ()=> openWa(msgAdvertise));
-  document.getElementById("ctaSuggest").addEventListener("click", ()=> openWa(msgSuggest));
-</script>
+    document.getElementById("suggest").addEventListener("click", ()=>{
+      const msg =
+        "Hi 👋 I want to suggest a link for JerseyGo.\n\n" +
+        "Title:\nCategory:\nLink (URL):\nWhy it’s useful:\nLanguage (EN/PT/PL/FR):\n";
+      window.open(waLink(msg), "_blank", "noopener");
+    });
+  </script>
 </body>
 </html>
