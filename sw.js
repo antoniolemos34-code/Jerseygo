@@ -1,4 +1,4 @@
-const CACHE_NAME = "jerseygo-cache-v1";
+const CACHE_NAME = "jerseygo-cache-v2";
 const CORE_ASSETS = ["./", "./index.html", "./manifest.webmanifest", "./icon.svg"];
 
 self.addEventListener("install", (event) => {
@@ -17,9 +17,11 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   const req = event.request;
-  const url = new URL(req.url);
   if (req.method !== "GET") return;
 
+  const url = new URL(req.url);
+
+  // Cache-first for same-origin assets
   if (url.origin === self.location.origin) {
     event.respondWith(
       caches.match(req).then((cached) => {
@@ -37,5 +39,6 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
+  // Network-first for external links
   event.respondWith(fetch(req).catch(() => caches.match("./index.html")));
 });
