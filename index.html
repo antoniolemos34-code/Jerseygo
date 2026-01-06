@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#0B1220" />
-  <meta name="description" content="JerseyGo — quick links for Jersey: residents & tourists. Parking, taxis, GP, toilets, pharmacies, transport, emergency, dates." />
+  <meta name="description" content="JerseyGo — quick links for Jersey: residents & tourists. Parking, taxis, toilets, pharmacies, transport, emergency, dates." />
   <title>JerseyGo</title>
 
   <link rel="manifest" href="./manifest.webmanifest" />
@@ -17,6 +17,7 @@
       --line:rgba(255,255,255,.10);
       --text:#E9EEF7; --muted:#A9B4C7;
       --r2:22px; --shadow: 0 22px 50px rgba(0,0,0,.45);
+      --blue:rgba(77,163,255,.45);
     }
     *{box-sizing:border-box}
     html,body{height:100%}
@@ -53,7 +54,6 @@
     .brand .t .name{font-weight:950; font-size:18px}
     .brand .t .sub{margin-top:4px; font-size:12px; color:var(--muted)}
 
-    /* ✅ actions aligned (Mode + Language left of search) */
     .actionsTop{
       display:flex;
       align-items:center;
@@ -62,23 +62,31 @@
       justify-content:flex-end;
       width:100%;
     }
-    @media (min-width: 980px){
-      .actionsTop{flex-wrap:nowrap; width:auto;}
-      .search{width:360px;}
-    }
 
+    /* ✅ Bigger search + focus */
     .search{
       display:flex; align-items:center; gap:10px;
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.04);
-      padding:12px 14px;
+      border:1px solid rgba(77,163,255,.22);
+      background: rgba(255,255,255,.05);
+      padding:13px 16px;
       border-radius:999px;
-      width:min(94vw, 520px);
+      width:min(94vw, 620px);
+      box-shadow: 0 12px 30px rgba(0,0,0,.25);
+    }
+    .search:focus-within{
+      border-color: rgba(77,163,255,.45);
+      background: rgba(255,255,255,.07);
+      box-shadow: 0 18px 45px rgba(0,0,0,.35);
     }
     .search input{
       width:100%;
       border:none; outline:none; background:transparent;
-      color:var(--text); font-size:14px;
+      color:var(--text); font-size:15px;
+    }
+
+    @media (min-width: 980px){
+      .actionsTop{flex-wrap:nowrap; width:auto;}
+      .search{width:520px;}
     }
 
     .btn{
@@ -90,6 +98,7 @@
       cursor:pointer;
       font-weight:900;
       letter-spacing:.2px;
+      white-space:nowrap;
     }
     .btn:hover{background: rgba(255,255,255,.08)}
     .btn.primary{border-color: rgba(77,163,255,.35); background: rgba(77,163,255,.14)}
@@ -103,6 +112,7 @@
       background: rgba(255,255,255,.03);
       padding:10px 12px;
       border-radius:999px;
+      white-space:nowrap;
     }
     .pillLbl{font-size:12px; color:var(--muted); font-weight:900; letter-spacing:.3px}
     .pillBtns{display:flex; gap:6px; flex-wrap:wrap}
@@ -115,6 +125,7 @@
       cursor:pointer;
       font-size:12px;
       opacity:.9;
+      white-space:nowrap;
     }
     .pillBtn.on{border-color: rgba(77,163,255,.35); background: rgba(77,163,255,.14); opacity:1}
 
@@ -148,22 +159,24 @@
 
     .cats{padding:10px}
     .cat{
-      display:flex; align-items:center; justify-content:space-between;
+      display:flex; align-items:flex-start; justify-content:space-between;
       gap:10px; padding:12px 12px;
       border-radius:16px; cursor:pointer;
       border:1px solid transparent;
     }
     .cat:hover{background: rgba(255,255,255,.04)}
     .cat.active{background: rgba(77,163,255,.10); border-color: rgba(77,163,255,.35);}
-    .catLeft{display:flex; align-items:center; gap:10px}
+    .catLeft{display:flex; align-items:flex-start; gap:10px}
     .catIcon{
       width:28px; height:28px;
       display:grid; place-items:center;
       border:1px solid var(--line);
       border-radius:10px;
       background: rgba(255,255,255,.03);
+      margin-top:1px;
     }
-    .catName{font-weight:950}
+    .catName{font-weight:950; line-height:1.1}
+    .catHint{margin-top:4px; font-size:12px; color:rgba(169,180,199,.85); line-height:1.25}
     .catCount{min-width:34px; text-align:center}
 
     .content{padding:14px}
@@ -188,6 +201,7 @@
       font-size:13px;
       cursor:pointer;
       user-select:none;
+      white-space:nowrap;
     }
     .chip:hover{background: rgba(255,255,255,.08)}
     .chip.primary{border-color: rgba(77,163,255,.35); background: rgba(77,163,255,.12)}
@@ -271,6 +285,7 @@
       border-radius:999px;
       cursor:pointer;
       user-select:none;
+      color:inherit;
     }
     .footLink:hover{background: rgba(255,255,255,.07)}
   </style>
@@ -288,7 +303,6 @@
     </div>
 
     <div class="actionsTop">
-      <!-- ✅ Mode (left) -->
       <div class="pillWrap">
         <div id="modeLbl" class="pillLbl">Mode</div>
         <div class="pillBtns">
@@ -297,7 +311,6 @@
         </div>
       </div>
 
-      <!-- ✅ Language (left) -->
       <div class="pillWrap">
         <div id="langLbl" class="pillLbl">Language</div>
         <div class="pillBtns">
@@ -308,7 +321,6 @@
         </div>
       </div>
 
-      <!-- Search after -->
       <div class="search">
         <span style="opacity:.9">🔎</span>
         <input id="q" placeholder="Search: parking, taxi, GP, toilets…" autocomplete="off" />
@@ -354,14 +366,14 @@
           <a id="quickTaxiNear" class="chip" target="_blank" rel="noopener">🚕 Taxi near me</a>
           <a id="quickToiletsNear" class="chip" target="_blank" rel="noopener">🚻 Toilets near me</a>
           <a id="quickPharmacyNear" class="chip" target="_blank" rel="noopener">💊 Pharmacy near me</a>
-          <a id="advertiseLinkTop" class="chip good" href="./advertise/" rel="noopener">💼 Advertise</a>
+          <a class="chip good" href="./advertise/" rel="noopener">💼 Advertise</a>
         </div>
       </div>
 
       <div id="cards" class="cards"></div>
 
-      <footer id="foot">
-        Emergency: call <b>999</b> / <b>112</b> • JerseyGo (unofficial directory; uses public sources)
+      <footer>
+        <span id="footText">Emergency: call 999 / 112 • JerseyGo (unofficial directory; uses public sources)</span>
         <div class="footLinks">
           <a class="footLink" href="./advertise/">💼 Advertise your business</a>
           <button id="suggestBtnFoot" class="footLink" type="button">➕ Suggest a link</button>
@@ -411,8 +423,8 @@ const LINKS = {
 
 /* ========= State ========= */
 const url = new URL(location.href);
-const LS_LANG = "jerseygo:lang:v2";
-const LS_MODE = "jerseygo:mode:v2";
+const LS_LANG = "jerseygo:lang:v3";
+const LS_MODE = "jerseygo:mode:v3";
 const LS_FAVS = "jerseygo:favs:v3";
 
 const allowedLangs = ["en","pt","pl","fr"];
@@ -580,21 +592,48 @@ function catIcon(cat){
 }
 const CATEGORY_ORDER = ["Essentials","Getting around","Facilities","Things to do","Help & safety"];
 
+/* ✅ Category subtitles (per language) */
+function catHint(cat){
+  const hints = {
+    "Essentials": {
+      en:"weather, tides, bank holidays",
+      pt:"tempo, marés, feriados",
+      pl:"pogoda, pływy, święta",
+      fr:"météo, marées, jours fériés"
+    },
+    "Getting around": {
+      en:"parking, buses, taxis, roadworks",
+      pt:"parking, autocarros, táxis, estradas",
+      pl:"parking, autobusy, taxi, drogi",
+      fr:"parking, bus, taxis, routes"
+    },
+    "Facilities": {
+      en:"toilets, pharmacies, ATMs, baby changing",
+      pt:"WC, farmácias, multibanco, fraldários",
+      pl:"toalety, apteki, bankomaty, przewijaki",
+      fr:"toilettes, pharmacies, distributeurs, table à langer"
+    },
+    "Things to do": {
+      en:"attractions, beaches, museums",
+      pt:"atrações, praias, museus",
+      pl:"atrakcje, plaże, muzea",
+      fr:"attractions, plages, musées"
+    },
+    "Help & safety": {
+      en:"emergency, airport, harbour, police",
+      pt:"emergência, aeroporto, porto, polícia",
+      pl:"alarmowe, lotnisko, port, policja",
+      fr:"urgence, aéroport, port, police"
+    }
+  };
+  const obj = hints[cat];
+  if(!obj) return "";
+  return obj[state.lang] || obj.en || "";
+}
+
 /* ========= Services (simplified categories; no cafes/restaurants) ========= */
 const SERVICES = [
-  /* ⭐ Essentials */
-  {
-    id:"ess-parking-live",
-    category:"Getting around",
-    audience:["residents","tourists"],
-    name:{en:"Live parking (official)",pt:"Parking ao vivo (oficial)",pl:"Parking na żywo (oficjalnie)",fr:"Parkings en direct (officiel)"},
-    desc:{en:"Official live spaces + PayByPhone info.",pt:"Vagas ao vivo + PayByPhone.",pl:"Wolne miejsca + PayByPhone.",fr:"Places + PayByPhone."},
-    tags:["parking","spaces"],
-    links:[
-      {label:{en:"Open live parking",pt:"Abrir parking",pl:"Otwórz parking",fr:"Ouvrir parkings"}, url:LINKS.parkingLive},
-      {label:{en:"PayByPhone info",pt:"Info PayByPhone",pl:"PayByPhone info",fr:"Infos PayByPhone"}, url:LINKS.parkingPay}
-    ]
-  },
+  /* Essentials */
   {
     id:"ess-weather",
     category:"Essentials",
@@ -616,17 +655,20 @@ const SERVICES = [
     tags:["bank","holidays","dates"],
     links:[{label:{en:"Open official bank holidays",pt:"Abrir feriados oficiais",pl:"Oficjalne święta",fr:"Jours fériés officiels"}, url:LINKS.bankHolidays}]
   },
-  {
-    id:"every-atm",
-    category:"Facilities",
-    audience:["residents","tourists"],
-    name:{en:"ATM / Cashpoint (near me)",pt:"ATM / Multibanco (perto de mim)",pl:"Bankomat (w pobliżu)",fr:"Distributeur (à proximité)"},
-    desc:{en:"Find the nearest cashpoint.",pt:"Encontra o multibanco mais perto.",pl:"Znajdź bankomat.",fr:"Trouvez un distributeur."},
-    tags:["atm","cash","near me"],
-    links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("ATM Jersey")}]
-  },
 
-  /* 🚌 Getting around */
+  /* Getting around */
+  {
+    id:"park-live",
+    category:"Getting around",
+    audience:["residents","tourists"],
+    name:{en:"Live parking (official)",pt:"Parking ao vivo (oficial)",pl:"Parking na żywo (oficjalnie)",fr:"Parkings en direct (officiel)"},
+    desc:{en:"Official live spaces + PayByPhone info.",pt:"Vagas ao vivo + PayByPhone.",pl:"Wolne miejsca + PayByPhone.",fr:"Places + PayByPhone."},
+    tags:["parking","spaces"],
+    links:[
+      {label:{en:"Open live parking",pt:"Abrir parking",pl:"Otwórz parking",fr:"Ouvrir parkings"}, url:LINKS.parkingLive},
+      {label:{en:"PayByPhone info",pt:"Info PayByPhone",pl:"PayByPhone info",fr:"Infos PayByPhone"}, url:LINKS.parkingPay}
+    ]
+  },
   {
     id:"transport-bus",
     category:"Getting around",
@@ -649,15 +691,6 @@ const SERVICES = [
     links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("taxi Jersey")}]
   },
   {
-    id:"transport-ev",
-    category:"Getting around",
-    audience:["residents","tourists"],
-    name:{en:"EV chargers (near me)",pt:"Carregadores elétricos (perto de mim)",pl:"Ładowarki EV (w pobliżu)",fr:"Bornes EV (à proximité)"},
-    desc:{en:"Find nearby EV charging points.",pt:"Encontra carregadores elétricos perto.",pl:"Znajdź ładowarki EV.",fr:"Trouvez des bornes EV."},
-    tags:["ev","charger","near me"],
-    links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("EV charger Jersey")}]
-  },
-  {
     id:"traffic-roadworks",
     category:"Getting around",
     audience:["residents","tourists"],
@@ -672,7 +705,7 @@ const SERVICES = [
     ]
   },
 
-  /* 🚻 Facilities */
+  /* Facilities */
   {
     id:"fac-toilets",
     category:"Facilities",
@@ -683,15 +716,6 @@ const SERVICES = [
     links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("public toilets Jersey")}]
   },
   {
-    id:"fac-baby",
-    category:"Facilities",
-    audience:["residents","tourists"],
-    name:{en:"Baby changing (near me)",pt:"Fraldário (perto de mim)",pl:"Przewijak (w pobliżu)",fr:"Table à langer (à proximité)"},
-    desc:{en:"Find baby changing facilities nearby.",pt:"Encontra fraldários perto.",pl:"Znajdź przewijaki.",fr:"Trouvez des tables à langer."},
-    tags:["baby","changing","near me"],
-    links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("baby changing Jersey")}]
-  },
-  {
     id:"fac-pharmacy",
     category:"Facilities",
     audience:["residents","tourists"],
@@ -700,8 +724,26 @@ const SERVICES = [
     tags:["pharmacy","near me"],
     links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("pharmacy Jersey")}]
   },
+  {
+    id:"every-atm",
+    category:"Facilities",
+    audience:["residents","tourists"],
+    name:{en:"ATM / Cashpoint (near me)",pt:"ATM / Multibanco (perto de mim)",pl:"Bankomat (w pobliżu)",fr:"Distributeur (à proximité)"},
+    desc:{en:"Find the nearest cashpoint.",pt:"Encontra o multibanco mais perto.",pl:"Znajdź bankomat.",fr:"Trouvez un distributeur."},
+    tags:["atm","cash","near me"],
+    links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("ATM Jersey")}]
+  },
+  {
+    id:"fac-baby",
+    category:"Facilities",
+    audience:["residents","tourists"],
+    name:{en:"Baby changing (near me)",pt:"Fraldário (perto de mim)",pl:"Przewijak (w pobliżu)",fr:"Table à langer (à proximité)"},
+    desc:{en:"Find baby changing facilities nearby.",pt:"Encontra fraldários perto.",pl:"Znajdź przewijaki.",fr:"Trouvez des tables à langer."},
+    tags:["baby","changing","near me"],
+    links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("baby changing Jersey")}]
+  },
 
-  /* 🏛️ Things to do */
+  /* Things to do */
   {
     id:"sea-beaches",
     category:"Things to do",
@@ -730,7 +772,7 @@ const SERVICES = [
     links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("tourist attraction Jersey")}]
   },
 
-  /* 🚨 Help & safety */
+  /* Help & safety */
   {
     id:"ports-contacts",
     category:"Help & safety",
@@ -754,7 +796,12 @@ const SERVICES = [
     category:"Help & safety",
     audience:["residents","tourists"],
     name:{en:"Emergency numbers",pt:"Números de emergência",pl:"Numery alarmowe",fr:"Numéros d'urgence"},
-    desc:{en:"Emergency: 999 / 112. Non-emergency: Police, Fire, Ambulance, Coastguard.",pt:"Emergência: 999 / 112. Não-urgente: Polícia, Bombeiros, Ambulância, Guarda-costeira.",pl:"Alarmowe: 999 / 112. Niealarmowe: Policja, Straż, Ambulans, Straż przybrzeżna.",fr:"Urgence : 999 / 112. Non-urgent : Police, Pompiers, Ambulance, Garde-côtes."},
+    desc:{
+      en:"Emergency: 999 / 112. Non-emergency: Police, Fire, Ambulance, Coastguard.",
+      pt:"Emergência: 999 / 112. Não-urgente: Polícia, Bombeiros, Ambulância, Guarda-costeira.",
+      pl:"Alarmowe: 999 / 112. Niealarmowe: Policja, Straż, Ambulans, Straż przybrzeżna.",
+      fr:"Urgence : 999 / 112. Non-urgent : Police, Pompiers, Ambulance, Garde-côtes."
+    },
     tags:["emergency","police","fire","ambulance","coastguard"],
     links:[
       {label:{en:"Call 999",pt:"Ligar 999",pl:"Zadzwoń 999",fr:"Appeler 999"}, url:"tel:999"},
@@ -764,13 +811,7 @@ const SERVICES = [
       {label:{en:"Fire (non-emergency)",pt:"Bombeiros (não-urgente)",pl:"Straż pożarna (niealarmowe)",fr:"Pompiers (non urgent)"}, url:"tel:+441534445906"},
       {label:{en:"Ambulance (non-emergency)",pt:"Ambulância (não-urgente)",pl:"Ambulans (niealarmowe)",fr:"Ambulance (non urgent)"}, url:"tel:+441534444710"},
       {label:{en:"Coastguard (non-emergency)",pt:"Guarda-costeira (não-urgente)",pl:"Straż przybrzeżna (niealarmowe)",fr:"Garde-côtes (non urgent)"}, url:"tel:+441534447705"}
-    ],
-    details:{
-      en:["Tip: Use 999 / 112 only for emergencies."],
-      pt:["Dica: Usa 999 / 112 apenas para emergências."],
-      pl:["Wskazówka: 999 / 112 tylko w nagłych wypadkach."],
-      fr:["Astuce : 999 / 112 uniquement en cas d'urgence."]
-    }
+    ]
   }
 ];
 
@@ -833,17 +874,8 @@ function setLangUI(){
 
   $("viewTitle").textContent = (state.category==="All") ? t().all : state.category;
   $("viewDesc").textContent = t().desc;
-  $("foot").childNodes[0].textContent = "";
 
-  // Set footer text without destroying links
-  const foot = $("foot");
-  foot.innerHTML = `
-    ${t().emergencyFoot}
-    <div class="footLinks">
-      <a class="footLink" href="./advertise/">💼 Advertise your business</a>
-      <button id="suggestBtnFoot" class="footLink" type="button">${t().suggest}</button>
-    </div>
-  `;
+  $("footText").textContent = t().emergencyFoot;
 
   [...document.querySelectorAll('[data-lang]')].forEach(b=>{
     b.classList.toggle("on", b.dataset.lang===state.lang);
@@ -854,20 +886,26 @@ function setLangUI(){
   $("modeResidents").classList.toggle("on", state.mode==="residents");
   $("modeTourists").classList.toggle("on", state.mode==="tourists");
 
-  // bind footer suggest every time because footer recreated
-  bindSuggestButton();
+  $("suggestBtnFoot").textContent = t().suggest;
 }
 
 function makeCatRow(cat, count){
   const row = document.createElement("div");
   row.className = "cat" + ((state.category===cat) ? " active" : "");
+
+  const hint = (cat==="All") ? "" : catHint(cat);
+
   row.innerHTML = `
     <div class="catLeft">
       <div class="catIcon">${catIcon(cat)}</div>
-      <div class="catName">${(cat==="All") ? t().allCat : cat}</div>
+      <div>
+        <div class="catName">${(cat==="All") ? t().allCat : cat}</div>
+        ${hint ? `<div class="catHint">${hint}</div>` : ``}
+      </div>
     </div>
     <div class="catCount badge">${count}</div>
   `;
+
   row.addEventListener("click", ()=>{
     state.category = cat;
     $("viewTitle").textContent = (cat==="All") ? t().all : cat;
@@ -925,11 +963,6 @@ function renderCards(){
     const tags = (s.tags||[]).slice(0,6);
     const favOn = state.favs.has(s.id);
 
-    const details = (s.details && (s.details[state.lang] || s.details.en)) || [];
-    const detailsHtml = details.length
-      ? `<div class="meta" style="margin-top:-2px">${details.map(d=>"• "+d).join("<br>")}</div>`
-      : "";
-
     const links = (s.links||[]).map((lnk, idx)=>{
       const lbl = getLabel(lnk.label);
       const openId = `open_${s.id}_${idx}`;
@@ -945,7 +978,6 @@ function renderCards(){
         <div>
           <div class="name">${title}</div>
           <div class="meta">${desc}</div>
-          ${detailsHtml}
         </div>
         <button class="favBtn ${favOn ? "on":""}" type="button" aria-label="Favourite">${favOn ? "★" : "☆"}</button>
       </div>
@@ -1069,17 +1101,12 @@ $("shareBtn").addEventListener("click", async ()=>{
 });
 
 /* ========= Suggest a link -> WhatsApp ========= */
-function bindSuggestButton(){
-  const btn = $("suggestBtnFoot");
-  if(!btn || btn.__bound) return;
-  btn.__bound = true;
-  btn.addEventListener("click", ()=>{
-    const msg =
-      "Hi 👋 I want to suggest a link for JerseyGo.\n\n" +
-      "Title:\nCategory:\nLink (URL):\nWhy it’s useful:\nLanguage (EN/PT/PL/FR):\n";
-    window.open(waLink(msg), "_blank", "noopener");
-  });
-}
+$("suggestBtnFoot").addEventListener("click", ()=>{
+  const msg =
+    "Hi 👋 I want to suggest a link for JerseyGo.\n\n" +
+    "Title:\nCategory:\nLink (URL):\nWhy it’s useful:\nLanguage (EN/PT/PL/FR):\n";
+  window.open(waLink(msg), "_blank", "noopener");
+});
 
 /* ========= Search + toggles ========= */
 $("q").value = url.searchParams.get("q") || "";
@@ -1151,4 +1178,4 @@ persist();
 render();
 </script>
 </body>
-  </html>
+</html>
