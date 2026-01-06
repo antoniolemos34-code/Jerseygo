@@ -141,7 +141,7 @@
           <h2>How it works</h2>
           <p class="title">Simple sponsored listing</p>
           <ul>
-            <li>Your business appears in the right category (e.g. Taxi, Trades, Facilities).</li>
+            <li>Your business appears in the right category.</li>
             <li>One-tap actions (Call / Maps / Official page / WhatsApp).</li>
             <li>Clear “Sponsored” label (trust & transparency).</li>
           </ul>
@@ -154,7 +154,7 @@
             <li>Taxis / private hire</li>
             <li>Trades (plumber, electrician, locksmith)</li>
             <li>Tourist services (bike hire, attractions)</li>
-            <li>Health & essentials (pharmacy, clinics)</li>
+            <li>Health & essentials</li>
           </ul>
         </div>
 
@@ -192,8 +192,6 @@
   </div>
 
 <script>
-  // Hidden-number WhatsApp link (no email)
-  // Your number: 07700 704591 => wa.me needs international format: 447700704591
   const WHATSAPP_NUMBER_INTL = "447700704591";
   const waLink = (text)=> `https://wa.me/${WHATSAPP_NUMBER_INTL}?text=${encodeURIComponent(text)}`;
 
