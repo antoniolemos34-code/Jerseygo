@@ -81,6 +81,7 @@
     .btn.primary{border-color: rgba(77,163,255,.35); background: rgba(77,163,255,.14)}
     .btn.good{border-color: rgba(53,208,127,.35); background: rgba(53,208,127,.12)}
     .btn.ghost{background: rgba(255,255,255,.03)}
+    .btn:disabled{opacity:.55; cursor:not-allowed}
 
     .pillWrap{
       display:flex; align-items:center; gap:10px;
@@ -209,6 +210,19 @@
     .favBtn.on{border-color: rgba(77,163,255,.35); background: rgba(77,163,255,.14)}
     .favBtn:hover{background: rgba(255,255,255,.08)}
 
+    .linkBtn{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      padding:10px 12px;
+      border-radius:14px;
+      cursor:pointer;
+      font-weight:950;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    .linkBtn:hover{background: rgba(255,255,255,.08)}
+
     .toast{
       position:fixed; left:50%; bottom:16px; transform:translateX(-50%);
       background: rgba(14,22,41,.92);
@@ -265,7 +279,7 @@
       <button id="favToggle" class="btn good">★ Favourites</button>
       <button id="nearMeBtn" class="btn primary">📍 Near me</button>
       <button id="shareBtn" class="btn">🔗 Share</button>
-      <button id="installBtn" class="btn ghost">⬇ Install</button>
+      <button id="installBtn" class="btn ghost" disabled>⬇ Install</button>
       <button id="resetBtn" class="btn ghost">Reset</button>
     </div>
   </div>
@@ -322,10 +336,6 @@
 ========= */
 const $ = (id)=>document.getElementById(id);
 const norm = (s)=> (s||"").toLowerCase().trim();
-const escapeHtml = (s)=> (s||"")
-  .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
-  .replaceAll('"',"&quot;").replaceAll("'","&#039;");
-
 const toast = (msg)=>{
   const t = $("toast");
   t.textContent = msg;
@@ -333,17 +343,10 @@ const toast = (msg)=>{
   clearTimeout(window.__toast);
   window.__toast = setTimeout(()=>t.classList.remove("show"), 1600);
 };
-
-const telHref = (phone)=>{
-  const cleaned = (phone||"").replace(/[^\d+]/g,"");
-  return cleaned ? ("tel:" + cleaned) : "#";
-};
-
 const mapsSearch = (query)=> `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
 
 /* =========
-   Stable links (official)
-   - Bank holidays + Roadworks fixed
+   Verified official links
 ========= */
 const LINKS = {
   govHome: "https://www.gov.je/",
@@ -353,11 +356,11 @@ const LINKS = {
   tides: "https://www.gov.je/weather/tidetimes/",
   libertyBus: "https://libertybus.je/",
   busesGov: "https://www.gov.je/Travel/Buses/Pages/RoutesTimetables.aspx",
+
+  policeContact: "https://www.jersey.police.je/s/contact-us",
   portsContact: "https://www.ports.je/about-us/contact/",
   airportContact: "https://www.jerseyairport.com/contact/contact-us/",
-  policeContact: "https://www.jersey.police.je/s/contact-us",
 
-  // ✅ FIXED (open reliably)
   bankHolidays: "https://www.gov.je/Leisure/Events/WhatsOn/pages/bankholidaydates.aspx",
   roadClosures: "https://www.gov.je/Travel/Roads/RoadClosures/pages/index.aspx",
   roadworksMobile: "https://m.gov.je/Traffic/Roadworks",
@@ -369,7 +372,6 @@ const LINKS = {
    State (URL + localStorage)
 ========= */
 const url = new URL(location.href);
-
 const LS_LANG = "jerseygo:lang:v1";
 const LS_MODE = "jerseygo:mode:v1";
 const LS_FAVS = "jerseygo:favs:v3";
@@ -421,7 +423,8 @@ const I18N = {
     emergencyFoot:"Emergency: call 999 / 112 • JerseyGo (unofficial directory; uses public sources)",
     howInstall:"How to install",
     open:"Open",
-    copy:"📋 Copy"
+    copy:"📋 Copy",
+    allCat:"All"
   },
   pt:{
     sub:"Links rápidos para Jersey — residentes e turistas",
@@ -452,7 +455,8 @@ const I18N = {
     emergencyFoot:"Emergência: liga 999 / 112 • JerseyGo (diretório não-oficial; usa fontes públicas)",
     howInstall:"Como instalar",
     open:"Abrir",
-    copy:"📋 Copiar"
+    copy:"📋 Copiar",
+    allCat:"Tudo"
   },
   pl:{
     sub:"Szybkie linki dla Jersey — mieszkańcy i turyści",
@@ -483,7 +487,8 @@ const I18N = {
     emergencyFoot:"Nagłe: 999 / 112 • JerseyGo (nieoficjalny katalog; publiczne źródła)",
     howInstall:"Jak zainstalować",
     open:"Otwórz",
-    copy:"📋 Kopiuj"
+    copy:"📋 Kopiuj",
+    allCat:"Wszystko"
   },
   fr:{
     sub:"Liens rapides pour Jersey — résidents & touristes",
@@ -514,7 +519,8 @@ const I18N = {
     emergencyFoot:"Urgence : 999 / 112 • JerseyGo (annuaire non officiel ; sources publiques)",
     howInstall:"Comment installer",
     open:"Ouvrir",
-    copy:"📋 Copier"
+    copy:"📋 Copier",
+    allCat:"Tout"
   }
 };
 const t = ()=> I18N[state.lang] || I18N.en;
@@ -540,25 +546,13 @@ function catIcon(cat){
     default: return "•";
   }
 }
-
 const CATEGORY_ORDER = [
-  "Essentials",
-  "Everyday",
-  "Facilities",
-  "Parking",
-  "Transport",
-  "Traffic",
-  "Dates",
-  "Weather",
-  "Beaches & Sea",
-  "Things to do",
-  "Airport & Harbour",
-  "Emergency"
+  "Essentials","Everyday","Facilities","Parking","Transport","Traffic","Dates","Weather",
+  "Beaches & Sea","Things to do","Airport & Harbour","Emergency"
 ];
 
 /* =========
-   Services
-   - no cafes/restaurants (reserved for paid listings in future)
+   Services (no cafes/restaurants)
 ========= */
 const SERVICES = [
   /* ⭐ Essentials */
@@ -572,8 +566,7 @@ const SERVICES = [
     links:[
       {label:{en:"Open live parking",pt:"Abrir parking",pl:"Otwórz parking",fr:"Ouvrir parkings"}, url:LINKS.parkingLive},
       {label:{en:"PayByPhone info",pt:"Info PayByPhone",pl:"PayByPhone info",fr:"Infos PayByPhone"}, url:LINKS.parkingPay}
-    ],
-    mapsQuery:"car park St Helier"
+    ]
   },
   {
     id:"ess-weather",
@@ -585,20 +578,18 @@ const SERVICES = [
     links:[
       {label:{en:"Open forecast",pt:"Abrir previsão",pl:"Otwórz prognozę",fr:"Ouvrir météo"}, url:LINKS.met},
       {label:{en:"Tide times",pt:"Marés",pl:"Pływy",fr:"Marées"}, url:LINKS.tides}
-    ],
-    mapsQuery:"Jersey"
+    ]
   },
 
   /* 🧩 Everyday */
   {
     id:"every-postoffice",
     category:"Everyday",
-    audience:["residents"],
+    audience:["residents","tourists"],
     name:{en:"Post Office (near me)",pt:"Correios (perto de mim)",pl:"Poczta (w pobliżu)",fr:"Bureau de poste (à proximité)"},
     desc:{en:"Find the nearest post office.",pt:"Encontra os correios mais perto.",pl:"Znajdź najbliższą pocztę.",fr:"Trouvez le bureau de poste le plus proche."},
     tags:["post","office","near me"],
-    links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("post office Jersey")}],
-    mapsQuery:"post office Jersey"
+    links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("post office Jersey")}]
   },
   {
     id:"every-recycling",
@@ -607,8 +598,7 @@ const SERVICES = [
     name:{en:"Recycling centre (near me)",pt:"Centro de reciclagem (perto de mim)",pl:"Punkt recyklingu (w pobliżu)",fr:"Centre de recyclage (à proximité)"},
     desc:{en:"Find the nearest recycling centre.",pt:"Encontra o centro de reciclagem mais perto.",pl:"Znajdź centrum recyklingu.",fr:"Trouvez un centre de recyclage."},
     tags:["recycling","near me"],
-    links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("recycling centre Jersey")}],
-    mapsQuery:"recycling centre Jersey"
+    links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("recycling centre Jersey")}]
   },
   {
     id:"every-parish",
@@ -617,8 +607,7 @@ const SERVICES = [
     name:{en:"Parish hall (near me)",pt:"Parish hall (perto de mim)",pl:"Ratusz parafii (w pobliżu)",fr:"Mairie paroissiale (à proximité)"},
     desc:{en:"Find your nearest parish hall.",pt:"Encontra o parish hall mais perto.",pl:"Znajdź parish hall.",fr:"Trouvez la mairie paroissiale."},
     tags:["parish","near me"],
-    links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("parish hall Jersey")}],
-    mapsQuery:"parish hall Jersey"
+    links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("parish hall Jersey")}]
   },
   {
     id:"every-atm",
@@ -627,8 +616,7 @@ const SERVICES = [
     name:{en:"ATM / Cashpoint (near me)",pt:"ATM / Multibanco (perto de mim)",pl:"Bankomat (w pobliżu)",fr:"Distributeur (à proximité)"},
     desc:{en:"Find the nearest cashpoint.",pt:"Encontra o multibanco mais perto.",pl:"Znajdź bankomat.",fr:"Trouvez un distributeur."},
     tags:["atm","cash","near me"],
-    links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("ATM Jersey")}],
-    mapsQuery:"ATM Jersey"
+    links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("ATM Jersey")}]
   },
 
   /* 🚻 Facilities */
@@ -639,8 +627,7 @@ const SERVICES = [
     name:{en:"Public toilets (near me)",pt:"WC públicos (perto de mim)",pl:"Toalety publiczne (w pobliżu)",fr:"Toilettes publiques (à proximité)"},
     desc:{en:"Open Google Maps with nearby public toilets.",pt:"Abre o Google Maps com WC perto de ti.",pl:"Otwiera Mapy z toaletami.",fr:"Ouvre Maps avec toilettes proches."},
     tags:["toilets","wc","near me"],
-    links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("public toilets Jersey")}],
-    mapsQuery:"public toilets Jersey"
+    links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("public toilets Jersey")}]
   },
   {
     id:"fac-baby",
@@ -649,8 +636,16 @@ const SERVICES = [
     name:{en:"Baby changing (near me)",pt:"Fraldário (perto de mim)",pl:"Przewijak (w pobliżu)",fr:"Table à langer (à proximité)"},
     desc:{en:"Find baby changing facilities nearby.",pt:"Encontra fraldários perto.",pl:"Znajdź przewijaki.",fr:"Trouvez des tables à langer."},
     tags:["baby","changing","near me"],
-    links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("baby changing Jersey")}],
-    mapsQuery:"baby changing Jersey"
+    links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("baby changing Jersey")}]
+  },
+  {
+    id:"fac-pharmacy",
+    category:"Facilities",
+    audience:["residents","tourists"],
+    name:{en:"Pharmacy (near me)",pt:"Farmácia (perto de mim)",pl:"Apteka (w pobliżu)",fr:"Pharmacie (à proximité)"},
+    desc:{en:"Find pharmacies nearby.",pt:"Encontra farmácias perto.",pl:"Znajdź apteki.",fr:"Trouvez des pharmacies."},
+    tags:["pharmacy","near me"],
+    links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("pharmacy Jersey")}]
   },
 
   /* 🅿️ Parking */
@@ -661,8 +656,7 @@ const SERVICES = [
     name:{en:"Pay for parking (info)",pt:"Pagar estacionamento (info)",pl:"Opłaty parkingowe (info)",fr:"Paiement parking (infos)"},
     desc:{en:"PayByPhone official info page.",pt:"Página oficial do PayByPhone.",pl:"Strona PayByPhone.",fr:"Infos PayByPhone."},
     tags:["parking","pay"],
-    links:[{label:{en:"Open PayByPhone info",pt:"Abrir PayByPhone",pl:"Otwórz PayByPhone",fr:"Ouvrir PayByPhone"}, url:LINKS.parkingPay}],
-    mapsQuery:"car park St Helier"
+    links:[{label:{en:"Open PayByPhone info",pt:"Abrir PayByPhone",pl:"Otwórz PayByPhone",fr:"Ouvrir PayByPhone"}, url:LINKS.parkingPay}]
   },
 
   /* 🚌 Transport */
@@ -676,8 +670,7 @@ const SERVICES = [
     links:[
       {label:{en:"Open LibertyBus",pt:"Abrir LibertyBus",pl:"Otwórz LibertyBus",fr:"Ouvrir LibertyBus"}, url:LINKS.libertyBus},
       {label:{en:"Gov routes & timetables",pt:"Horários gov.je",pl:"Rozkłady gov.je",fr:"Horaires gov.je"}, url:LINKS.busesGov}
-    ],
-    mapsQuery:"Liberation Station St Helier"
+    ]
   },
   {
     id:"transport-taxi",
@@ -686,8 +679,7 @@ const SERVICES = [
     name:{en:"Taxi (near me)",pt:"Táxi (perto de mim)",pl:"Taxi (w pobliżu)",fr:"Taxi (à proximité)"},
     desc:{en:"Nearby taxis / taxi ranks on Maps.",pt:"Táxis e paragens no Maps.",pl:"Taxi i postoje.",fr:"Taxis et stations."},
     tags:["taxi","near me"],
-    links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("taxi Jersey")}],
-    mapsQuery:"taxi Jersey"
+    links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("taxi Jersey")}]
   },
   {
     id:"transport-ev",
@@ -696,8 +688,7 @@ const SERVICES = [
     name:{en:"EV chargers (near me)",pt:"Carregadores elétricos (perto de mim)",pl:"Ładowarki EV (w pobliżu)",fr:"Bornes EV (à proximité)"},
     desc:{en:"Find nearby EV charging points.",pt:"Encontra carregadores elétricos perto.",pl:"Znajdź ładowarki EV.",fr:"Trouvez des bornes EV."},
     tags:["ev","charger","near me"],
-    links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("EV charger Jersey")}],
-    mapsQuery:"EV charger Jersey"
+    links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("EV charger Jersey")}]
   },
 
   /* 🚧 Traffic */
@@ -718,8 +709,7 @@ const SERVICES = [
       {label:{en:"Mobile view",pt:"Versão mobile",pl:"Wersja mobilna",fr:"Version mobile"}, url:LINKS.roadworksMobile},
       {label:{en:"Live roadworks map",pt:"Mapa de obras",pl:"Mapa robót",fr:"Carte des travaux"}, url:LINKS.roadworksMap},
       {label:{en:"Traffic report list",pt:"Lista (traffic report)",pl:"Lista (raport)",fr:"Liste (rapport)"}, url:LINKS.trafficReport}
-    ],
-    mapsQuery:"roadworks Jersey"
+    ]
   },
 
   /* 📅 Dates */
@@ -735,26 +725,33 @@ const SERVICES = [
       fr:"Jours fériés officiels (Gov.je)."
     },
     tags:["bank","holidays","dates"],
-    links:[
-      {label:{en:"Open official bank holidays",pt:"Abrir feriados oficiais",pl:"Oficjalne święta",fr:"Jours fériés officiels"}, url:LINKS.bankHolidays}
-    ],
-    mapsQuery:"Government of Jersey"
+    links:[{label:{en:"Open official bank holidays",pt:"Abrir feriados oficiais",pl:"Oficjalne święta",fr:"Jours fériés officiels"}, url:LINKS.bankHolidays}]
   },
   {
     id:"dates-schoolterms",
     category:"Dates",
     audience:["residents"],
     name:{en:"School terms (reference)",pt:"Calendário escolar (referência)",pl:"Terminy szkolne (lista)",fr:"Calendrier scolaire (liste)"},
-    desc:{en:"Add term/half-term dates (works offline).",pt:"Adiciona datas de term/half-term (offline).",pl:"Dodaj terminy (offline).",fr:"Ajoutez les dates (hors-ligne)."},
+    desc:{en:"Quick reference page (add your dates).",pt:"Página de referência (adiciona as datas).",pl:"Strona referencyjna (dodaj daty).",fr:"Page de référence (ajoutez vos dates)."},
     tags:["school","terms","dates"],
+    links:[{label:{en:"Gov.je home",pt:"Gov.je",pl:"Gov.je",fr:"Gov.je"}, url:LINKS.govHome}],
     details:{
       en:["Tip: paste term + half-term dates for the current academic year."],
       pt:["Dica: cola as datas do ano letivo atual (terms + half-terms)."],
       pl:["Wklej daty semestrów i przerw."],
       fr:["Collez les dates des trimestres et vacances."]
-    },
-    links:[{label:{en:"Gov.je home",pt:"Gov.je",pl:"Gov.je",fr:"Gov.je"}, url:LINKS.govHome}],
-    mapsQuery:"Jersey"
+    }
+  },
+
+  /* 🌦️ Weather */
+  {
+    id:"weather-met",
+    category:"Weather",
+    audience:["residents","tourists"],
+    name:{en:"Jersey Met (official)",pt:"Jersey Met (oficial)",pl:"Jersey Met (oficjalnie)",fr:"Jersey Met (officiel)"},
+    desc:{en:"Official forecast page.",pt:"Página oficial do tempo.",pl:"Oficjalna prognoza.",fr:"Prévisions officielles."},
+    tags:["weather","forecast"],
+    links:[{label:{en:"Open Jersey Met",pt:"Abrir Jersey Met",pl:"Otwórz Jersey Met",fr:"Ouvrir Jersey Met"}, url:LINKS.met}]
   },
 
   /* 🌊 Beaches & Sea */
@@ -765,8 +762,7 @@ const SERVICES = [
     name:{en:"Beaches (near me)",pt:"Praias (perto de mim)",pl:"Plaże (w pobliżu)",fr:"Plages (à proximité)"},
     desc:{en:"Find beaches near your location.",pt:"Encontra praias perto de ti.",pl:"Znajdź plaże w pobliżu.",fr:"Trouvez des plages proches."},
     tags:["beach","near me"],
-    links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("beach Jersey")}],
-    mapsQuery:"beach Jersey"
+    links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("beach Jersey")}]
   },
   {
     id:"sea-coastal-walks",
@@ -775,43 +771,487 @@ const SERVICES = [
     name:{en:"Coastal walks (near me)",pt:"Trilhos costeiros (perto)",pl:"Spacery nadmorskie (w pobliżu)",fr:"Balades côtières (à proximité)"},
     desc:{en:"Find coastal walks nearby.",pt:"Encontra trilhos costeiros perto.",pl:"Znajdź trasy nadmorskie.",fr:"Trouvez des balades côtières."},
     tags:["walk","coastal","near me"],
-    links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("coastal walk Jersey")}],
-    mapsQuery:"coastal walk Jersey"
+    links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("coastal walk Jersey")}]
   },
 
   /* 🏛️ Things to do */
   {
     id:"todo-museums",
     category:"Things to do",
-    audience:["tourists"],
+    audience:["tourists","residents"],
     name:{en:"Museums (near me)",pt:"Museus (perto de mim)",pl:"Muzea (w pobliżu)",fr:"Musées (à proximité)"},
     desc:{en:"Find museums nearby.",pt:"Encontra museus perto.",pl:"Znajdź muzea.",fr:"Trouvez des musées."},
     tags:["museum","near me"],
-    links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("museum Jersey")}],
-    mapsQuery:"museum Jersey"
+    links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("museum Jersey")}]
   },
   {
     id:"todo-attractions",
     category:"Things to do",
-    audience:["tourists"],
+    audience:["tourists","residents"],
     name:{en:"Attractions (near me)",pt:"Atrações (perto de mim)",pl:"Atrakcje (w pobliżu)",fr:"Attractions (à proximité)"},
     desc:{en:"Find top attractions nearby.",pt:"Encontra atrações perto.",pl:"Znajdź atrakcje.",fr:"Trouvez des attractions."},
     tags:["attraction","near me"],
-    links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("tourist attraction Jersey")}],
-    mapsQuery:"tourist attraction Jersey"
+    links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("tourist attraction Jersey")}]
   },
 
   /* ✈️ Airport & Harbour */
+  {
+    id:"ports-contacts",
+    category:"Airport & Harbour",
+    audience:["residents","tourists"],
+    name:{en:"Ports of Jersey — contact",pt:"Ports of Jersey — contacto",pl:"Ports of Jersey — kontakt",fr:"Ports of Jersey — contact"},
+    desc:{en:"Official ports contact page.",pt:"Página oficial de contacto.",pl:"Oficjalny kontakt.",fr:"Contact officiel."},
+    tags:["ports","harbour","contact"],
+    links:[{label:{en:"Open contact",pt:"Abrir contacto",pl:"Kontakt",fr:"Ouvrir contact"}, url:LINKS.portsContact}]
+  },
   {
     id:"airport-contact",
     category:"Airport & Harbour",
     audience:["residents","tourists"],
     name:{en:"Jersey Airport — contact",pt:"Aeroporto — contacto",pl:"Lotnisko — kontakt",fr:"Aéroport — contact"},
-    desc:{en:"Official contact page.",pt:"Página oficial de contacto.",pl:"Oficjalny kontakt.",fr:"Contact officiel."},
-    tags:["airport"],
-    links:[{ ??Q?] // left intentionally? no.
+    desc:{en:"Official airport contact page.",pt:"Página oficial de contacto do aeroporto.",pl:"Oficjalny kontakt lotniska.",fr:"Contact officiel de l'aéroport."},
+    tags:["airport","contact"],
+    links:[{label:{en:"Open contact",pt:"Abrir contacto",pl:"Otwórz kontakt",fr:"Ouvrir contact"}, url:LINKS.airportContact}]
+  },
+
+  /* 🚨 Emergency */
+  {
+    id:"emergency-main",
+    category:"Emergency",
+    audience:["residents","tourists"],
+    name:{en:"Emergency numbers",pt:"Números de emergência",pl:"Numery alarmowe",fr:"Numéros d'urgence"},
+    desc:{
+      en:"Emergency: 999 / 112. Non-emergency: Police, Fire, Ambulance, Coastguard.",
+      pt:"Emergência: 999 / 112. Não-urgente: Polícia, Bombeiros, Ambulância, Guarda-costeira.",
+      pl:"Alarmowe: 999 / 112. Niealarmowe: Policja, Straż, Ambulans, Straż przybrzeżna.",
+      fr:"Urgence : 999 / 112. Non-urgent : Police, Pompiers, Ambulance, Garde-côtes."
+    },
+    tags:["emergency","police","fire","ambulance","coastguard"],
+    links:[
+      {label:{en:"Call 999",pt:"Ligar 999",pl:"Zadzwoń 999",fr:"Appeler 999"}, url:"tel:999"},
+      {label:{en:"Call 112",pt:"Ligar 112",pl:"Zadzwoń 112",fr:"Appeler 112"}, url:"tel:112"},
+      {label:{en:"Police (non-emergency)",pt:"Polícia (não-urgente)",pl:"Policja (niealarmowe)",fr:"Police (non urgent)"}, url:"tel:+441534612612"},
+      {label:{en:"Police contact page",pt:"Página da polícia",pl:"Strona policji",fr:"Page police"}, url:LINKS.policeContact},
+      {label:{en:"Fire (non-emergency)",pt:"Bombeiros (não-urgente)",pl:"Straż pożarna (niealarmowe)",fr:"Pompiers (non urgent)"}, url:"tel:+441534445906"},
+      {label:{en:"Ambulance (non-emergency)",pt:"Ambulância (não-urgente)",pl:"Ambulans (niealarmowe)",fr:"Ambulance (non urgent)"}, url:"tel:+441534444710"},
+      {label:{en:"Coastguard (non-emergency)",pt:"Guarda-costeira (não-urgente)",pl:"Straż przybrzeżna (niealarmowe)",fr:"Garde-côtes (non urgent)"}, url:"tel:+441534447705"}
+    ],
+    details:{
+      en:["Tip: Use 999 / 112 only for emergencies."],
+      pt:["Dica: Usa 999 / 112 apenas para emergências."],
+      pl:["Wskazówka: 999 / 112 tylko w nagłych wypadkach."],
+      fr:["Astuce : 999 / 112 uniquement en cas d'urgence."]
+    }
   }
 ];
+
+/* =========
+   Derived helpers
+========= */
+function getLabel(obj){
+  if(!obj) return "";
+  return obj[state.lang] || obj.en || "";
+}
+function serviceText(s){
+  const name = getLabel(s.name);
+  const desc = (s.desc && (s.desc[state.lang] || s.desc.en)) || "";
+  const tags = (s.tags||[]).join(" ");
+  return norm([name, desc, tags].join(" "));
+}
+function matchesMode(s){
+  return (s.audience||[]).includes(state.mode);
+}
+function matchesCat(s){
+  return state.category==="All" || s.category===state.category;
+}
+function matchesFav(s){
+  return !state.showFavs || state.favs.has(s.id);
+}
+function matchesQuery(s){
+  if(!state.q) return true;
+  return serviceText(s).includes(state.q);
+}
+function visibleServices(){
+  return SERVICES
+    .filter(matchesMode)
+    .filter(matchesCat)
+    .filter(matchesFav)
+    .filter(matchesQuery);
+}
+
+/* =========
+   URL sync
+========= */
+function syncUrl(){
+  const u = new URL(location.href);
+  u.searchParams.set("lang", state.lang);
+  u.searchParams.set("mode", state.mode);
+  u.searchParams.set("cat", state.category);
+  if(state.showFavs) u.searchParams.set("favs","1"); else u.searchParams.delete("favs");
+  if(state.q) u.searchParams.set("q", state.q); else u.searchParams.delete("q");
+  history.replaceState({}, "", u.toString());
+}
+function persist(){
+  localStorage.setItem(LS_LANG, state.lang);
+  localStorage.setItem(LS_MODE, state.mode);
+  localStorage.setItem(LS_FAVS, JSON.stringify([...state.favs]));
+}
+
+/* =========
+   UI render
+========= */
+function setLangUI(){
+  document.documentElement.lang = (state.lang==="pt") ? "pt-PT" : state.lang;
+  $("subline").textContent = t().sub;
+  $("modeLbl").textContent = t().mode;
+  $("langLbl").textContent = t().lang;
+  $("catsTitle").textContent = t().cats;
+  $("tipTitle").textContent = t().tipT;
+  $("tipText").textContent = t().tip;
+
+  $("favToggle").textContent = t().fav;
+  $("nearMeBtn").textContent = t().near;
+  $("shareBtn").textContent = t().share;
+  $("installBtn").textContent = t().install;
+  $("resetBtn").textContent = t().reset;
+
+  $("viewTitle").textContent = (state.category==="All") ? t().all : state.category;
+  $("viewDesc").textContent = t().desc;
+  $("foot").innerHTML = t().emergencyFoot;
+
+  $("q").placeholder = (state.lang==="pt")
+    ? "Pesquisar: parking, taxi, GP, toilets…"
+    : "Search: parking, taxi, GP, toilets…";
+
+  // language pills
+  [...document.querySelectorAll('[data-lang]')].forEach(b=>{
+    b.classList.toggle("on", b.dataset.lang===state.lang);
+  });
+
+  // mode pills
+  $("modeResidents").textContent = t().residents;
+  $("modeTourists").textContent = t().tourists;
+  $("modeResidents").classList.toggle("on", state.mode==="residents");
+  $("modeTourists").classList.toggle("on", state.mode==="tourists");
+}
+
+function renderCats(){
+  const counts = {};
+  CATEGORY_ORDER.forEach(c=>counts[c]=0);
+  SERVICES.filter(matchesMode).forEach(s=>{
+    counts[s.category] = (counts[s.category]||0)+1;
+  });
+
+  const catsEl = $("cats");
+  catsEl.innerHTML = "";
+
+  const allCount = SERVICES.filter(matchesMode).length;
+  const allRow = makeCatRow("All", allCount);
+  catsEl.appendChild(allRow);
+
+  CATEGORY_ORDER.forEach(cat=>{
+    const row = makeCatRow(cat, counts[cat]||0);
+    catsEl.appendChild(row);
+  });
+}
+
+function makeCatRow(cat, count){
+  const row = document.createElement("div");
+  row.className = "cat" + ((state.category===cat) ? " active" : "");
+  row.innerHTML = `
+    <div class="catLeft">
+      <div class="catIcon">${catIcon(cat)}</div>
+      <div class="catName">${(cat==="All") ? t().allCat : cat}</div>
+    </div>
+    <div class="catCount badge">${count}</div>
+  `;
+  row.addEventListener("click", ()=>{
+    state.category = cat;
+    $("viewTitle").textContent = (cat==="All") ? t().all : cat;
+    state.q = "";
+    $("q").value = "";
+    syncUrl(); persist();
+    render();
+  });
+  return row;
+}
+
+function renderCards(){
+  const list = visibleServices();
+  $("countVisible").textContent = String(list.length);
+  $("statsLine").textContent = t().showing(list.length);
+
+  const cards = $("cards");
+  cards.innerHTML = "";
+
+  if(list.length===0){
+    const empty = document.createElement("div");
+    empty.className = "card";
+    empty.innerHTML = `
+      <div class="name">${t().no}</div>
+      <div class="meta">${t().try}</div>
+    `;
+    cards.appendChild(empty);
+    return;
+  }
+
+  list.forEach(s=>{
+    const card = document.createElement("div");
+    card.className = "card";
+
+    const title = getLabel(s.name);
+    const desc = (s.desc && (s.desc[state.lang] || s.desc.en)) || "";
+    const tags = (s.tags||[]).slice(0,6);
+
+    const favOn = state.favs.has(s.id);
+
+    const details = (s.details && (s.details[state.lang] || s.details.en)) || [];
+    const detailsHtml = details.length
+      ? `<div class="meta" style="margin-top:-2px">${details.map(d=>"• "+d).join("<br>")}</div>`
+      : "";
+
+    const links = (s.links||[]).map((lnk, idx)=>{
+      const lbl = getLabel(lnk.label);
+      const safeUrl = lnk.url || "#";
+      const openId = `open_${s.id}_${idx}`;
+      const copyId = `copy_${s.id}_${idx}`;
+      return `
+        <button class="linkBtn" id="${openId}" type="button">🔗 ${t().open}: ${lbl}</button>
+        <button class="linkBtn" id="${copyId}" type="button">${t().copy}</button>
+      `;
+    }).join("");
+
+    card.innerHTML = `
+      <div class="row">
+        <div>
+          <div class="name">${title}</div>
+          <div class="meta">${desc}</div>
+          ${detailsHtml}
+        </div>
+        <button class="favBtn ${favOn ? "on":""}" type="button" aria-label="Favourite">${favOn ? "★" : "☆"}</button>
+      </div>
+
+      <div class="tags">
+        ${tags.map(x=>`<span class="tag">${x}</span>`).join("")}
+      </div>
+
+      <div class="actions">
+        ${links}
+      </div>
+    `;
+
+    // fav toggle
+    card.querySelector(".favBtn").addEventListener("click", ()=>{
+      if(state.favs.has(s.id)){
+        state.favs.delete(s.id);
+        toast(t().removed);
+      }else{
+        state.favs.add(s.id);
+        toast(t().saved);
+      }
+      persist();
+      if(state.showFavs) renderCards(); else render(); // update counts + cats nicely
+    });
+
+    // open/copy buttons
+    (s.links||[]).forEach((lnk, idx)=>{
+      const openBtn = card.querySelector(`#open_${s.id}_${idx}`);
+      const copyBtn = card.querySelector(`#copy_${s.id}_${idx}`);
+      if(openBtn){
+        openBtn.addEventListener("click", ()=> window.open(lnk.url, "_blank", "noopener"));
+      }
+      if(copyBtn){
+        copyBtn.addEventListener("click", async ()=>{
+          try{
+            await navigator.clipboard.writeText(lnk.url);
+            toast(t().copied);
+          }catch(e){
+            toast(t().copyFail);
+          }
+        });
+      }
+    });
+
+    cards.appendChild(card);
+  });
+}
+
+function render(){
+  setLangUI();
+  renderCats();
+  // update active class in cats after rebuild:
+  [...document.querySelectorAll(".cat")].forEach(row=>{
+    const name = row.querySelector(".catName")?.textContent || "";
+    // we rebuild anyway; keep simple
+  });
+  renderCards();
+}
+
+/* =========
+   Quick links + Near me
+========= */
+function setQuickLinks(){
+  $("quickParking").href = LINKS.parkingLive;
+  $("quickTaxiNear").href = mapsSearch("taxi near me");
+  $("quickToiletsNear").href = mapsSearch("public toilets near me");
+  $("quickPharmacyNear").href = mapsSearch("pharmacy near me");
+}
+
+async function doNearMe(){
+  if(!("geolocation" in navigator)){
+    toast(t().geos); return;
+  }
+  toast(t().getting);
+  navigator.geolocation.getCurrentPosition(
+    (pos)=>{
+      const {latitude, longitude} = pos.coords;
+      const q = `${latitude},${longitude}`;
+      // Open a useful overview: "things to do" near location
+      window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent("things to do near "+q)}`, "_blank", "noopener");
+    },
+    (err)=>{
+      if(err && err.code===1) toast(t().blocked);
+      else toast(t().geos);
+    },
+    {enableHighAccuracy:true, timeout:12000, maximumAge: 15000}
+  );
+}
+
+/* =========
+   Install (PWA)
+========= */
+let deferredPrompt = null;
+
+window.addEventListener("beforeinstallprompt", (e)=>{
+  e.preventDefault();
+  deferredPrompt = e;
+  $("installBtn").disabled = false;
+});
+
+$("installBtn").addEventListener("click", async ()=>{
+  if(!deferredPrompt){
+    // fallback tip
+    alert(t().howInstall + ":\n\nAndroid Chrome: ⋮ menu → “Install app” / “Add to Home screen”\nSafari iPhone: Share → “Add to Home Screen”");
+    return;
+  }
+  deferredPrompt.prompt();
+  try{ await deferredPrompt.userChoice; }catch(e){}
+  deferredPrompt = null;
+  $("installBtn").disabled = true;
+});
+
+/* =========
+   Share
+========= */
+$("shareBtn").addEventListener("click", async ()=>{
+  const shareUrl = location.href;
+  const title = "JerseyGo";
+  if(navigator.share){
+    try{
+      await navigator.share({title, text:"JerseyGo — quick links for Jersey", url: shareUrl});
+    }catch(e){}
+    return;
+  }
+  // fallback copy link
+  try{
+    await navigator.clipboard.writeText(shareUrl);
+    toast(t().copied);
+  }catch(e){
+    toast(t().copyFail);
+  }
+});
+
+/* =========
+   Search + toggles
+========= */
+$("q").value = url.searchParams.get("q") || "";
+state.q = norm($("q").value);
+
+$("q").addEventListener("input", (e)=>{
+  state.q = norm(e.target.value);
+  syncUrl();
+  renderCards();
+});
+
+$("favToggle").addEventListener("click", ()=>{
+  state.showFavs = !state.showFavs;
+  $("favToggle").classList.toggle("primary", state.showFavs);
+  syncUrl();
+  renderCards();
+});
+
+$("modeResidents").addEventListener("click", ()=>{
+  state.mode = "residents";
+  localStorage.setItem(LS_MODE, state.mode);
+  state.category = "All";
+  state.q = "";
+  $("q").value = "";
+  syncUrl();
+  render();
+});
+$("modeTourists").addEventListener("click", ()=>{
+  state.mode = "tourists";
+  localStorage.setItem(LS_MODE, state.mode);
+  state.category = "All";
+  state.q = "";
+  $("q").value = "";
+  syncUrl();
+  render();
+});
+
+[...document.querySelectorAll("[data-lang]")].forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    state.lang = btn.dataset.lang;
+    localStorage.setItem(LS_LANG, state.lang);
+    syncUrl();
+    render();
+  });
+});
+
+$("nearMeBtn").addEventListener("click", doNearMe);
+
+$("resetBtn").addEventListener("click", ()=>{
+  state.lang = "en";
+  state.mode = "residents";
+  state.q = "";
+  state.category = "All";
+  state.showFavs = false;
+  state.favs = new Set();
+  localStorage.removeItem(LS_LANG);
+  localStorage.removeItem(LS_MODE);
+  localStorage.removeItem(LS_FAVS);
+  $("q").value = "";
+  syncUrl();
+  render();
+});
+
+/* =========
+   Service Worker
+========= */
+if("serviceWorker" in navigator){
+  window.addEventListener("load", ()=>{
+    navigator.serviceWorker.register("./sw.js").catch(()=>{});
+  });
+}
+
+/* =========
+   Init
+========= */
+function initFromUrl(){
+  // optional favs toggle from URL
+  state.showFavs = url.searchParams.get("favs")==="1";
+  $("favToggle").classList.toggle("primary", state.showFavs);
+
+  // category
+  const cat = url.searchParams.get("cat");
+  if(cat) state.category = cat;
+}
+initFromUrl();
+setQuickLinks();
+setLangUI();
+syncUrl();
+persist();
+render();
 </script>
 </body>
-</html>
+          </html>
