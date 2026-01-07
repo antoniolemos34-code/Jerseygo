@@ -63,7 +63,6 @@
       width:100%;
     }
 
-    /* ✅ Bigger search + focus */
     .search{
       display:flex; align-items:center; gap:10px;
       border:1px solid rgba(77,163,255,.22);
@@ -398,6 +397,21 @@ const toast = (msg)=>{
 };
 const mapsSearch = (query)=> `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
 
+/* ✅ Find address (prompt -> Maps) */
+function findAddress(){
+  const labels = {
+    en: { title:"Find an address", hint:"Type an address, postcode or place (e.g., '1 King Street, St Helier')" },
+    pt: { title:"Procurar morada", hint:"Escreve uma morada, código postal ou local (ex.: '1 King Street, St Helier')" },
+    pl: { title:"Znajdź adres", hint:"Wpisz adres, kod pocztowy lub miejsce (np. '1 King Street, St Helier')" },
+    fr: { title:"Trouver une adresse", hint:"Tapez une adresse, code postal ou lieu (ex.: '1 King Street, St Helier')" }
+  };
+  const L = labels[state.lang] || labels.en;
+  const q = prompt(`${L.title}\n\n${L.hint}`);
+  if(!q) return;
+  const query = `${q} Jersey`;
+  window.open(mapsSearch(query), "_blank", "noopener");
+}
+
 /* ========= WhatsApp (hidden in UI; link only) ========= */
 const WHATSAPP_NUMBER_INTL = "447700704591";
 const waLink = (text)=> `https://wa.me/${WHATSAPP_NUMBER_INTL}?text=${encodeURIComponent(text)}`;
@@ -460,7 +474,7 @@ const I18N = {
     all:"All services",
     desc:"One-tap actions: Call • Maps • Official pages.",
     no:"No results",
-    try:"Try: “parking”, “taxi”, “toilets”, “pharmacy”, “beach”, “museum”.",
+    try:"Try: “parking”, “taxi”, “toilets”, “pharmacy”, “address”.",
     copied:"Copied",
     copyFail:"Copy not supported",
     saved:"Saved to favourites",
@@ -474,7 +488,8 @@ const I18N = {
     open:"Open",
     copy:"📋 Copy",
     allCat:"All",
-    suggest:"➕ Suggest a link"
+    suggest:"➕ Suggest a link",
+    action:"Action"
   },
   pt:{
     sub:"Links rápidos para Jersey — residentes e turistas",
@@ -493,7 +508,7 @@ const I18N = {
     all:"Todos os serviços",
     desc:"Ações rápidas: Chamar • Mapas • Sites oficiais.",
     no:"Sem resultados",
-    try:"Experimenta: “parking”, “taxi”, “toilets”, “pharmacy”, “beach”, “museum”.",
+    try:"Experimenta: “parking”, “taxi”, “toilets”, “pharmacy”, “morada”.",
     copied:"Copiado",
     copyFail:"Copiar não suportado",
     saved:"Guardado nos favoritos",
@@ -507,7 +522,8 @@ const I18N = {
     open:"Abrir",
     copy:"📋 Copiar",
     allCat:"Tudo",
-    suggest:"➕ Sugerir link"
+    suggest:"➕ Sugerir link",
+    action:"Ação"
   },
   pl:{
     sub:"Szybkie linki dla Jersey — mieszkańcy i turyści",
@@ -526,7 +542,7 @@ const I18N = {
     all:"Wszystkie usługi",
     desc:"Szybkie akcje: Telefon • Mapy • Oficjalne strony.",
     no:"Brak wyników",
-    try:"Spróbuj: „parking”, „taxi”, „toilets”, „pharmacy”, „beach”, „museum”.",
+    try:"Spróbuj: „parking”, „taxi”, „toilets”, „pharmacy”, „address”.",
     copied:"Skopiowano",
     copyFail:"Kopiowanie niedostępne",
     saved:"Dodano do ulubionych",
@@ -540,7 +556,8 @@ const I18N = {
     open:"Otwórz",
     copy:"📋 Kopiuj",
     allCat:"Wszystko",
-    suggest:"➕ Zasugeruj link"
+    suggest:"➕ Zasugeruj link",
+    action:"Akcja"
   },
   fr:{
     sub:"Liens rapides pour Jersey — résidents & touristes",
@@ -559,7 +576,7 @@ const I18N = {
     all:"Tous les services",
     desc:"Actions rapides : Appeler • Cartes • Sites officiels.",
     no:"Aucun résultat",
-    try:"Essayez : « parking », « taxi », « toilettes », « pharmacie », « plage », « musée ». ",
+    try:"Essayez : « parking », « taxi », « toilettes », « pharmacie », « adresse ». ",
     copied:"Copié",
     copyFail:"Copie non prise en charge",
     saved:"Ajouté aux favoris",
@@ -573,7 +590,8 @@ const I18N = {
     open:"Ouvrir",
     copy:"📋 Copier",
     allCat:"Tout",
-    suggest:"➕ Proposer un lien"
+    suggest:"➕ Proposer un lien",
+    action:"Action"
   }
 };
 const t = ()=> I18N[state.lang] || I18N.en;
@@ -592,7 +610,7 @@ function catIcon(cat){
 }
 const CATEGORY_ORDER = ["Essentials","Getting around","Facilities","Things to do","Help & safety"];
 
-/* ✅ Category subtitles (per language) */
+/* Category subtitles */
 function catHint(cat){
   const hints = {
     "Essentials": {
@@ -608,10 +626,10 @@ function catHint(cat){
       fr:"parking, bus, taxis, routes"
     },
     "Facilities": {
-      en:"toilets, pharmacies, ATMs, baby changing",
-      pt:"WC, farmácias, multibanco, fraldários",
-      pl:"toalety, apteki, bankomaty, przewijaki",
-      fr:"toilettes, pharmacies, distributeurs, table à langer"
+      en:"toilets, pharmacies, ATMs, baby changing, addresses",
+      pt:"WC, farmácias, multibanco, fraldários, moradas",
+      pl:"toalety, apteki, bankomaty, przewijaki, adresy",
+      fr:"toilettes, pharmacies, distributeurs, table à langer, adresses"
     },
     "Things to do": {
       en:"attractions, beaches, museums",
@@ -631,7 +649,7 @@ function catHint(cat){
   return obj[state.lang] || obj.en || "";
 }
 
-/* ========= Services (simplified categories; no cafes/restaurants) ========= */
+/* ========= Services ========= */
 const SERVICES = [
   /* Essentials */
   {
@@ -706,6 +724,23 @@ const SERVICES = [
   },
 
   /* Facilities */
+  {
+    id:"fac-find-address",
+    category:"Facilities",
+    audience:["residents","tourists"],
+    name:{en:"Find an address",pt:"Procurar morada",pl:"Znajdź adres",fr:"Trouver une adresse"},
+    desc:{
+      en:"Type an address/postcode and open it on Google Maps.",
+      pt:"Escreve uma morada/código postal e abre no Google Maps.",
+      pl:"Wpisz adres/kod i otwórz w Mapach Google.",
+      fr:"Tapez une adresse/code postal et ouvrez dans Google Maps."
+    },
+    tags:["address","postcode","map","find"],
+    links:[
+      {label:{en:"Search address",pt:"Procurar morada",pl:"Szukaj adresu",fr:"Rechercher une adresse"}, action:"findAddress"},
+      {label:{en:"Copy instructions",pt:"Copiar instruções",pl:"Kopiuj instrukcje",fr:"Copier les instructions"}, copy_text:"Type an address/postcode → open in Google Maps"}
+    ]
+  },
   {
     id:"fac-toilets",
     category:"Facilities",
@@ -935,6 +970,15 @@ function renderCats(){
   });
 }
 
+async function copyTextSafe(text){
+  try{
+    await navigator.clipboard.writeText(text);
+    toast(t().copied);
+  }catch(e){
+    toast(t().copyFail);
+  }
+}
+
 function renderCards(){
   const list = visibleServices();
   $("countVisible").textContent = String(list.length);
@@ -967,8 +1011,9 @@ function renderCards(){
       const lbl = getLabel(lnk.label);
       const openId = `open_${s.id}_${idx}`;
       const copyId = `copy_${s.id}_${idx}`;
+      const openText = (lnk.action ? `${t().action}: ${lbl}` : `${t().open}: ${lbl}`);
       return `
-        <button class="linkBtn" id="${openId}" type="button">🔗 ${t().open}: ${lbl}</button>
+        <button class="linkBtn" id="${openId}" type="button">🔗 ${openText}</button>
         <button class="linkBtn" id="${copyId}" type="button">${t().copy}</button>
       `;
     }).join("");
@@ -1006,15 +1051,25 @@ function renderCards(){
     (s.links||[]).forEach((lnk, idx)=>{
       const openBtn = card.querySelector(`#open_${s.id}_${idx}`);
       const copyBtn = card.querySelector(`#copy_${s.id}_${idx}`);
-      if(openBtn) openBtn.addEventListener("click", ()=> window.open(lnk.url, "_blank", "noopener"));
+
+      if(openBtn){
+        openBtn.addEventListener("click", ()=>{
+          if(lnk.action === "findAddress"){ findAddress(); return; }
+          if(lnk.url){ window.open(lnk.url, "_blank", "noopener"); }
+        });
+      }
+
       if(copyBtn){
-        copyBtn.addEventListener("click", async ()=>{
-          try{
-            await navigator.clipboard.writeText(lnk.url);
-            toast(t().copied);
-          }catch(e){
-            toast(t().copyFail);
+        copyBtn.addEventListener("click", ()=>{
+          if(lnk.copy_text){
+            copyTextSafe(lnk.copy_text);
+            return;
           }
+          if(lnk.url){
+            copyTextSafe(lnk.url);
+            return;
+          }
+          toast(t().copyFail);
         });
       }
     });
@@ -1178,4 +1233,4 @@ persist();
 render();
 </script>
 </body>
-</html>
+  </html>
