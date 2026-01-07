@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#0B1220" />
+  <title>Advertise — JerseyGo</title>
+  <meta name="description" content="Advertise your business on JerseyGo." />
+  <style>
+    :root{--bg:#070A12;--bg2:#0B1220;--line:rgba(255,255,255,.10);--text:#E9EEF7;--muted:#A9B4C7;--r:22px}
+    *{box-sizing:border-box}
+    body{
+      margin:0; color:var(--text);
+      font-family: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      background:
+        radial-gradient(900px 600px at 12% 12%, rgba(77,163,255,.22), transparent 58%),
+        radial-gradient(850px 520px at 88% 10%, rgba(53,208,127,.18), transparent 58%),
+        linear-gradient(180deg,var(--bg),var(--bg2));
+    }
+    .wrap{max-width:880px;margin:0 auto;padding:18px}
+    .card{
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.03);
+      border-radius:var(--r);
+      padding:18px;
+      margin-top:14px;
+    }
+    h1{margin:0;font-size:22px}
+    p{color:var(--muted);line-height:1.5;margin:10px 0 0}
+    .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    a.btn{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:12px 14px;border-radius:16px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.05);
+      text-decoration:none;color:var(--text);font-weight:900;
+    }
+    a.btn:hover{background:rgba(255,255,255,.08)}
+    .list{margin:12px 0 0;color:var(--muted)}
+    .list li{margin:6px 0}
+    .small{font-size:12px;color:rgba(169,180,199,.85);margin-top:14px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>Advertise your business on JerseyGo</h1>
+      <p>Send your details and we’ll add your listing.</p>
+
+      <ul class="list">
+        <li><b>Business name</b></li>
+        <li><b>Category</b></li>
+        <li><b>Website link</b> (or Google Maps link)</li>
+        <li><b>Phone / WhatsApp</b> (optional)</li>
+        <li><b>Short description</b> (1–2 lines)</li>
+      </ul>
+
+      <div class="btns">
+        <a class="btn" href="../">← Back to JerseyGo</a>
+        <a class="btn"
+           href="mailto:apdigitalsolutions.je@outlook.com?subject=JerseyGo%20Listing%20Request&body=Business%20name%3A%0ACategory%3A%0ALink%20(URL)%3A%0AContact%20(phone/WhatsApp)%3A%0AShort%20description%3A%0A">
+          ✉️ Email request
+        </a>
+      </div>
+
+      <div class="small">JerseyGo is independent and not affiliated with the Government of Jersey.</div>
+    </div>
+  </div>
+</body>
+</html>
