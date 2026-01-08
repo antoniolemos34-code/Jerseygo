@@ -4,12 +4,55 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#0B1220" />
-  <meta name="description" content="JerseyGo — quick links for Jersey: residents & tourists. Parking, taxis, toilets, pharmacies, transport, emergency, dates." />
-  <title>JerseyGo</title>
 
+  <!-- ✅ SEO basics -->
+  <title>JerseyGo — Essential links for Jersey residents & visitors</title>
+  <meta name="description" content="JerseyGo is a simple web app with essential links for Jersey residents and visitors: parking, taxis, public toilets, pharmacies, transport, emergency numbers, and official local services — all in one place." />
+  <meta name="robots" content="index,follow,max-image-preview:large" />
+  <link rel="canonical" href="https://jerseygo.app/" />
+
+  <!-- ✅ Local / Geo signals (Jersey) -->
+  <meta name="geo.region" content="JE" />
+  <meta name="geo.placename" content="Jersey, Channel Islands" />
+  <meta name="geo.position" content="49.2144;-2.1313" />
+  <meta name="ICBM" content="49.2144, -2.1313" />
+
+  <!-- ✅ Open Graph -->
+  <meta property="og:title" content="JerseyGo — Essential links for Jersey residents & visitors" />
+  <meta property="og:description" content="Parking, taxis, toilets, pharmacies, transport, emergency numbers and official local services in one simple web app." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://jerseygo.app/" />
+  <meta property="og:locale" content="en_GB" />
+  <meta property="og:image" content="https://jerseygo.app/icon.svg" />
+
+  <!-- ✅ Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="JerseyGo — Essential links for Jersey residents & visitors" />
+  <meta name="twitter:description" content="Parking, taxis, toilets, pharmacies, transport, emergency numbers and official local services in one simple web app." />
+  <meta name="twitter:image" content="https://jerseygo.app/icon.svg" />
+
+  <!-- ✅ PWA -->
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="icon" href="./icon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="./icon.svg" />
+
+  <!-- ✅ Structured data (Local SEO) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "JerseyGo",
+    "url": "https://jerseygo.app/",
+    "applicationCategory": "TravelApplication",
+    "operatingSystem": "Web",
+    "description": "JerseyGo is a web app with essential links for Jersey residents and visitors: parking, taxis, toilets, pharmacies, transport, emergency numbers and official services.",
+    "inLanguage": ["en-GB","pt-PT","pl","fr"],
+    "areaServed": {
+      "@type": "AdministrativeArea",
+      "name": "Jersey, Channel Islands"
+    }
+  }
+  </script>
 
   <style>
     :root{
@@ -36,6 +79,15 @@
     a{color:inherit; text-decoration:none}
     button{font-family:inherit}
     .wrap{max-width:1180px; margin:0 auto; padding:14px}
+
+    /* ✅ Invisible SEO helper text (doesn't affect UI) */
+    .sr-only{
+      position:absolute;
+      width:1px; height:1px;
+      padding:0; margin:-1px;
+      overflow:hidden; clip:rect(0,0,0,0);
+      white-space:nowrap; border:0;
+    }
 
     header{
       position:sticky; top:0; z-index:50;
@@ -291,6 +343,16 @@
 </head>
 
 <body>
+  <!-- ✅ SEO text (invisible, helps Google understand Jersey + services) -->
+  <div class="sr-only">
+    <h1>JerseyGo — essential links for Jersey residents and visitors</h1>
+    <p>
+      JerseyGo is a fast web app for Jersey, Channel Islands, with quick access to local services and official information:
+      parking, taxis, public toilets, pharmacies, transport, weather, tides, bank holidays, roadworks, emergency numbers,
+      and useful links for daily life in Jersey.
+    </p>
+  </div>
+
 <header>
   <div class="wrap top">
     <div class="brand">
@@ -1148,7 +1210,7 @@ $("shareBtn").addEventListener("click", async ()=>{
   const shareUrl = location.href;
   const title = "JerseyGo";
   if(navigator.share){
-    try{ await navigator.share({title, text:"JerseyGo — quick links for Jersey", url: shareUrl}); }catch(e){}
+    try{ await navigator.share({title, text:"JerseyGo — essential links for Jersey", url: shareUrl}); }catch(e){}
     return;
   }
   try{ await navigator.clipboard.writeText(shareUrl); toast(t().copied); }
@@ -1233,4 +1295,4 @@ persist();
 render();
 </script>
 </body>
-  </html>
+</html>
