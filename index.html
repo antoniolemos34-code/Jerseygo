@@ -4,14 +4,15 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#0B1220" />
+  <meta name="color-scheme" content="dark" />
 
-  <!-- ✅ SEO basics -->
+  <!-- ✅ SEO -->
   <title>JerseyGo — Essential links for Jersey residents & visitors</title>
-  <meta name="description" content="JerseyGo is a simple web app with essential links for Jersey residents and visitors: parking, taxis, public toilets, pharmacies, transport, emergency numbers, and official local services — all in one place." />
+  <meta name="description" content="JerseyGo is a fast, simple web app with essential links for Jersey residents and visitors: parking, taxis, public toilets, pharmacies, transport, weather, tides, bank holidays, roadworks and emergency numbers — all in one place." />
   <meta name="robots" content="index,follow,max-image-preview:large" />
   <link rel="canonical" href="https://jerseygo.app/" />
 
-  <!-- ✅ Local / Geo signals (Jersey) -->
+  <!-- ✅ Geo -->
   <meta name="geo.region" content="JE" />
   <meta name="geo.placename" content="Jersey, Channel Islands" />
   <meta name="geo.position" content="49.2144;-2.1313" />
@@ -19,7 +20,7 @@
 
   <!-- ✅ Open Graph -->
   <meta property="og:title" content="JerseyGo — Essential links for Jersey residents & visitors" />
-  <meta property="og:description" content="Parking, taxis, toilets, pharmacies, transport, emergency numbers and official local services in one simple web app." />
+  <meta property="og:description" content="Parking, taxis, toilets, pharmacies, transport, emergency numbers and official local services — in one fast web app." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://jerseygo.app/" />
   <meta property="og:locale" content="en_GB" />
@@ -28,7 +29,7 @@
   <!-- ✅ Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="JerseyGo — Essential links for Jersey residents & visitors" />
-  <meta name="twitter:description" content="Parking, taxis, toilets, pharmacies, transport, emergency numbers and official local services in one simple web app." />
+  <meta name="twitter:description" content="Parking, taxis, toilets, pharmacies, transport, emergency numbers and official local services — in one fast web app." />
   <meta name="twitter:image" content="https://jerseygo.app/icon.svg" />
 
   <!-- ✅ PWA -->
@@ -36,21 +37,18 @@
   <link rel="icon" href="./icon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="./icon.svg" />
 
-  <!-- ✅ Structured data (Local SEO) -->
+  <!-- ✅ Structured Data -->
   <script type="application/ld+json">
   {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "JerseyGo",
-    "url": "https://jerseygo.app/",
-    "applicationCategory": "TravelApplication",
-    "operatingSystem": "Web",
-    "description": "JerseyGo is a web app with essential links for Jersey residents and visitors: parking, taxis, toilets, pharmacies, transport, emergency numbers and official services.",
-    "inLanguage": ["en-GB","pt-PT","pl","fr"],
-    "areaServed": {
-      "@type": "AdministrativeArea",
-      "name": "Jersey, Channel Islands"
-    }
+    "@context":"https://schema.org",
+    "@type":"WebApplication",
+    "name":"JerseyGo",
+    "url":"https://jerseygo.app/",
+    "applicationCategory":"TravelApplication",
+    "operatingSystem":"Web",
+    "description":"JerseyGo is a web app with essential links for Jersey residents and visitors: parking, taxis, toilets, pharmacies, transport, weather, tides, bank holidays, roadworks, emergency numbers and official services.",
+    "inLanguage":["en-GB","pt-PT","pl","fr"],
+    "areaServed":{"@type":"AdministrativeArea","name":"Jersey, Channel Islands"}
   }
   </script>
 
@@ -61,7 +59,10 @@
       --text:#E9EEF7; --muted:#A9B4C7;
       --r2:22px; --shadow: 0 22px 50px rgba(0,0,0,.45);
       --blue:rgba(77,163,255,.45);
+      --good:rgba(53,208,127,.35);
+      --focus: rgba(77,163,255,.75);
     }
+
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
@@ -76,17 +77,35 @@
       -webkit-font-smoothing:antialiased;
       text-rendering:optimizeLegibility;
     }
+
     a{color:inherit; text-decoration:none}
-    button{font-family:inherit}
+    button,input{font-family:inherit}
     .wrap{max-width:1180px; margin:0 auto; padding:14px}
 
-    /* ✅ Invisible SEO helper text (doesn't affect UI) */
+    /* Accessibility */
     .sr-only{
-      position:absolute;
+      position:absolute !important;
       width:1px; height:1px;
       padding:0; margin:-1px;
       overflow:hidden; clip:rect(0,0,0,0);
       white-space:nowrap; border:0;
+    }
+    .skip{
+      position:absolute; left:12px; top:12px;
+      padding:10px 12px;
+      border-radius:12px;
+      background: rgba(14,22,41,.95);
+      border:1px solid var(--line);
+      transform: translateY(-140%);
+      transition: transform .18s ease;
+      z-index:9999;
+    }
+    .skip:focus{ transform: translateY(0); outline:none; border-color: var(--focus); }
+
+    :focus-visible{
+      outline: 2px solid var(--focus);
+      outline-offset: 3px;
+      border-radius: 10px;
     }
 
     header{
@@ -96,23 +115,24 @@
       background: rgba(7,10,18,.72);
       border-bottom:1px solid var(--line);
     }
+
     .top{
       display:flex; align-items:center; justify-content:space-between; gap:12px;
       flex-wrap:wrap; padding:14px;
     }
+
     .brand{display:flex; align-items:center; gap:12px; min-width:260px}
-    .brand img{width:40px; height:40px; border-radius:14px; box-shadow: 0 12px 30px rgba(0,0,0,.35)}
+    .brand img{
+      width:40px; height:40px; border-radius:14px;
+      box-shadow: 0 12px 30px rgba(0,0,0,.35);
+    }
     .brand .t{line-height:1.05}
     .brand .t .name{font-weight:950; font-size:18px}
     .brand .t .sub{margin-top:4px; font-size:12px; color:var(--muted)}
 
     .actionsTop{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      flex-wrap:wrap;
-      justify-content:flex-end;
-      width:100%;
+      display:flex; align-items:center; gap:10px;
+      flex-wrap:wrap; justify-content:flex-end; width:100%;
     }
 
     .search{
@@ -150,8 +170,11 @@
       font-weight:900;
       letter-spacing:.2px;
       white-space:nowrap;
+      transition: transform .08s ease, background .15s ease;
+      user-select:none;
     }
     .btn:hover{background: rgba(255,255,255,.08)}
+    .btn:active{transform: translateY(1px)}
     .btn.primary{border-color: rgba(77,163,255,.35); background: rgba(77,163,255,.14)}
     .btn.good{border-color: rgba(53,208,127,.35); background: rgba(53,208,127,.12)}
     .btn.ghost{background: rgba(255,255,255,.03)}
@@ -177,6 +200,7 @@
       font-size:12px;
       opacity:.9;
       white-space:nowrap;
+      user-select:none;
     }
     .pillBtn.on{border-color: rgba(77,163,255,.35); background: rgba(77,163,255,.14); opacity:1}
 
@@ -214,6 +238,7 @@
       gap:10px; padding:12px 12px;
       border-radius:16px; cursor:pointer;
       border:1px solid transparent;
+      transition: background .15s ease, border-color .15s ease;
     }
     .cat:hover{background: rgba(255,255,255,.04)}
     .cat.active{background: rgba(77,163,255,.10); border-color: rgba(77,163,255,.35);}
@@ -236,7 +261,8 @@
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
       border-radius: var(--r2);
       padding:14px;
-      display:flex; align-items:flex-start; justify-content:space-between; gap:14px; flex-wrap:wrap;
+      display:flex; align-items:flex-start; justify-content:space-between;
+      gap:14px; flex-wrap:wrap;
     }
     .hero h1{margin:0; font-size:20px}
     .hero p{margin:7px 0 0; color:var(--muted); line-height:1.35}
@@ -253,8 +279,10 @@
       cursor:pointer;
       user-select:none;
       white-space:nowrap;
+      transition: background .15s ease, transform .08s ease;
     }
     .chip:hover{background: rgba(255,255,255,.08)}
+    .chip:active{transform: translateY(1px)}
     .chip.primary{border-color: rgba(77,163,255,.35); background: rgba(77,163,255,.12)}
     .chip.good{border-color: rgba(53,208,127,.35); background: rgba(53,208,127,.12)}
 
@@ -267,7 +295,9 @@
       border-radius: var(--r2);
       padding:14px;
       display:flex; flex-direction:column; gap:10px;
+      transition: transform .12s ease, background .15s ease;
     }
+    .card:hover{background: rgba(255,255,255,.04)}
     .row{display:flex; align-items:flex-start; justify-content:space-between; gap:10px}
     .name{font-weight:950; letter-spacing:.2px}
     .meta{font-size:12px; color:var(--muted); line-height:1.35}
@@ -286,6 +316,7 @@
       border-radius:14px;
       cursor:pointer;
       font-weight:950;
+      user-select:none;
     }
     .favBtn.on{border-color: rgba(77,163,255,.35); background: rgba(77,163,255,.14)}
     .favBtn:hover{background: rgba(255,255,255,.08)}
@@ -300,6 +331,7 @@
       display:inline-flex;
       align-items:center;
       gap:8px;
+      user-select:none;
     }
     .linkBtn:hover{background: rgba(255,255,255,.08)}
 
@@ -318,11 +350,11 @@
     .toast.show{display:block}
 
     footer{
-      color:rgba(169,180,199,.8);
+      color:rgba(169,180,199,.82);
       font-size:12px;
       text-align:center;
       padding:14px 0 2px;
-      line-height:1.5;
+      line-height:1.55;
     }
     .footLinks{
       display:flex; gap:10px; justify-content:center; flex-wrap:wrap;
@@ -343,61 +375,53 @@
 </head>
 
 <body>
-  <!-- ✅ SEO text (invisible, helps Google understand Jersey + services) -->
-  <div class="sr-only">
-    <h1>JerseyGo — essential links for Jersey residents and visitors</h1>
-    <p>
-      JerseyGo is a fast web app for Jersey, Channel Islands, with quick access to local services and official information:
-      parking, taxis, public toilets, pharmacies, transport, weather, tides, bank holidays, roadworks, emergency numbers,
-      and useful links for daily life in Jersey.
-    </p>
-  </div>
+  <a class="skip" href="#main">Skip to content</a>
 
 <header>
   <div class="wrap top">
     <div class="brand">
-      <img src="./icon.svg" alt="JerseyGo icon">
+      <img src="./icon.svg" alt="JerseyGo icon" width="40" height="40">
       <div class="t">
         <div class="name">JerseyGo</div>
         <div id="subline" class="sub">Quick links for Jersey — residents & tourists</div>
       </div>
     </div>
 
-    <div class="actionsTop">
-      <div class="pillWrap">
+    <div class="actionsTop" role="toolbar" aria-label="App controls">
+      <div class="pillWrap" role="group" aria-label="Mode">
         <div id="modeLbl" class="pillLbl">Mode</div>
         <div class="pillBtns">
-          <button class="pillBtn" id="modeResidents">Resident</button>
-          <button class="pillBtn" id="modeTourists">Tourist</button>
+          <button class="pillBtn" id="modeResidents" type="button">Resident</button>
+          <button class="pillBtn" id="modeTourists" type="button">Tourist</button>
         </div>
       </div>
 
-      <div class="pillWrap">
+      <div class="pillWrap" role="group" aria-label="Language">
         <div id="langLbl" class="pillLbl">Language</div>
         <div class="pillBtns">
-          <button class="pillBtn" data-lang="en">EN</button>
-          <button class="pillBtn" data-lang="pt">PT</button>
-          <button class="pillBtn" data-lang="pl">PL</button>
-          <button class="pillBtn" data-lang="fr">FR</button>
+          <button class="pillBtn" data-lang="en" type="button">EN</button>
+          <button class="pillBtn" data-lang="pt" type="button">PT</button>
+          <button class="pillBtn" data-lang="pl" type="button">PL</button>
+          <button class="pillBtn" data-lang="fr" type="button">FR</button>
         </div>
       </div>
 
-      <div class="search">
-        <span style="opacity:.9">🔎</span>
-        <input id="q" placeholder="Search: parking, taxi, GP, toilets…" autocomplete="off" />
-      </div>
+      <label class="search" aria-label="Search services">
+        <span aria-hidden="true" style="opacity:.9">🔎</span>
+        <input id="q" placeholder="Search: parking, taxi, GP, toilets…" autocomplete="off" inputmode="search" />
+      </label>
 
-      <button id="favToggle" class="btn good">★ Favourites</button>
-      <button id="nearMeBtn" class="btn primary">📍 Near me</button>
-      <button id="shareBtn" class="btn">🔗 Share</button>
-      <button id="installBtn" class="btn ghost" disabled>⬇ Install</button>
-      <button id="resetBtn" class="btn ghost">Reset</button>
+      <button id="favToggle" class="btn good" type="button" aria-pressed="false">★ Favourites</button>
+      <button id="nearMeBtn" class="btn primary" type="button">📍 Near me</button>
+      <button id="shareBtn" class="btn" type="button">🔗 Share</button>
+      <button id="installBtn" class="btn ghost" type="button" disabled>⬇ Install</button>
+      <button id="resetBtn" class="btn ghost" type="button">Reset</button>
     </div>
   </div>
 </header>
 
 <div class="wrap grid">
-  <aside class="panel">
+  <aside class="panel" aria-label="Categories">
     <div class="panelHd">
       <h2 id="catsTitle">Categories</h2>
       <span id="countVisible" class="badge">0</span>
@@ -413,16 +437,19 @@
     </div>
   </aside>
 
-  <main class="panel">
+  <main id="main" class="panel">
     <div class="content">
       <div class="hero">
         <div>
           <h1 id="viewTitle">All services</h1>
-          <p id="viewDesc">One-tap actions: Call • Maps • Official pages.</p>
+          <p id="viewDesc">Official links + one-tap actions for everyday life in Jersey.</p>
           <div id="statsLine" class="mini">Loading…</div>
+          <div class="mini" id="aboutLine">
+            JerseyGo is an unofficial directory that links to official/public sources (Gov.je, LibertyBus, Ports of Jersey, Jersey Airport).
+          </div>
         </div>
 
-        <div class="quick">
+        <div class="quick" aria-label="Quick actions">
           <a id="quickParking" class="chip primary" target="_blank" rel="noopener">🅿️ Parking</a>
           <a id="quickTaxiNear" class="chip" target="_blank" rel="noopener">🚕 Taxi near me</a>
           <a id="quickToiletsNear" class="chip" target="_blank" rel="noopener">🚻 Toilets near me</a>
@@ -431,7 +458,7 @@
         </div>
       </div>
 
-      <div id="cards" class="cards"></div>
+      <div id="cards" class="cards" aria-live="polite"></div>
 
       <footer>
         <span id="footText">Emergency: call 999 / 112 • JerseyGo (unofficial directory; uses public sources)</span>
@@ -444,7 +471,7 @@
   </main>
 </div>
 
-<div id="toast" class="toast"></div>
+<div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 
 <script>
 /* ========= Helpers ========= */
@@ -452,27 +479,13 @@ const $ = (id)=>document.getElementById(id);
 const norm = (s)=> (s||"").toLowerCase().trim();
 const toast = (msg)=>{
   const tEl = $("toast");
+  if(!tEl) return;
   tEl.textContent = msg;
   tEl.classList.add("show");
   clearTimeout(window.__toast);
   window.__toast = setTimeout(()=>tEl.classList.remove("show"), 1600);
 };
 const mapsSearch = (query)=> `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
-
-/* ✅ Find address (prompt -> Maps) */
-function findAddress(){
-  const labels = {
-    en: { title:"Find an address", hint:"Type an address, postcode or place (e.g., '1 King Street, St Helier')" },
-    pt: { title:"Procurar morada", hint:"Escreve uma morada, código postal ou local (ex.: '1 King Street, St Helier')" },
-    pl: { title:"Znajdź adres", hint:"Wpisz adres, kod pocztowy lub miejsce (np. '1 King Street, St Helier')" },
-    fr: { title:"Trouver une adresse", hint:"Tapez une adresse, code postal ou lieu (ex.: '1 King Street, St Helier')" }
-  };
-  const L = labels[state.lang] || labels.en;
-  const q = prompt(`${L.title}\n\n${L.hint}`);
-  if(!q) return;
-  const query = `${q} Jersey`;
-  window.open(mapsSearch(query), "_blank", "noopener");
-}
 
 /* ========= WhatsApp (hidden in UI; link only) ========= */
 const WHATSAPP_NUMBER_INTL = "447700704591";
@@ -534,7 +547,7 @@ const I18N = {
     install:"⬇ Install",
     reset:"Reset",
     all:"All services",
-    desc:"One-tap actions: Call • Maps • Official pages.",
+    desc:"Official links + one-tap actions for everyday life in Jersey.",
     no:"No results",
     try:"Try: “parking”, “taxi”, “toilets”, “pharmacy”, “address”.",
     copied:"Copied",
@@ -551,7 +564,8 @@ const I18N = {
     copy:"📋 Copy",
     allCat:"All",
     suggest:"➕ Suggest a link",
-    action:"Action"
+    action:"Action",
+    about:"JerseyGo is an unofficial directory that links to official/public sources."
   },
   pt:{
     sub:"Links rápidos para Jersey — residentes e turistas",
@@ -568,7 +582,7 @@ const I18N = {
     install:"⬇ Instalar",
     reset:"Repor",
     all:"Todos os serviços",
-    desc:"Ações rápidas: Chamar • Mapas • Sites oficiais.",
+    desc:"Links oficiais + ações rápidas para o dia-a-dia em Jersey.",
     no:"Sem resultados",
     try:"Experimenta: “parking”, “taxi”, “toilets”, “pharmacy”, “morada”.",
     copied:"Copiado",
@@ -585,7 +599,8 @@ const I18N = {
     copy:"📋 Copiar",
     allCat:"Tudo",
     suggest:"➕ Sugerir link",
-    action:"Ação"
+    action:"Ação",
+    about:"JerseyGo é um diretório não-oficial com links para fontes públicas/oficiais."
   },
   pl:{
     sub:"Szybkie linki dla Jersey — mieszkańcy i turyści",
@@ -602,7 +617,7 @@ const I18N = {
     install:"⬇ Zainstaluj",
     reset:"Reset",
     all:"Wszystkie usługi",
-    desc:"Szybkie akcje: Telefon • Mapy • Oficjalne strony.",
+    desc:"Oficjalne linki + szybkie akcje na co dzień w Jersey.",
     no:"Brak wyników",
     try:"Spróbuj: „parking”, „taxi”, „toilets”, „pharmacy”, „address”.",
     copied:"Skopiowano",
@@ -619,7 +634,8 @@ const I18N = {
     copy:"📋 Kopiuj",
     allCat:"Wszystko",
     suggest:"➕ Zasugeruj link",
-    action:"Akcja"
+    action:"Akcja",
+    about:"JerseyGo to nieoficjalny katalog z linkami do publicznych/oficjalnych źródeł."
   },
   fr:{
     sub:"Liens rapides pour Jersey — résidents & touristes",
@@ -636,9 +652,9 @@ const I18N = {
     install:"⬇ Installer",
     reset:"Réinitialiser",
     all:"Tous les services",
-    desc:"Actions rapides : Appeler • Cartes • Sites officiels.",
+    desc:"Liens officiels + actions rapides pour la vie quotidienne à Jersey.",
     no:"Aucun résultat",
-    try:"Essayez : « parking », « taxi », « toilettes », « pharmacie », « adresse ». ",
+    try:"Essayez : « parking », « taxi », « toilettes », « pharmacie », « adresse ».",
     copied:"Copié",
     copyFail:"Copie non prise en charge",
     saved:"Ajouté aux favoris",
@@ -653,12 +669,28 @@ const I18N = {
     copy:"📋 Copier",
     allCat:"Tout",
     suggest:"➕ Proposer un lien",
-    action:"Action"
+    action:"Action",
+    about:"JerseyGo est un annuaire non officiel avec des liens vers des sources publiques/officielles."
   }
 };
 const t = ()=> I18N[state.lang] || I18N.en;
 
-/* ========= Simplified Categories (5) ========= */
+/* ========= Find address (prompt -> Maps) ========= */
+function findAddress(){
+  const labels = {
+    en: { title:"Find an address", hint:"Type an address, postcode or place (e.g., '1 King Street, St Helier')" },
+    pt: { title:"Procurar morada", hint:"Escreve uma morada, código postal ou local (ex.: '1 King Street, St Helier')" },
+    pl: { title:"Znajdź adres", hint:"Wpisz adres, kod pocztowy lub miejsce (np. '1 King Street, St Helier')" },
+    fr: { title:"Trouver une adresse", hint:"Tapez une adresse, code postal ou lieu (ex.: '1 King Street, St Helier')" }
+  };
+  const L = labels[state.lang] || labels.en;
+  const q = prompt(`${L.title}\n\n${L.hint}`);
+  if(!q) return;
+  const query = `${q} Jersey`;
+  window.open(mapsSearch(query), "_blank", "noopener");
+}
+
+/* ========= Categories ========= */
 function catIcon(cat){
   switch(cat){
     case "All": return "🧭";
@@ -672,7 +704,6 @@ function catIcon(cat){
 }
 const CATEGORY_ORDER = ["Essentials","Getting around","Facilities","Things to do","Help & safety"];
 
-/* Category subtitles */
 function catHint(cat){
   const hints = {
     "Essentials": {
@@ -711,7 +742,7 @@ function catHint(cat){
   return obj[state.lang] || obj.en || "";
 }
 
-/* ========= Services ========= */
+/* ========= Services (same info) ========= */
 const SERVICES = [
   /* Essentials */
   {
@@ -955,8 +986,8 @@ function persist(){
 /* ========= UI ========= */
 function setLangUI(){
   document.documentElement.lang = (state.lang==="pt") ? "pt-PT" : state.lang;
-  $("subline").textContent = t().sub;
 
+  $("subline").textContent = t().sub;
   $("modeLbl").textContent = t().mode;
   $("langLbl").textContent = t().lang;
   $("catsTitle").textContent = t().cats;
@@ -974,6 +1005,9 @@ function setLangUI(){
 
   $("footText").textContent = t().emergencyFoot;
 
+  const about = $("aboutLine");
+  if(about) about.textContent = t().about;
+
   [...document.querySelectorAll('[data-lang]')].forEach(b=>{
     b.classList.toggle("on", b.dataset.lang===state.lang);
   });
@@ -984,17 +1018,23 @@ function setLangUI(){
   $("modeTourists").classList.toggle("on", state.mode==="tourists");
 
   $("suggestBtnFoot").textContent = t().suggest;
+
+  // keep favourites aria state
+  $("favToggle").setAttribute("aria-pressed", state.showFavs ? "true" : "false");
 }
 
 function makeCatRow(cat, count){
   const row = document.createElement("div");
   row.className = "cat" + ((state.category===cat) ? " active" : "");
+  row.setAttribute("role","button");
+  row.setAttribute("tabindex","0");
+  row.setAttribute("aria-label", `${cat} (${count})`);
 
   const hint = (cat==="All") ? "" : catHint(cat);
 
   row.innerHTML = `
     <div class="catLeft">
-      <div class="catIcon">${catIcon(cat)}</div>
+      <div class="catIcon" aria-hidden="true">${catIcon(cat)}</div>
       <div>
         <div class="catName">${(cat==="All") ? t().allCat : cat}</div>
         ${hint ? `<div class="catHint">${hint}</div>` : ``}
@@ -1003,14 +1043,20 @@ function makeCatRow(cat, count){
     <div class="catCount badge">${count}</div>
   `;
 
-  row.addEventListener("click", ()=>{
+  const activate = ()=>{
     state.category = cat;
     $("viewTitle").textContent = (cat==="All") ? t().all : cat;
     state.q = "";
     $("q").value = "";
     syncUrl(); persist();
     render();
+  };
+
+  row.addEventListener("click", activate);
+  row.addEventListener("keydown", (e)=>{
+    if(e.key==="Enter" || e.key===" "){ e.preventDefault(); activate(); }
   });
+
   return row;
 }
 
@@ -1086,7 +1132,7 @@ function renderCards(){
           <div class="name">${title}</div>
           <div class="meta">${desc}</div>
         </div>
-        <button class="favBtn ${favOn ? "on":""}" type="button" aria-label="Favourite">${favOn ? "★" : "☆"}</button>
+        <button class="favBtn ${favOn ? "on":""}" type="button" aria-label="Favourite" aria-pressed="${favOn ? "true":"false"}">${favOn ? "★" : "☆"}</button>
       </div>
 
       <div class="tags">
@@ -1098,7 +1144,8 @@ function renderCards(){
       </div>
     `;
 
-    card.querySelector(".favBtn").addEventListener("click", ()=>{
+    const favBtn = card.querySelector(".favBtn");
+    favBtn.addEventListener("click", ()=>{
       if(state.favs.has(s.id)){
         state.favs.delete(s.id);
         toast(t().removed);
@@ -1106,6 +1153,10 @@ function renderCards(){
         state.favs.add(s.id);
         toast(t().saved);
       }
+      favBtn.classList.toggle("on", state.favs.has(s.id));
+      favBtn.textContent = state.favs.has(s.id) ? "★" : "☆";
+      favBtn.setAttribute("aria-pressed", state.favs.has(s.id) ? "true" : "false");
+
       persist();
       if(state.showFavs) renderCards(); else render();
     });
@@ -1123,14 +1174,8 @@ function renderCards(){
 
       if(copyBtn){
         copyBtn.addEventListener("click", ()=>{
-          if(lnk.copy_text){
-            copyTextSafe(lnk.copy_text);
-            return;
-          }
-          if(lnk.url){
-            copyTextSafe(lnk.url);
-            return;
-          }
+          if(lnk.copy_text){ copyTextSafe(lnk.copy_text); return; }
+          if(lnk.url){ copyTextSafe(lnk.url); return; }
           toast(t().copyFail);
         });
       }
@@ -1157,11 +1202,13 @@ function setQuickLinks(){
 function doNearMe(){
   if(!("geolocation" in navigator)){ toast(t().geos); return; }
   toast(t().getting);
+
   navigator.geolocation.getCurrentPosition(
     (pos)=>{
       const {latitude, longitude} = pos.coords;
-      const q = `${latitude},${longitude}`;
-      window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent("things to do near "+q)}`, "_blank", "noopener");
+      // Better “Near me” behaviour: use maps with coordinates + query
+      const query = `things to do near ${latitude},${longitude}`;
+      window.open(mapsSearch(query), "_blank", "noopener");
     },
     (err)=>{
       if(err && err.code===1) toast(t().blocked);
@@ -1180,7 +1227,6 @@ function updateInstallButtonVisibility(){
 
   const btn = $("installBtn");
   if(!btn) return;
-
   btn.style.display = isStandalone ? "none" : "";
 }
 window.addEventListener("appinstalled", updateInstallButtonVisibility);
@@ -1238,6 +1284,7 @@ $("q").addEventListener("input", (e)=>{
 $("favToggle").addEventListener("click", ()=>{
   state.showFavs = !state.showFavs;
   $("favToggle").classList.toggle("primary", state.showFavs);
+  $("favToggle").setAttribute("aria-pressed", state.showFavs ? "true" : "false");
   syncUrl();
   renderCards();
 });
@@ -1283,6 +1330,7 @@ if("serviceWorker" in navigator){
 function initFromUrl(){
   state.showFavs = url.searchParams.get("favs")==="1";
   $("favToggle").classList.toggle("primary", state.showFavs);
+  $("favToggle").setAttribute("aria-pressed", state.showFavs ? "true" : "false");
   const cat = url.searchParams.get("cat");
   if(cat) state.category = cat;
 }
