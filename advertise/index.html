@@ -6,127 +6,84 @@
   <meta name="theme-color" content="#0B1220" />
   <meta name="color-scheme" content="dark" />
   <title>Advertise on JerseyGo</title>
-  <meta name="description" content="Promote your business on JerseyGo with clearly marked Featured / Sponsored listings." />
+  <meta name="description" content="Advertise your business on JerseyGo. Clearly marked Sponsored listings." />
   <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-  <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+  <link rel="icon" href="../icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="../icon.svg" />
+
   <style>
-    :root{
-      --bg:#070A12; --bg2:#0B1220;
-      --line:rgba(255,255,255,.10);
-      --text:#E9EEF7; --muted:#A9B4C7;
-      --r2:22px;
-      --focus: rgba(77,163,255,.75);
-    }
+    :root{--bg:#070A12;--bg2:#0B1220;--line:rgba(255,255,255,.10);--text:#E9EEF7;--muted:#A9B4C7;--r:22px}
     *{box-sizing:border-box}
     body{
       margin:0;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       color:var(--text);
       background:
-        radial-gradient(900px 600px at 12% 12%, rgba(77,163,255,.22), transparent 58%),
-        radial-gradient(850px 520px at 88% 10%, rgba(53,208,127,.18), transparent 58%),
+        radial-gradient(900px 600px at 12% 12%, rgba(77,163,255,.18), transparent 58%),
+        radial-gradient(850px 520px at 88% 10%, rgba(53,208,127,.14), transparent 58%),
         linear-gradient(180deg, var(--bg), var(--bg2));
       -webkit-font-smoothing:antialiased;
-      text-rendering:optimizeLegibility;
     }
-    a{color:inherit; text-decoration:none}
-    :focus-visible{outline:2px solid var(--focus); outline-offset:3px; border-radius:12px}
-
-    .wrap{max-width:980px; margin:0 auto; padding:18px}
+    a{color:inherit;text-decoration:none}
+    .wrap{max-width:920px;margin:0 auto;padding:18px}
     .card{
       border:1px solid var(--line);
       background: rgba(255,255,255,.03);
-      border-radius: var(--r2);
+      border-radius: var(--r);
       padding:18px;
+      box-shadow: 0 22px 50px rgba(0,0,0,.45);
     }
-    .top{
-      display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
-      margin-bottom:14px;
-    }
-    .brand{display:flex; align-items:center; gap:12px}
-    .brand img{width:44px; height:44px; border-radius:16px}
-    h1{margin:10px 0 6px; font-size:26px; letter-spacing:.2px}
-    p{margin:0; color:var(--muted); line-height:1.5}
-
-    .grid{display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:12px; margin-top:14px}
-    @media (max-width: 820px){ .grid{grid-template-columns:1fr} }
-
-    .plan{
-      border:1px solid var(--line);
-      border-radius: 18px;
-      padding:14px;
-      background: rgba(255,255,255,.02);
-    }
-    .plan h2{margin:0 0 8px; font-size:14px; letter-spacing:.3px; text-transform:uppercase; color:rgba(233,238,247,.92)}
-    .list{margin:0; padding-left:18px; color:var(--muted); line-height:1.6; font-size:14px}
-    .btnRow{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px}
+    .top{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+    .top img{width:44px;height:44px;border-radius:16px}
+    h1{margin:0;font-size:22px}
+    p{margin:8px 0;color:var(--muted);line-height:1.5}
+    .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
     .btn{
       border:1px solid var(--line);
       background: rgba(255,255,255,.05);
-      color:var(--text);
       padding:12px 14px;
       border-radius:16px;
       font-weight:900;
       cursor:pointer;
-      user-select:none;
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
     }
-    .btn.primary{border-color: rgba(53,208,127,.35); background: rgba(53,208,127,.12)}
-    .btn.ghost{background: rgba(255,255,255,.03)}
-    .note{margin-top:14px; font-size:12px; color:rgba(169,180,199,.85); line-height:1.6}
+    .btn:hover{background: rgba(255,255,255,.08)}
+    .pill{
+      display:inline-flex;gap:8px;align-items:center;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      padding:8px 10px;border-radius:999px;
+      font-size:12px;color:var(--muted);font-weight:900
+    }
+    .note{margin-top:10px;font-size:12px;color:rgba(169,180,199,.9)}
   </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="top">
-      <div class="brand">
-        <img src="/icon.svg" alt="JerseyGo">
+    <div class="card">
+      <div class="top">
+        <img src="../icon.svg" alt="JerseyGo" />
         <div>
-          <div style="font-weight:950">JerseyGo</div>
-          <div style="color:rgba(169,180,199,.85); font-size:12px">Featured & Sponsored listings</div>
+          <h1>Advertise on JerseyGo</h1>
+          <div class="pill">✨ Sponsored listings are clearly marked</div>
         </div>
       </div>
-      <a class="btn ghost" href="/">← Back to JerseyGo</a>
-    </div>
 
-    <div class="card">
-      <h1>Advertise your business on JerseyGo</h1>
       <p>
-        Reach Jersey residents & visitors with clearly marked listings. No hidden tricks —
-        Featured/Sponsored items are always labelled.
+        Want your business to appear in JerseyGo with a clearly marked <strong>Sponsored</strong> listing?
+        Send us your business name, category and link (website / Facebook / WhatsApp).
       </p>
 
-      <div class="grid">
-        <div class="plan">
-          <h2>Featured</h2>
-          <ul class="list">
-            <li>Highlighted placement in your category</li>
-            <li>“Featured” badge</li>
-            <li>Link + Copy button</li>
-            <li>Great for services & local businesses</li>
-          </ul>
-        </div>
-        <div class="plan">
-          <h2>Sponsored</h2>
-          <ul class="list">
-            <li>Top placement where relevant</li>
-            <li>“Sponsored” badge</li>
-            <li>Optional custom CTA button</li>
-            <li>Best for campaigns & offers</li>
-          </ul>
-        </div>
-      </div>
+      <p class="note">
+        JerseyGo is an unofficial directory that links to public sources. Sponsored listings are always labelled.
+      </p>
 
-      <div class="btnRow">
-        <a class="btn primary" href="https://wa.me/447700704591?text=Hi%20%F0%9F%91%8B%20I%20want%20to%20advertise%20on%20JerseyGo.%0A%0ABusiness%20name%3A%0ACategory%3A%0ALink%20(URL)%3A%0APreferred%20plan%20(Featured/Sponsored)%3A" target="_blank" rel="noopener">
-          Message on WhatsApp
-        </a>
-        <a class="btn" href="mailto:hello@jerseygo.app?subject=Advertise%20on%20JerseyGo&body=Hi%2C%0A%0ABusiness%20name%3A%0ACategory%3A%0ALink%20(URL)%3A%0APreferred%20plan%20(Featured/Sponsored)%3A%0A" >
-          Email us
-        </a>
-      </div>
+      <div class="btns">
+        <a class="btn" href="mailto:apdigitalsolutions.je@gmail.com?subject=JerseyGo%20Advertise%20-%20Enquiry&body=Hi%2C%0A%0AI%20want%20to%20advertise%20on%20JerseyGo.%0A%0ABusiness%20name%3A%0ACategory%3A%0ALink%20(URL)%3A%0APhone%20(optional)%3A%0A%0AThanks!">✉️ Email</a>
 
-      <div class="note">
-        JerseyGo is an unofficial directory linking to public/official sources. We can refuse listings that are misleading or unsafe.
+        <a class="btn" href="../">⬅ Back to JerseyGo</a>
       </div>
     </div>
   </div>
