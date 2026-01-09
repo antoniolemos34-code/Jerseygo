@@ -2,12 +2,15 @@
 <html lang="en-GB">
 <head>
   <meta charset="utf-8" />
-  <link rel="icon" href="/favicon.ico" type="image/x-icon">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#0B1220" />
   <meta name="color-scheme" content="dark" />
+
+  <!-- Icons -->
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="./icon.svg" />
 
   <!-- ✅ SEO -->
   <title>JerseyGo — Essential links for Jersey residents & visitors</title>
@@ -37,8 +40,6 @@
 
   <!-- ✅ PWA -->
   <link rel="manifest" href="./manifest.webmanifest" />
-  <link rel="icon" href="./icon.svg" type="image/svg+xml" />
-  <link rel="apple-touch-icon" href="./icon.svg" />
 
   <!-- ✅ Structured Data -->
   <script type="application/ld+json">
@@ -366,7 +367,7 @@
     .linkBtn:hover{background: rgba(255,255,255,.08)}
     .linkBtn:active{transform: translateY(1px)}
 
-    /* ✅ Sponsored / Featured styling (only visible when enabled via data on services) */
+    /* Sponsored / Featured styling */
     .card.sponsored{
       border-color: var(--warn);
       background: linear-gradient(180deg, rgba(255,176,32,.08), rgba(255,255,255,.02));
@@ -430,10 +431,147 @@
     }
     .footLink:hover{background: rgba(255,255,255,.07)}
     .footLink:active{transform: translateY(1px)}
+
+    /* =========================================================
+       ✅ PHONE SPLASH (opens like a phone mockup)
+       ========================================================= */
+    .splash{
+      position:fixed; inset:0; z-index:99999;
+      display:grid; place-items:center;
+      padding:24px;
+      background:
+        radial-gradient(900px 600px at 20% 15%, rgba(77,163,255,.18), transparent 60%),
+        radial-gradient(900px 600px at 80% 20%, rgba(53,208,127,.16), transparent 60%),
+        linear-gradient(180deg, rgba(7,10,18,.96), rgba(11,18,32,.98));
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .splash.hide{
+      opacity:0; pointer-events:none;
+      transition: opacity .25s ease;
+    }
+    .phoneMock{
+      width:min(420px, 92vw);
+      aspect-ratio: 9 / 19.5;
+      border-radius: 44px;
+      position:relative;
+      border: 1px solid rgba(255,255,255,.18);
+      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.03));
+      box-shadow: 0 40px 120px rgba(0,0,0,.65);
+      overflow:hidden;
+    }
+    .phoneBezel{
+      position:absolute; inset:10px;
+      border-radius: 36px;
+      background:
+        radial-gradient(700px 520px at 15% 10%, rgba(77,163,255,.18), transparent 55%),
+        radial-gradient(650px 520px at 85% 10%, rgba(53,208,127,.16), transparent 55%),
+        linear-gradient(180deg, rgba(7,10,18,.94), rgba(11,18,32,.98));
+      border: 1px solid rgba(255,255,255,.10);
+      overflow:hidden;
+    }
+    .phoneNotch{
+      position:absolute; top:0; left:50%;
+      transform:translateX(-50%);
+      width: 48%;
+      height: 30px;
+      border-bottom-left-radius: 18px;
+      border-bottom-right-radius: 18px;
+      background: rgba(0,0,0,.55);
+      border: 1px solid rgba(255,255,255,.08);
+      border-top:none;
+      z-index:4;
+    }
+    .phoneInner{
+      position:absolute; inset:0;
+      display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
+      padding:34px 22px 22px;
+      gap:14px;
+      text-align:center;
+    }
+    .phoneLogo{
+      width:86px; height:86px;
+      border-radius: 26px;
+      box-shadow: 0 22px 55px rgba(0,0,0,.55);
+    }
+    .phoneTitle{
+      font-weight:950;
+      letter-spacing:.2px;
+      font-size:22px;
+    }
+    .phoneSub{
+      color: rgba(169,180,199,.92);
+      font-size:13px;
+      line-height:1.4;
+      max-width: 270px;
+    }
+    .phonePills{
+      display:flex; flex-wrap:wrap; gap:8px;
+      justify-content:center;
+      margin-top:6px;
+    }
+    .phonePill{
+      font-size:12px;
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      color: rgba(233,238,247,.92);
+    }
+    .phoneCTA{
+      margin-top:10px;
+      width:min(280px, 88%);
+      border-radius: 16px;
+      padding:12px 14px;
+      font-weight:950;
+      cursor:pointer;
+      border:1px solid rgba(53,208,127,.40);
+      background: rgba(53,208,127,.16);
+      transition: transform .08s ease, background .15s ease;
+      color: var(--text);
+    }
+    .phoneCTA:hover{ background: rgba(53,208,127,.22); }
+    .phoneCTA:active{ transform: translateY(1px); }
+    .phoneHint{
+      margin-top:6px;
+      font-size:12px;
+      color: rgba(169,180,199,.85);
+    }
   </style>
 </head>
 
 <body>
+  <!-- ✅ Phone splash -->
+  <div id="splash" class="splash" aria-label="JerseyGo intro">
+    <div class="phoneMock" role="dialog" aria-modal="true">
+      <div class="phoneBezel">
+        <div class="phoneNotch" aria-hidden="true"></div>
+
+        <div class="phoneInner">
+          <img class="phoneLogo" src="./icon.svg" alt="JerseyGo" />
+          <div class="phoneTitle">JerseyGo</div>
+          <div class="phoneSub">
+            Essential links for Jersey residents & visitors.<br/>
+            Free to use • No app download.
+          </div>
+
+          <div class="phonePills" aria-hidden="true">
+            <div class="phonePill">🅿️ Parking</div>
+            <div class="phonePill">🚕 Taxis</div>
+            <div class="phonePill">🚻 Toilets</div>
+            <div class="phonePill">💊 Pharmacies</div>
+            <div class="phonePill">🚌 Buses</div>
+            <div class="phonePill">🌦️ Weather</div>
+          </div>
+
+          <button id="enterAppBtn" class="phoneCTA" type="button">Open JerseyGo</button>
+          <div class="phoneHint">Tip: add to Home Screen to use like an app</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <a class="skip" href="#main">Skip to content</a>
 
 <header>
@@ -517,9 +655,7 @@
         </div>
       </div>
 
-      <!-- ✅ Sponsored/Featured section container (auto-hidden when empty) -->
       <div id="promoWrap" style="display:none;"></div>
-
       <div id="cards" class="cards" aria-live="polite"></div>
 
       <footer>
@@ -538,9 +674,7 @@
 <script>
 /* ===========================================================
    JerseyGo — polished “market-level” structure
-   ✅ Adds Sponsored/Featured framework (invisible until used)
-   ✅ Cleaner sorting + rendering
-   ✅ Keeps all existing features intact
+   + Phone splash intro (opens like phone mockup)
    =========================================================== */
 
 /* ========= Helpers ========= */
@@ -555,6 +689,30 @@ const toast = (msg)=>{
   window.__toast = setTimeout(()=>tEl.classList.remove("show"), 1600);
 };
 const mapsSearch = (query)=> `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+
+/* ========= Phone splash ========= */
+(function splashIntro(){
+  const splash = $("splash");
+  const btn = $("enterAppBtn");
+  if(!splash || !btn) return;
+
+  // show once per session
+  if(sessionStorage.getItem("jerseygo:splash") === "1"){
+    splash.classList.add("hide");
+    setTimeout(()=> splash.remove(), 260);
+    return;
+  }
+
+  const close = ()=>{
+    sessionStorage.setItem("jerseygo:splash","1");
+    splash.classList.add("hide");
+    setTimeout(()=> splash.remove(), 260);
+  };
+
+  btn.addEventListener("click", close);
+  splash.addEventListener("click", (e)=>{ if(e.target === splash) close(); });
+  document.addEventListener("keydown", (e)=>{ if(e.key === "Escape") close(); }, { once:true });
+})();
 
 /* ========= WhatsApp (hidden in UI; link only) ========= */
 const WHATSAPP_NUMBER_INTL = "447700704591";
@@ -585,7 +743,6 @@ const LS_LANG = "jerseygo:lang:v3";
 const LS_MODE = "jerseygo:mode:v3";
 const LS_FAVS = "jerseygo:favs:v3";
 
-/* Dev/preview: add ?preview=1 to show sponsored UI even with no clients */
 const PREVIEW_PROMO = url.searchParams.get("preview")==="1";
 
 const allowedLangs = ["en","pt","pl","fr"];
@@ -763,7 +920,7 @@ const I18N = {
 };
 const t = ()=> I18N[state.lang] || I18N.en;
 
-/* ========= Find address (prompt -> Maps) ========= */
+/* ========= Find address ========= */
 function findAddress(){
   const labels = {
     en: { title:"Find an address", hint:"Type an address, postcode or place (e.g., '1 King Street, St Helier')" },
@@ -794,52 +951,19 @@ const CATEGORY_ORDER = ["Essentials","Getting around","Facilities","Things to do
 
 function catHint(cat){
   const hints = {
-    "Essentials": {
-      en:"weather, tides, bank holidays",
-      pt:"tempo, marés, feriados",
-      pl:"pogoda, pływy, święta",
-      fr:"météo, marées, jours fériés"
-    },
-    "Getting around": {
-      en:"parking, buses, taxis, roadworks",
-      pt:"parking, autocarros, táxis, estradas",
-      pl:"parking, autobusy, taxi, drogi",
-      fr:"parking, bus, taxis, routes"
-    },
-    "Facilities": {
-      en:"toilets, pharmacies, ATMs, baby changing, addresses",
-      pt:"WC, farmácias, multibanco, fraldários, moradas",
-      pl:"toalety, apteki, bankomaty, przewijaki, adresy",
-      fr:"toilettes, pharmacies, distributeurs, table à langer, adresses"
-    },
-    "Things to do": {
-      en:"attractions, beaches, museums",
-      pt:"atrações, praias, museus",
-      pl:"atrakcje, plaże, muzea",
-      fr:"attractions, plages, musées"
-    },
-    "Help & safety": {
-      en:"emergency, airport, harbour, police",
-      pt:"emergência, aeroporto, porto, polícia",
-      pl:"alarmowe, lotnisko, port, policja",
-      fr:"urgence, aéroport, port, police"
-    }
+    "Essentials": { en:"weather, tides, bank holidays", pt:"tempo, marés, feriados", pl:"pogoda, pływy, święta", fr:"météo, marées, jours fériés" },
+    "Getting around": { en:"parking, buses, taxis, roadworks", pt:"parking, autocarros, táxis, estradas", pl:"parking, autobusy, taxi, drogi", fr:"parking, bus, taxis, routes" },
+    "Facilities": { en:"toilets, pharmacies, ATMs, baby changing, addresses", pt:"WC, farmácias, multibanco, fraldários, moradas", pl:"toalety, apteki, bankomaty, przewijaki, adresy", fr:"toilettes, pharmacies, distributeurs, table à langer, adresses" },
+    "Things to do": { en:"attractions, beaches, museums", pt:"atrações, praias, museus", pl:"atrakcje, plaże, muzea", fr:"attractions, plages, musées" },
+    "Help & safety": { en:"emergency, airport, harbour, police", pt:"emergência, aeroporto, porto, polícia", pl:"alarmowe, lotnisko, port, policja", fr:"urgence, aéroport, port, police" }
   };
   const obj = hints[cat];
   if(!obj) return "";
   return obj[state.lang] || obj.en || "";
 }
 
-/* ===========================================================
-   ✅ Services
-   Add monetisation later by setting:
-   - sponsored: true
-   - featured: true
-   - promoUrl: "https://example.com" (optional)
-   - promoLabel: {en:"Visit", ...} (optional)
-   =========================================================== */
+/* ========= Services ========= */
 const SERVICES = [
-  /* Essentials */
   {
     id:"ess-weather",
     category:"Essentials",
@@ -861,8 +985,6 @@ const SERVICES = [
     tags:["bank","holidays","dates"],
     links:[{label:{en:"Open official bank holidays",pt:"Abrir feriados oficiais",pl:"Oficjalne święta",fr:"Jours fériés officiels"}, url:LINKS.bankHolidays}]
   },
-
-  /* Getting around */
   {
     id:"park-live",
     category:"Getting around",
@@ -910,8 +1032,6 @@ const SERVICES = [
       {label:{en:"Traffic report list",pt:"Lista (traffic report)",pl:"Lista (raport)",fr:"Liste (rapport)"}, url:LINKS.trafficReport}
     ]
   },
-
-  /* Facilities */
   {
     id:"fac-find-address",
     category:"Facilities",
@@ -965,8 +1085,6 @@ const SERVICES = [
     tags:["baby","changing","near me"],
     links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("baby changing Jersey")}]
   },
-
-  /* Things to do */
   {
     id:"sea-beaches",
     category:"Things to do",
@@ -994,8 +1112,6 @@ const SERVICES = [
     tags:["attraction","near me"],
     links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("tourist attraction Jersey")}]
   },
-
-  /* Help & safety */
   {
     id:"ports-contacts",
     category:"Help & safety",
@@ -1070,7 +1186,6 @@ function syncUrl(){
   u.searchParams.set("cat", state.category);
   if(state.showFavs) u.searchParams.set("favs","1"); else u.searchParams.delete("favs");
   if(state.q) u.searchParams.set("q", state.q); else u.searchParams.delete("q");
-  // keep preview param if present
   if(PREVIEW_PROMO) u.searchParams.set("preview","1");
   history.replaceState({}, "", u.toString());
 }
@@ -1182,7 +1297,6 @@ async function copyTextSafe(text){
       toast(t().copied);
       return;
     }
-    // fallback
     const ta = document.createElement("textarea");
     ta.value = text;
     ta.style.position = "fixed";
@@ -1198,11 +1312,9 @@ async function copyTextSafe(text){
   }
 }
 
-/* ========= Sponsored / Featured logic (invisible until data exists) ========= */
+/* ========= Sponsored / Featured ========= */
 function promoType(s){
-  // allow preview mode to show layout even with no clients
   if(PREVIEW_PROMO && !s.sponsored && !s.featured){
-    // show first item as featured in preview (safe, UI only)
     return (s.id === SERVICES[0]?.id) ? "featured" : null;
   }
   if(s.sponsored) return "sponsored";
@@ -1232,7 +1344,6 @@ function splitPromos(list){
   });
   return {promos, normal};
 }
-
 function renderPromoSection(promos){
   const wrap = $("promoWrap");
   if(!wrap) return;
@@ -1263,14 +1374,11 @@ function renderPromoSection(promos){
   wrap.appendChild(grid);
 
   const frag = document.createDocumentFragment();
-  promos.forEach(s=>{
-    frag.appendChild(buildCard(s, {isPromo:true}));
-  });
+  promos.forEach(s=> frag.appendChild(buildCard(s)));
   grid.appendChild(frag);
 }
 
-/* ========= Card builder ========= */
-function buildCard(s, opts={}) {
+function buildCard(s){
   const card = document.createElement("div");
 
   const p = promoType(s);
@@ -1283,21 +1391,11 @@ function buildCard(s, opts={}) {
   const tags = (s.tags||[]).slice(0,6);
   const favOn = state.favs.has(s.id);
 
-  // promo pill (only if sponsored/featured OR preview mode)
   const promoPill = (p)
     ? `<span class="pill ${p}">${p==="sponsored" ? t().sponsored : t().featured}</span>`
     : "";
 
-  // optional extra “Visit sponsor” quick CTA (still uses same info; only if you set promoUrl later)
-  const promoCta = (s.promoUrl && p)
-    ? `
-      <button class="linkBtn" data-open-url="${s.promoUrl}" type="button">
-        ⭐ ${getLabel(s.promoLabel) || (p==="sponsored" ? t().sponsored : t().featured)}
-      </button>
-      <button class="linkBtn" data-copy-text="${s.promoUrl}" type="button">${t().copy}</button>
-    ` : "";
-
-  const linksHtml = (s.links||[]).map((lnk, idx)=>{
+  const linksHtml = (s.links||[]).map((lnk)=>{
     const lbl = getLabel(lnk.label);
     const openText = (lnk.action ? `${t().action}: ${lbl}` : `${t().open}: ${lbl}`);
     return `
@@ -1320,12 +1418,10 @@ function buildCard(s, opts={}) {
     </div>
 
     <div class="actions">
-      ${promoCta}
       ${linksHtml}
     </div>
   `;
 
-  // fav handler
   const favBtn = card.querySelector(".favBtn");
   favBtn.addEventListener("click", ()=>{
     if(state.favs.has(s.id)){
@@ -1338,12 +1434,10 @@ function buildCard(s, opts={}) {
     favBtn.classList.toggle("on", state.favs.has(s.id));
     favBtn.textContent = state.favs.has(s.id) ? "★" : "☆";
     favBtn.setAttribute("aria-pressed", state.favs.has(s.id) ? "true" : "false");
-
     persist();
     if(state.showFavs) renderCards(); else render();
   });
 
-  // delegated actions inside card
   card.addEventListener("click", (e)=>{
     const btn = e.target.closest("button");
     if(!btn) return;
@@ -1366,7 +1460,6 @@ function buildCard(s, opts={}) {
   return card;
 }
 
-/* ========= Render cards ========= */
 function renderCards(){
   const listRaw = visibleServices();
   const listSorted = sortServices(listRaw);
@@ -1375,7 +1468,6 @@ function renderCards(){
   $("countVisible").textContent = String(listRaw.length);
   $("statsLine").textContent = t().showing(listRaw.length);
 
-  // promo section (auto-hidden if no data)
   renderPromoSection(promos);
 
   const cards = $("cards");
@@ -1429,7 +1521,7 @@ function doNearMe(){
   );
 }
 
-/* ========= Install button: hide when already installed ========= */
+/* ========= Install button ========= */
 function updateInstallButtonVisibility(){
   const isStandalone =
     window.matchMedia("(display-mode: standalone)").matches ||
@@ -1470,11 +1562,7 @@ $("shareBtn").addEventListener("click", async ()=>{
     try{ await navigator.share({title, text:"JerseyGo — essential links for Jersey", url: shareUrl}); }catch(e){}
     return;
   }
-  try{
-    await copyTextSafe(shareUrl);
-  }catch(e){
-    toast(t().copyFail);
-  }
+  try{ await copyTextSafe(shareUrl); }catch(e){ toast(t().copyFail); }
 });
 
 /* ========= Suggest a link -> WhatsApp ========= */
@@ -1533,13 +1621,6 @@ $("resetBtn").addEventListener("click", ()=>{
   syncUrl(); render();
 });
 
-/* ========= Service Worker ========= */
-if("serviceWorker" in navigator){
-  window.addEventListener("load", ()=>{
-    navigator.serviceWorker.register("./sw.js").catch(()=>{});
-  });
-}
-
 /* ========= Init ========= */
 function initFromUrl(){
   state.showFavs = url.searchParams.get("favs")==="1";
@@ -1555,6 +1636,13 @@ setLangUI();
 syncUrl();
 persist();
 render();
+
+/* ========= Service Worker ========= */
+if("serviceWorker" in navigator){
+  window.addEventListener("load", ()=>{
+    navigator.serviceWorker.register("./sw.js").catch(()=>{});
+  });
+}
 </script>
 </body>
 </html>
