@@ -433,7 +433,7 @@
     .footLink:active{transform: translateY(1px)}
 
     /* =========================================================
-       ✅ PHONE SPLASH (opens like a phone mockup)
+       ✅ PHONE SPLASH
        ========================================================= */
     .splash{
       position:fixed; inset:0; z-index:99999;
@@ -964,6 +964,33 @@ function catHint(cat){
 
 /* ========= Services ========= */
 const SERVICES = [
+  /* ✅ Sponsored: AP Digital Solutions */
+  {
+    id:"sponsor-ap-digital-solutions",
+    category:"Essentials",
+    audience:["residents","tourists"],
+    sponsored:true,
+    name:{
+      en:"AP Digital Solutions — Websites & Automation",
+      pt:"AP Digital Solutions — Sites & Automação",
+      pl:"AP Digital Solutions — Strony & Automatyzacja",
+      fr:"AP Digital Solutions — Sites & Automatisation"
+    },
+    desc:{
+      en:"Premium websites, business email and AI automation for small & growing businesses.",
+      pt:"Sites premium, email profissional e automação com IA para pequenos negócios.",
+      pl:"Nowoczesne strony, email firmowy i automatyzacja AI dla firm.",
+      fr:"Sites premium, email pro et automatisation IA pour les entreprises."
+    },
+    tags:["sponsored","websites","business email","ai","automation","marketing"],
+    links:[
+      {label:{en:"Website",pt:"Website",pl:"Strona",fr:"Site"}, url:"https://apdigitalsolutions.digital/?utm_source=jerseygo&utm_medium=app&utm_campaign=sponsored"},
+      {label:{en:"WhatsApp (free demo)",pt:"WhatsApp (demo grátis)",pl:"WhatsApp (demo)",fr:"WhatsApp (démo)"}, url: waLink("Hi 👋 I saw AP Digital Solutions on JerseyGo. I’d like a free demo / quote for a website + business email.")},
+      {label:{en:"Email us",pt:"Enviar email",pl:"Email",fr:"Email"}, url:"mailto:apdigitalsolutions.je@gmail.com?subject=JerseyGo%20-%20Enquiry&body=Hi%20AP%20Digital%20Solutions%2C%0A%0AI%20saw%20you%20on%20JerseyGo%20and%20I%E2%80%99d%20like%20to%20know%20more%20about%20a%20website%2C%20business%20email%20and%20automation.%0A%0AThanks%21"}
+    ]
+  },
+
+  /* --- Your services --- */
   {
     id:"ess-weather",
     category:"Essentials",
@@ -1230,7 +1257,6 @@ function setLangUI(){
   $("modeTourists").classList.toggle("on", state.mode==="tourists");
 
   $("suggestBtnFoot").textContent = t().suggest;
-
   $("favToggle").setAttribute("aria-pressed", state.showFavs ? "true" : "false");
 }
 
@@ -1331,7 +1357,7 @@ function sortServices(list){
   return [...list].sort((a,b)=>{
     const pa = prio(a), pb = prio(b);
     if(pb !== pa) return pb - pa;
-    const na = getLabel(a.name), nb = getLabel(b.name);
+    const na = getLabel(a.name), nb = getLabel(a.name);
     return na.localeCompare(nb);
   });
 }
