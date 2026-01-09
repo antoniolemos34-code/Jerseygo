@@ -1,15 +1,15 @@
 {
   "name": "JerseyGo",
   "short_name": "JerseyGo",
-  "start_url": "/?source=pwa&lang=en&mode=residents&cat=All",
-  "scope": "/",
+  "start_url": "./?source=pwa",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#0B1220",
   "theme_color": "#0B1220",
-  "description": "Essential links for Jersey residents & visitors — all in one place.",
+  "description": "Essential links for Jersey residents & visitors: parking, taxis, toilets, pharmacies, transport, weather, tides, bank holidays, roadworks and emergency numbers.",
   "icons": [
     {
-      "src": "/icon.svg",
+      "src": "./icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
