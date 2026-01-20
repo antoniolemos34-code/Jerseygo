@@ -1,13 +1,29 @@
 {
   "name": "JerseyGo",
   "short_name": "JerseyGo",
+  "id": "/?app=jerseygo",
   "start_url": "./?source=pwa",
   "scope": "./",
   "display": "standalone",
   "background_color": "#0B1220",
   "theme_color": "#0B1220",
   "description": "Essential links for Jersey residents & visitors: parking, taxis, toilets, pharmacies, transport, weather, tides, bank holidays, roadworks and emergency numbers.",
+  "lang": "en-GB",
+  "dir": "ltr",
+  "orientation": "portrait",
   "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
     {
       "src": "./icon.svg",
       "sizes": "any",
