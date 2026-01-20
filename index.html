@@ -328,7 +328,7 @@
       border-radius: var(--r2);
       padding:14px;
       display:flex; flex-direction:column; gap:10px;
-      transition: transform .12s ease, background .15s ease, border-color .15s ease;
+      transition: background .15s ease, border-color .15s ease;
     }
     .card:hover{background: rgba(255,255,255,.04)}
     .row{display:flex; align-items:flex-start; justify-content:space-between; gap:10px}
@@ -678,8 +678,7 @@
 
 <script>
 /* ===========================================================
-   JerseyGo — polished “market-level” structure
-   + Hardening + safer rendering
+   JerseyGo — final improved version (drop-in)
    =========================================================== */
 
 /* ========= Helpers ========= */
@@ -695,7 +694,7 @@ const toast = (msg)=>{
 };
 const mapsSearch = (query)=> `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
 
-// HTML / attribute escaping (robust if later you ingest external user suggestions)
+// escape to avoid injection if later you accept external suggestions
 const esc = (s)=> String(s ?? "")
   .replace(/&/g,"&amp;")
   .replace(/</g,"&lt;")
@@ -703,13 +702,28 @@ const esc = (s)=> String(s ?? "")
   .replace(/"/g,"&quot;")
   .replace(/'/g,"&#39;");
 
+// hardening: block javascript: etc
+function safeUrl(u){
+  try{
+    const s = String(u||"").trim();
+    if(!s) return "";
+    // allow tel:, mailto:, https:, http:, relative (./ ../ /)
+    if(/^javascript:/i.test(s)) return "";
+    if(/^data:/i.test(s)) return "";
+    if(/^(https?:|mailto:|tel:)/i.test(s)) return s;
+    if(s.startsWith("/") || s.startsWith("./") || s.startsWith("../")) return s;
+    return s; // fallback (keep) — but we already blocked javascript/data
+  }catch(e){
+    return "";
+  }
+}
+
 /* ========= Phone splash ========= */
 (function splashIntro(){
   const splash = $("splash");
   const btn = $("enterAppBtn");
   if(!splash || !btn) return;
 
-  // show once per session
   if(sessionStorage.getItem("jerseygo:splash") === "1"){
     splash.classList.add("hide");
     setTimeout(()=> splash.remove(), 260);
@@ -727,13 +741,12 @@ const esc = (s)=> String(s ?? "")
   document.addEventListener("keydown", (e)=>{ if(e.key === "Escape") close(); }, { once:true });
 })();
 
-/* ========= WhatsApp (hidden in UI; link only) ========= */
-const WHATSAPP_NUMBER_INTL = "447700704591";
+/* ========= WhatsApp (hidden number, direct link only) ========= */
+const WHATSAPP_NUMBER_INTL = "447700704591"; // keep same
 const waLink = (text)=> `https://wa.me/${WHATSAPP_NUMBER_INTL}?text=${encodeURIComponent(text)}`;
 
 /* ========= Links ========= */
 const LINKS = {
-  govHome: "https://www.gov.je/",
   parkingLive: "https://www.gov.je/Travel/Motoring/Parking/pages/carparkspaces.aspx",
   parkingPay: "https://www.gov.je/Travel/Motoring/Parking/PayForParking/pages/paybyphoneapp.aspx",
   met: "https://www.gov.je/weather/",
@@ -969,7 +982,7 @@ function catHint(cat){
 
 /* ========= Services ========= */
 const SERVICES = [
-  /* ✅ Sponsored: Antonio Pereira (website + email + WhatsApp link only) */
+  /* ✅ Sponsored: Antonio Pereira */
   {
     id:"sponsor-antonio-pereira",
     category:"Essentials",
@@ -995,7 +1008,7 @@ const SERVICES = [
     ]
   },
 
-  /* --- Services --- */
+  /* --- official / public sources --- */
   {
     id:"ess-weather",
     category:"Essentials",
@@ -1248,7 +1261,6 @@ function setLangUI(){
   $("viewDesc").textContent = t().desc;
 
   $("footText").textContent = t().emergencyFoot;
-
   const about = $("aboutLine");
   if(about) about.textContent = t().about;
 
@@ -1326,7 +1338,7 @@ async function copyTextSafe(text){
     if(navigator.clipboard && navigator.clipboard.writeText){
       await navigator.clipboard.writeText(text);
       toast(t().copied);
-      return;
+      return true;
     }
     const ta = document.createElement("textarea");
     ta.value = text;
@@ -1338,15 +1350,18 @@ async function copyTextSafe(text){
     const ok = document.execCommand("copy");
     document.body.removeChild(ta);
     toast(ok ? t().copied : t().copyFail);
+    return ok;
   }catch(e){
     toast(t().copyFail);
+    return false;
   }
 }
 
 /* ========= Sponsored / Featured ========= */
 function promoType(s){
   if(PREVIEW_PROMO && !s.sponsored && !s.featured){
-    return (s.id === SERVICES[0]?.id) ? "featured" : null;
+    // preview mode can highlight first item only, but do not override sponsored
+    return null;
   }
   if(s.sponsored) return "sponsored";
   if(s.featured) return "featured";
@@ -1365,7 +1380,6 @@ function sortServices(list){
     const pa = prio(a), pb = prio(b);
     if(pb !== pa) return pb - pa;
 
-    // ✅ Bug fix: compare a vs b properly
     const na = getLabel(a.name);
     const nb = getLabel(b.name);
     return na.localeCompare(nb, undefined, { sensitivity:"base" });
@@ -1386,7 +1400,8 @@ function renderPromoSection(promos){
   const wrap = $("promoWrap");
   if(!wrap) return;
 
-  if(!promos.length){
+  // ✅ improvement: hide promos when favourites filter is ON (clean UX)
+  if(state.showFavs || !promos.length){
     wrap.style.display = "none";
     wrap.innerHTML = "";
     return;
@@ -1437,10 +1452,11 @@ function buildCard(s){
     const lbl = getLabel(lnk.label);
     const openText = (lnk.action ? `${t().action}: ${lbl}` : `${t().open}: ${lbl}`);
     const safeAction = esc(lnk.action || "");
-    const safeUrl = esc(lnk.url || "");
-    const safeCopy = esc(lnk.copy_text ? String(lnk.copy_text) : (lnk.url ? String(lnk.url) : ""));
+    const url = safeUrl(lnk.url || "");
+    const safeOpenUrl = esc(url);
+    const safeCopy = esc(lnk.copy_text ? String(lnk.copy_text) : (url ? String(url) : ""));
     return `
-      <button class="linkBtn" data-open-action="${safeAction}" data-open-url="${safeUrl}" type="button">🔗 ${esc(openText)}</button>
+      <button class="linkBtn" data-open-action="${safeAction}" data-open-url="${safeOpenUrl}" type="button">🔗 ${esc(openText)}</button>
       <button class="linkBtn" data-copy-text="${safeCopy}" type="button">${esc(t().copy)}</button>
     `;
   }).join("");
@@ -1476,7 +1492,7 @@ function buildCard(s){
     favBtn.textContent = state.favs.has(s.id) ? "★" : "☆";
     favBtn.setAttribute("aria-pressed", state.favs.has(s.id) ? "true" : "false");
     persist();
-    if(state.showFavs) renderCards(); else render();
+    renderCards(); // keep consistent with current filter
   });
 
   card.addEventListener("click", (e)=>{
@@ -1491,10 +1507,11 @@ function buildCard(s){
       copyTextSafe(copyText.trim());
       return;
     }
-
     if(openAction === "findAddress"){ findAddress(); return; }
     if(openUrl && openUrl.trim()){
-      window.open(openUrl.trim(), "_blank", "noopener");
+      const finalUrl = safeUrl(openUrl.trim());
+      if(!finalUrl){ toast("Blocked link"); return; }
+      window.open(finalUrl, "_blank", "noopener");
     }
   });
 
@@ -1514,7 +1531,7 @@ function renderCards(){
   const cards = $("cards");
   cards.innerHTML = "";
 
-  if(normal.length===0 && promos.length===0){
+  if(normal.length===0 && (!promos.length || state.showFavs)){
     const empty = document.createElement("div");
     empty.className = "card";
     empty.innerHTML = `
@@ -1539,12 +1556,13 @@ function render(){
 /* ========= Quick links + Near me ========= */
 function setQuickLinks(){
   $("quickParking").href = LINKS.parkingLive;
+
+  // cleaner: always opens device location on Maps (no geolocation prompt in-app)
   $("quickTaxiNear").href = mapsSearch("taxi near me");
   $("quickToiletsNear").href = mapsSearch("public toilets near me");
   $("quickPharmacyNear").href = mapsSearch("pharmacy near me");
 }
 
-// More professional: no geolocation prompt; “near me” uses Maps device location anyway.
 function nearMeQuery(){
   if(state.q) return `${state.q} near me`;
   switch(state.category){
@@ -1599,10 +1617,15 @@ $("shareBtn").addEventListener("click", async ()=>{
   const shareUrl = location.href;
   const title = "JerseyGo";
   if(navigator.share){
-    try{ await navigator.share({title, text:"JerseyGo — essential links for Jersey", url: shareUrl}); }catch(e){}
-    return;
+    try{
+      await navigator.share({title, text:"JerseyGo — essential links for Jersey", url: shareUrl});
+      return;
+    }catch(e){
+      // fallback to copy
+    }
   }
-  try{ await copyTextSafe(shareUrl); }catch(e){ toast(t().copyFail); }
+  const ok = await copyTextSafe(shareUrl);
+  if(ok) toast(t().copied);
 });
 
 /* ========= Suggest a link -> WhatsApp ========= */
