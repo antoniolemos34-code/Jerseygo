@@ -88,6 +88,11 @@
     button,input{font-family:inherit}
     .wrap{max-width:1180px; margin:0 auto; padding:14px}
 
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce){
+      *{animation:none !important; transition:none !important; scroll-behavior:auto !important;}
+    }
+
     /* Accessibility */
     .sr-only{
       position:absolute !important;
@@ -674,7 +679,7 @@
 <script>
 /* ===========================================================
    JerseyGo — polished “market-level” structure
-   + Phone splash intro (opens like phone mockup)
+   + Hardening + safer rendering
    =========================================================== */
 
 /* ========= Helpers ========= */
@@ -689,6 +694,14 @@ const toast = (msg)=>{
   window.__toast = setTimeout(()=>tEl.classList.remove("show"), 1600);
 };
 const mapsSearch = (query)=> `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+
+// HTML / attribute escaping (robust if later you ingest external user suggestions)
+const esc = (s)=> String(s ?? "")
+  .replace(/&/g,"&amp;")
+  .replace(/</g,"&lt;")
+  .replace(/>/g,"&gt;")
+  .replace(/"/g,"&quot;")
+  .replace(/'/g,"&#39;");
 
 /* ========= Phone splash ========= */
 (function splashIntro(){
@@ -783,9 +796,6 @@ const I18N = {
     copyFail:"Copy not supported",
     saved:"Saved to favourites",
     removed:"Removed from favourites",
-    blocked:"Location blocked in browser settings",
-    geos:"Geolocation not supported",
-    getting:"Getting location…",
     showing:(n)=>`Showing ${n}`,
     emergencyFoot:"Emergency: call 999 / 112 • JerseyGo (unofficial directory; uses public sources)",
     howInstall:"How to install",
@@ -798,7 +808,8 @@ const I18N = {
     sponsored:"Sponsored",
     featured:"Featured",
     promoNote:"Businesses can feature a link here. Listings are clearly marked.",
-    promoNoteShort:"Clearly marked listings."
+    promoNoteShort:"Clearly marked listings.",
+    openingMap:"Opening map…"
   },
   pt:{
     sub:"Links rápidos para Jersey — residentes e turistas",
@@ -822,9 +833,6 @@ const I18N = {
     copyFail:"Copiar não suportado",
     saved:"Guardado nos favoritos",
     removed:"Removido dos favoritos",
-    blocked:"Localização bloqueada nas definições do browser",
-    geos:"Geolocalização não suportada",
-    getting:"A obter localização…",
     showing:(n)=>`A mostrar ${n}`,
     emergencyFoot:"Emergência: liga 999 / 112 • JerseyGo (diretório não-oficial; usa fontes públicas)",
     howInstall:"Como instalar",
@@ -837,7 +845,8 @@ const I18N = {
     sponsored:"Patrocinado",
     featured:"Destaque",
     promoNote:"Empresas podem destacar um link aqui. As listagens ficam marcadas.",
-    promoNoteShort:"Listagens marcadas."
+    promoNoteShort:"Listagens marcadas.",
+    openingMap:"A abrir mapa…"
   },
   pl:{
     sub:"Szybkie linki dla Jersey — mieszkańcy i turyści",
@@ -861,9 +870,6 @@ const I18N = {
     copyFail:"Kopiowanie niedostępne",
     saved:"Dodano do ulubionych",
     removed:"Usunięto z ulubionych",
-    blocked:"Lokalizacja zablokowana w ustawieniach przeglądarki",
-    geos:"Geolokalizacja nieobsługiwana",
-    getting:"Pobieranie lokalizacji…",
     showing:(n)=>`Wyświetlono ${n}`,
     emergencyFoot:"Nagłe: 999 / 112 • JerseyGo (nieoficjalny katalog; publiczne źródła)",
     howInstall:"Jak zainstalować",
@@ -876,7 +882,8 @@ const I18N = {
     sponsored:"Sponsorowane",
     featured:"Wyróżnione",
     promoNote:"Firmy mogą się tu wyróżnić. Ogłoszenia są oznaczone.",
-    promoNoteShort:"Oznaczone wpisy."
+    promoNoteShort:"Oznaczone wpisy.",
+    openingMap:"Otwieranie mapy…"
   },
   fr:{
     sub:"Liens rapides pour Jersey — résidents & touristes",
@@ -900,9 +907,6 @@ const I18N = {
     copyFail:"Copie non prise en charge",
     saved:"Ajouté aux favoris",
     removed:"Retiré des favoris",
-    blocked:"Localisation bloquée dans les paramètres du navigateur",
-    geos:"Géolocalisation non prise en charge",
-    getting:"Localisation…",
     showing:(n)=>`Affichage ${n}`,
     emergencyFoot:"Urgence : 999 / 112 • JerseyGo (annuaire non officiel ; sources publiques)",
     howInstall:"Comment installer",
@@ -915,7 +919,8 @@ const I18N = {
     sponsored:"Sponsorisé",
     featured:"À la une",
     promoNote:"Les entreprises peuvent apparaître ici. Les annonces sont clairement indiquées.",
-    promoNoteShort:"Annonces indiquées."
+    promoNoteShort:"Annonces indiquées.",
+    openingMap:"Ouverture de la carte…"
   }
 };
 const t = ()=> I18N[state.lang] || I18N.en;
@@ -964,33 +969,33 @@ function catHint(cat){
 
 /* ========= Services ========= */
 const SERVICES = [
-  /* ✅ Sponsored: AP Digital Solutions */
+  /* ✅ Sponsored: Antonio Pereira (website + email + WhatsApp link only) */
   {
-    id:"sponsor-ap-digital-solutions",
+    id:"sponsor-antonio-pereira",
     category:"Essentials",
     audience:["residents","tourists"],
     sponsored:true,
     name:{
-      en:"AP Digital Solutions — Websites & Automation",
-      pt:"AP Digital Solutions — Sites & Automação",
-      pl:"AP Digital Solutions — Strony & Automatyzacja",
-      fr:"AP Digital Solutions — Sites & Automatisation"
+      en:"Antonio Pereira — Web Design & Automation",
+      pt:"Antonio Pereira — Web Design & Automação",
+      pl:"Antonio Pereira — Strony & Automatyzacja",
+      fr:"Antonio Pereira — Sites & Automatisation"
     },
     desc:{
-      en:"Premium websites, business email and AI automation for small & growing businesses.",
+      en:"Premium websites, professional business email and AI automation for small & growing businesses.",
       pt:"Sites premium, email profissional e automação com IA para pequenos negócios.",
       pl:"Nowoczesne strony, email firmowy i automatyzacja AI dla firm.",
       fr:"Sites premium, email pro et automatisation IA pour les entreprises."
     },
-    tags:["sponsored","websites","business email","ai","automation","marketing"],
+    tags:["sponsored","web design","business email","ai","automation"],
     links:[
-      {label:{en:"Website",pt:"Website",pl:"Strona",fr:"Site"}, url:"https://apdigitalsolutions.digital/?utm_source=jerseygo&utm_medium=app&utm_campaign=sponsored"},
-      {label:{en:"WhatsApp (free demo)",pt:"WhatsApp (demo grátis)",pl:"WhatsApp (demo)",fr:"WhatsApp (démo)"}, url: waLink("Hi 👋 I saw AP Digital Solutions on JerseyGo. I’d like a free demo / quote for a website + business email.")},
-      {label:{en:"Email us",pt:"Enviar email",pl:"Email",fr:"Email"}, url:"mailto:apdigitalsolutions.je@gmail.com?subject=JerseyGo%20-%20Enquiry&body=Hi%20AP%20Digital%20Solutions%2C%0A%0AI%20saw%20you%20on%20JerseyGo%20and%20I%E2%80%99d%20like%20to%20know%20more%20about%20a%20website%2C%20business%20email%20and%20automation.%0A%0AThanks%21"}
+      {label:{en:"Website",pt:"Website",pl:"Strona",fr:"Site"}, url:"https://antoniopereiraweb.co.uk/?utm_source=jerseygo&utm_medium=app&utm_campaign=sponsored"},
+      {label:{en:"WhatsApp (free demo)",pt:"WhatsApp (demo grátis)",pl:"WhatsApp (demo)",fr:"WhatsApp (démo)"}, url: waLink("Hi 👋 I saw Antonio Pereira on JerseyGo. I’d like a free demo / quote for a website + business email.")},
+      {label:{en:"Email",pt:"Email",pl:"Email",fr:"Email"}, url:"mailto:info@antoniopereiraweb.co.uk?subject=JerseyGo%20-%20Enquiry&body=Hi%20Antonio%2C%0A%0AI%20saw%20you%20on%20JerseyGo%20and%20I%E2%80%99d%20like%20to%20know%20more%20about%20a%20website%2C%20business%20email%20and%20automation.%0A%0AThanks%21"}
     ]
   },
 
-  /* --- Your services --- */
+  /* --- Services --- */
   {
     id:"ess-weather",
     category:"Essentials",
@@ -1273,8 +1278,8 @@ function makeCatRow(cat, count){
     <div class="catLeft">
       <div class="catIcon" aria-hidden="true">${catIcon(cat)}</div>
       <div>
-        <div class="catName">${(cat==="All") ? t().allCat : cat}</div>
-        ${hint ? `<div class="catHint">${hint}</div>` : ``}
+        <div class="catName">${(cat==="All") ? esc(t().allCat) : esc(cat)}</div>
+        ${hint ? `<div class="catHint">${esc(hint)}</div>` : ``}
       </div>
     </div>
     <div class="catCount badge">${count}</div>
@@ -1347,6 +1352,7 @@ function promoType(s){
   if(s.featured) return "featured";
   return null;
 }
+
 function sortServices(list){
   const prio = (s)=>{
     const p = promoType(s);
@@ -1354,13 +1360,18 @@ function sortServices(list){
     if(p==="featured") return 2;
     return 1;
   };
+
   return [...list].sort((a,b)=>{
     const pa = prio(a), pb = prio(b);
     if(pb !== pa) return pb - pa;
-    const na = getLabel(a.name), nb = getLabel(a.name);
-    return na.localeCompare(nb);
+
+    // ✅ Bug fix: compare a vs b properly
+    const na = getLabel(a.name);
+    const nb = getLabel(b.name);
+    return na.localeCompare(nb, undefined, { sensitivity:"base" });
   });
 }
+
 function splitPromos(list){
   const promos = [];
   const normal = [];
@@ -1370,6 +1381,7 @@ function splitPromos(list){
   });
   return {promos, normal};
 }
+
 function renderPromoSection(promos){
   const wrap = $("promoWrap");
   if(!wrap) return;
@@ -1388,10 +1400,10 @@ function renderPromoSection(promos){
   title.innerHTML = `
     <div class="left">
       <span aria-hidden="true">✨</span>
-      <span>${t().featured} / ${t().sponsored}</span>
-      <span class="pill" style="opacity:.9">${t().promoNoteShort}</span>
+      <span>${esc(t().featured)} / ${esc(t().sponsored)}</span>
+      <span class="pill" style="opacity:.9">${esc(t().promoNoteShort)}</span>
     </div>
-    <div class="note">${t().promoNote}</div>
+    <div class="note">${esc(t().promoNote)}</div>
   `;
   wrap.appendChild(title);
 
@@ -1418,29 +1430,32 @@ function buildCard(s){
   const favOn = state.favs.has(s.id);
 
   const promoPill = (p)
-    ? `<span class="pill ${p}">${p==="sponsored" ? t().sponsored : t().featured}</span>`
+    ? `<span class="pill ${p}">${esc(p==="sponsored" ? t().sponsored : t().featured)}</span>`
     : "";
 
   const linksHtml = (s.links||[]).map((lnk)=>{
     const lbl = getLabel(lnk.label);
     const openText = (lnk.action ? `${t().action}: ${lbl}` : `${t().open}: ${lbl}`);
+    const safeAction = esc(lnk.action || "");
+    const safeUrl = esc(lnk.url || "");
+    const safeCopy = esc(lnk.copy_text ? String(lnk.copy_text) : (lnk.url ? String(lnk.url) : ""));
     return `
-      <button class="linkBtn" data-open-action="${lnk.action||""}" data-open-url="${lnk.url||""}" type="button">🔗 ${openText}</button>
-      <button class="linkBtn" data-copy-text="${lnk.copy_text ? String(lnk.copy_text) : (lnk.url ? String(lnk.url) : "")}" type="button">${t().copy}</button>
+      <button class="linkBtn" data-open-action="${safeAction}" data-open-url="${safeUrl}" type="button">🔗 ${esc(openText)}</button>
+      <button class="linkBtn" data-copy-text="${safeCopy}" type="button">${esc(t().copy)}</button>
     `;
   }).join("");
 
   card.innerHTML = `
     <div class="row">
       <div>
-        <div class="name">${title} ${promoPill}</div>
-        <div class="meta">${desc}</div>
+        <div class="name">${esc(title)} ${promoPill}</div>
+        <div class="meta">${esc(desc)}</div>
       </div>
       <button class="favBtn ${favOn ? "on":""}" type="button" aria-label="Favourite" aria-pressed="${favOn ? "true":"false"}">${favOn ? "★" : "☆"}</button>
     </div>
 
     <div class="tags">
-      ${tags.map(x=>`<span class="tag">${x}</span>`).join("")}
+      ${tags.map(x=>`<span class="tag">${esc(x)}</span>`).join("")}
     </div>
 
     <div class="actions">
@@ -1503,8 +1518,8 @@ function renderCards(){
     const empty = document.createElement("div");
     empty.className = "card";
     empty.innerHTML = `
-      <div class="name">${t().no}</div>
-      <div class="meta">${t().try}</div>
+      <div class="name">${esc(t().no)}</div>
+      <div class="meta">${esc(t().try)}</div>
     `;
     cards.appendChild(empty);
     return;
@@ -1529,22 +1544,21 @@ function setQuickLinks(){
   $("quickPharmacyNear").href = mapsSearch("pharmacy near me");
 }
 
+// More professional: no geolocation prompt; “near me” uses Maps device location anyway.
+function nearMeQuery(){
+  if(state.q) return `${state.q} near me`;
+  switch(state.category){
+    case "Facilities": return "public toilets near me";
+    case "Getting around": return "taxi near me";
+    case "Things to do": return "tourist attractions near me";
+    case "Help & safety": return "police station near me";
+    case "Essentials": return "St Helier";
+    default: return "services near me";
+  }
+}
 function doNearMe(){
-  if(!("geolocation" in navigator)){ toast(t().geos); return; }
-  toast(t().getting);
-
-  navigator.geolocation.getCurrentPosition(
-    (pos)=>{
-      const {latitude, longitude} = pos.coords;
-      const query = `things to do near ${latitude},${longitude}`;
-      window.open(mapsSearch(query), "_blank", "noopener");
-    },
-    (err)=>{
-      if(err && err.code===1) toast(t().blocked);
-      else toast(t().geos);
-    },
-    {enableHighAccuracy:true, timeout:12000, maximumAge:15000}
-  );
+  toast(t().openingMap);
+  window.open(mapsSearch(nearMeQuery()), "_blank", "noopener");
 }
 
 /* ========= Install button ========= */
