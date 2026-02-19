@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="theme-color" content="#0B0F19" />
-  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#F6F8FC" />
+  <meta name="color-scheme" content="light" />
 
   <!-- Icons -->
   <link rel="icon" href="/favicon.ico" type="image/x-icon" />
@@ -50,38 +50,38 @@
     "applicationCategory":"TravelApplication",
     "operatingSystem":"Web",
     "description":"JerseyGo is a web app with essential links for Jersey residents and visitors: parking, taxis, toilets, pharmacies, transport, weather, tides, bank holidays, roadworks, emergency numbers and official services.",
-    "inLanguage":["en-GB","pt-PT","pl","fr"],
+    "inLanguage":["en-GB","pt-PT","fr"],
     "areaServed":{"@type":"AdministrativeArea","name":"Jersey, Channel Islands"}
   }
   </script>
 
   <style>
     :root{
-      /* Premium dark */
-      --bg0:#060814;
-      --bg1:#0B0F19;
-      --bg2:#0F1525;
+      /* Modern light */
+      --bg0:#F6F8FC;
+      --bg1:#FFFFFF;
+      --bg2:#F2F5FA;
 
-      --card: rgba(255,255,255,.04);
-      --card2: rgba(255,255,255,.06);
+      --card: rgba(255,255,255,.85);
+      --card2: rgba(255,255,255,.95);
 
-      --line: rgba(255,255,255,.10);
-      --line2: rgba(255,255,255,.14);
+      --line: rgba(20,24,40,.10);
+      --line2: rgba(20,24,40,.14);
 
-      --text:#EAF0FF;
-      --muted: rgba(234,240,255,.70);
+      --text:#0B1020;
+      --muted: rgba(11,16,32,.68);
 
-      --accent: #4DA3FF;
-      --accent2:#35D07F;
-      --warn:#FFB020;
+      --accent: #2563EB;     /* blue */
+      --accent2:#16A34A;     /* green */
+      --warn:#F59E0B;
 
       --r1:16px;
       --r2:22px;
 
-      --shadow: 0 18px 50px rgba(0,0,0,.45);
-      --shadow2: 0 10px 22px rgba(0,0,0,.30);
+      --shadow: 0 18px 50px rgba(15, 23, 42, .10);
+      --shadow2: 0 10px 22px rgba(15, 23, 42, .08);
 
-      --focus: rgba(77,163,255,.85);
+      --focus: rgba(37,99,235,.60);
 
       --max: 1180px;
       --pad: 14px;
@@ -94,9 +94,9 @@
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       color:var(--text);
       background:
-        radial-gradient(900px 620px at 12% 12%, rgba(77,163,255,.12), transparent 60%),
-        radial-gradient(900px 620px at 85% 8%, rgba(53,208,127,.10), transparent 60%),
-        radial-gradient(950px 760px at 50% 105%, rgba(255,176,32,.06), transparent 62%),
+        radial-gradient(900px 620px at 12% 12%, rgba(37,99,235,.10), transparent 62%),
+        radial-gradient(900px 620px at 85% 8%, rgba(22,163,74,.10), transparent 62%),
+        radial-gradient(950px 760px at 50% 105%, rgba(245,158,11,.07), transparent 64%),
         linear-gradient(180deg, var(--bg0), var(--bg1));
       -webkit-font-smoothing: antialiased;
       text-rendering: optimizeLegibility;
@@ -116,15 +116,15 @@
       *{animation:none !important; transition:none !important; scroll-behavior:auto !important;}
     }
 
-    /* Splash */
+    /* Splash (light) */
     .splash{
       position:fixed; inset:0; z-index:99999;
       display:grid; place-items:center;
       padding:24px;
       background:
-        radial-gradient(900px 620px at 15% 15%, rgba(77,163,255,.14), transparent 62%),
-        radial-gradient(900px 620px at 85% 15%, rgba(53,208,127,.12), transparent 62%),
-        linear-gradient(180deg, rgba(6,8,20,.95), rgba(11,15,25,.98));
+        radial-gradient(900px 620px at 15% 15%, rgba(37,99,235,.12), transparent 64%),
+        radial-gradient(900px 620px at 85% 15%, rgba(22,163,74,.10), transparent 64%),
+        linear-gradient(180deg, rgba(246,248,252,.92), rgba(255,255,255,.92));
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
     }
@@ -133,20 +133,20 @@
       width:min(420px, 92vw);
       aspect-ratio: 9/19.5;
       border-radius: 44px;
-      border:1px solid rgba(255,255,255,.14);
-      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.03));
-      box-shadow: 0 40px 120px rgba(0,0,0,.65);
+      border:1px solid rgba(20,24,40,.14);
+      background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.72));
+      box-shadow: 0 40px 120px rgba(15,23,42,.18);
       overflow:hidden;
       position:relative;
     }
     .phoneInner{
       position:absolute; inset:12px;
       border-radius:36px;
-      border:1px solid rgba(255,255,255,.10);
+      border:1px solid rgba(20,24,40,.10);
       background:
-        radial-gradient(700px 520px at 20% 10%, rgba(77,163,255,.14), transparent 58%),
-        radial-gradient(650px 520px at 80% 12%, rgba(53,208,127,.12), transparent 58%),
-        linear-gradient(180deg, rgba(6,8,20,.92), rgba(15,21,37,.97));
+        radial-gradient(700px 520px at 20% 10%, rgba(37,99,235,.10), transparent 62%),
+        radial-gradient(650px 520px at 80% 12%, rgba(22,163,74,.08), transparent 62%),
+        linear-gradient(180deg, rgba(255,255,255,.92), rgba(242,245,250,.92));
       display:flex; flex-direction:column;
       align-items:center; justify-content:center;
       text-align:center;
@@ -157,17 +157,18 @@
       position:absolute; top:0; left:50%;
       transform:translateX(-50%);
       width:48%; height:30px;
-      background: rgba(0,0,0,.55);
-      border:1px solid rgba(255,255,255,.08);
+      background: rgba(11,16,32,.14);
+      border:1px solid rgba(20,24,40,.10);
       border-top:none;
       border-bottom-left-radius:18px;
       border-bottom-right-radius:18px;
     }
     .phoneLogo{
       width:84px; height:84px; border-radius:24px;
-      box-shadow: 0 22px 55px rgba(0,0,0,.55);
+      box-shadow: 0 18px 42px rgba(15,23,42,.16);
+      background: #fff;
     }
-    .phoneTitle{ font-weight:900; font-size:22px; letter-spacing:.2px; }
+    .phoneTitle{ font-weight:950; font-size:22px; letter-spacing:.2px; }
     .phoneSub{
       color:var(--muted);
       font-size:13px;
@@ -179,32 +180,32 @@
       font-size:12px;
       padding:8px 10px;
       border-radius:999px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.04);
-      color: rgba(234,240,255,.90);
+      border:1px solid rgba(20,24,40,.10);
+      background: rgba(255,255,255,.70);
+      color: rgba(11,16,32,.88);
     }
     .phoneCTA{
       margin-top:10px;
       width:min(280px, 88%);
       border-radius: 16px;
       padding:12px 14px;
-      font-weight:900;
+      font-weight:950;
       cursor:pointer;
-      border:1px solid rgba(77,163,255,.40);
-      background: rgba(77,163,255,.16);
+      border:1px solid rgba(37,99,235,.28);
+      background: rgba(37,99,235,.10);
       color:var(--text);
       transition: transform .08s ease, background .15s ease;
     }
-    .phoneCTA:hover{ background: rgba(77,163,255,.22); }
+    .phoneCTA:hover{ background: rgba(37,99,235,.14); }
     .phoneCTA:active{ transform: translateY(1px); }
-    .phoneHint{ margin-top:6px; font-size:12px; color:rgba(234,240,255,.65); }
+    .phoneHint{ margin-top:6px; font-size:12px; color:rgba(11,16,32,.62); }
 
-    /* Header */
+    /* Header (light, glassy) */
     header{
       position:sticky; top:0; z-index:50;
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      background: rgba(6,8,20,.70);
+      background: rgba(246,248,252,.78);
       border-bottom:1px solid var(--line);
     }
     .top{
@@ -213,7 +214,7 @@
       padding:14px;
     }
     .brand{display:flex; align-items:center; gap:12px; min-width:260px}
-    .brand img{ width:40px; height:40px; border-radius:14px; box-shadow: var(--shadow2); }
+    .brand img{ width:40px; height:40px; border-radius:14px; box-shadow: var(--shadow2); background:#fff; }
     .brand .t{line-height:1.05}
     .brand .name{font-weight:950; font-size:18px}
     .brand .sub{margin-top:4px; font-size:12px; color:var(--muted)}
@@ -230,44 +231,46 @@
     .pillWrap{
       display:flex; align-items:center; gap:10px;
       border:1px solid var(--line);
-      background: rgba(255,255,255,.03);
+      background: rgba(255,255,255,.72);
       padding:10px 12px;
       border-radius:999px;
       white-space:nowrap;
+      box-shadow: var(--shadow2);
     }
-    .pillLbl{font-size:12px; color:var(--muted); font-weight:900; letter-spacing:.3px}
+    .pillLbl{font-size:12px; color:var(--muted); font-weight:950; letter-spacing:.3px}
     .pillBtns{display:flex; gap:6px; flex-wrap:wrap}
     .pillBtn{
       border:1px solid var(--line);
-      background: rgba(255,255,255,.04);
+      background: rgba(255,255,255,.85);
       padding:8px 10px;
       border-radius:999px;
-      font-weight:900;
+      font-weight:950;
       cursor:pointer;
       font-size:12px;
-      opacity:.88;
-      transition: background .15s ease, border-color .15s ease;
+      opacity:.90;
+      transition: background .15s ease, border-color .15s ease, transform .08s ease;
       user-select:none;
     }
-    .pillBtn:hover{ background: rgba(255,255,255,.06); }
+    .pillBtn:hover{ background: rgba(255,255,255,.98); }
+    .pillBtn:active{ transform: translateY(1px); }
     .pillBtn.on{
-      border-color: rgba(77,163,255,.45);
-      background: rgba(77,163,255,.14);
+      border-color: rgba(37,99,235,.28);
+      background: rgba(37,99,235,.10);
       opacity:1;
     }
 
     .search{
       display:flex; align-items:center; gap:10px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.05);
+      border:1px solid rgba(20,24,40,.10);
+      background: rgba(255,255,255,.85);
       padding:12px 14px;
       border-radius:999px;
       width:min(94vw, 620px);
       box-shadow: var(--shadow2);
     }
     .search:focus-within{
-      border-color: rgba(77,163,255,.45);
-      background: rgba(255,255,255,.07);
+      border-color: rgba(37,99,235,.25);
+      background: rgba(255,255,255,.98);
     }
     .search input{
       width:100%;
@@ -278,22 +281,23 @@
 
     .btn{
       border:1px solid var(--line);
-      background: rgba(255,255,255,.04);
+      background: rgba(255,255,255,.85);
       color:var(--text);
       padding:11px 13px;
       border-radius:14px;
       cursor:pointer;
-      font-weight:900;
+      font-weight:950;
       letter-spacing:.15px;
       user-select:none;
       transition: transform .08s ease, background .15s ease, border-color .15s ease;
       white-space:nowrap;
+      box-shadow: var(--shadow2);
     }
-    .btn:hover{ background: rgba(255,255,255,.07); }
+    .btn:hover{ background: rgba(255,255,255,.98); }
     .btn:active{ transform: translateY(1px); }
-    .btn.primary{ border-color: rgba(77,163,255,.40); background: rgba(77,163,255,.14); }
-    .btn.good{ border-color: rgba(53,208,127,.38); background: rgba(53,208,127,.12); }
-    .btn.ghost{ background: rgba(255,255,255,.02); }
+    .btn.primary{ border-color: rgba(37,99,235,.26); background: rgba(37,99,235,.10); }
+    .btn.good{ border-color: rgba(22,163,74,.22); background: rgba(22,163,74,.10); }
+    .btn.ghost{ background: rgba(255,255,255,.70); }
     .btn:disabled{opacity:.55; cursor:not-allowed}
 
     /* Layout */
@@ -302,7 +306,7 @@
 
     .panel{
       border:1px solid var(--line);
-      background: rgba(255,255,255,.03);
+      background: rgba(255,255,255,.72);
       border-radius: var(--r2);
       overflow:hidden;
       box-shadow: var(--shadow);
@@ -311,18 +315,18 @@
       padding:14px;
       display:flex; align-items:center; justify-content:space-between;
       border-bottom:1px solid var(--line);
-      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.70));
     }
     .panelHd h2{
       margin:0; font-size:12px; color:var(--muted);
-      font-weight:900; letter-spacing:.35px; text-transform:uppercase;
+      font-weight:950; letter-spacing:.35px; text-transform:uppercase;
     }
     .badge{
       font-size:12px; color:var(--muted);
       border:1px solid var(--line);
       padding:5px 10px;
       border-radius:999px;
-      background: rgba(255,255,255,.02);
+      background: rgba(255,255,255,.80);
     }
 
     /* Sidebar categories */
@@ -332,12 +336,14 @@
       gap:10px; padding:12px;
       border-radius:16px; cursor:pointer;
       border:1px solid transparent;
-      transition: background .15s ease, border-color .15s ease;
+      transition: background .15s ease, border-color .15s ease, transform .08s ease;
+      background: rgba(255,255,255,.55);
     }
-    .cat:hover{ background: rgba(255,255,255,.04); }
+    .cat:hover{ background: rgba(255,255,255,.85); }
+    .cat:active{ transform: translateY(1px); }
     .cat.active{
-      background: rgba(77,163,255,.10);
-      border-color: rgba(77,163,255,.35);
+      background: rgba(37,99,235,.08);
+      border-color: rgba(37,99,235,.20);
     }
     .catLeft{display:flex; align-items:flex-start; gap:10px}
     .catIcon{
@@ -345,32 +351,33 @@
       display:grid; place-items:center;
       border:1px solid var(--line);
       border-radius:10px;
-      background: rgba(255,255,255,.03);
+      background: rgba(255,255,255,.85);
       margin-top:1px;
     }
     .catName{font-weight:950; line-height:1.1}
-    .catHint{margin-top:4px; font-size:12px; color:rgba(234,240,255,.62); line-height:1.3}
+    .catHint{margin-top:4px; font-size:12px; color:rgba(11,16,32,.62); line-height:1.3}
     .catCount{min-width:34px; text-align:center}
 
     /* Main content */
     .content{padding:14px}
     .hero{
       border:1px solid var(--line);
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.70));
       border-radius: var(--r2);
       padding:14px;
       display:flex; align-items:flex-start; justify-content:space-between;
       gap:14px; flex-wrap:wrap;
+      box-shadow: var(--shadow2);
     }
     .hero h1{margin:0; font-size:20px; font-weight:950; letter-spacing:.2px;}
     .hero p{margin:7px 0 0; color:var(--muted); line-height:1.4}
-    .mini{font-size:12px; color:rgba(234,240,255,.62); margin-top:10px; line-height:1.45}
+    .mini{font-size:12px; color:rgba(11,16,32,.62); margin-top:10px; line-height:1.45}
 
     .quick{display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end}
     .chip{
       display:inline-flex; align-items:center; gap:8px;
       border:1px solid var(--line);
-      background: rgba(255,255,255,.04);
+      background: rgba(255,255,255,.86);
       padding:10px 12px;
       border-radius:14px;
       font-size:13px;
@@ -378,22 +385,24 @@
       user-select:none;
       white-space:nowrap;
       transition: background .15s ease, transform .08s ease, border-color .15s ease;
+      box-shadow: var(--shadow2);
     }
-    .chip:hover{ background: rgba(255,255,255,.07); }
+    .chip:hover{ background: rgba(255,255,255,.98); }
     .chip:active{ transform: translateY(1px); }
-    .chip.primary{ border-color: rgba(77,163,255,.35); background: rgba(77,163,255,.12); }
-    .chip.good{ border-color: rgba(53,208,127,.35); background: rgba(53,208,127,.12); }
+    .chip.primary{ border-color: rgba(37,99,235,.22); background: rgba(37,99,235,.10); }
+    .chip.good{ border-color: rgba(22,163,74,.20); background: rgba(22,163,74,.10); }
 
     .sectionTitle{
       margin-top:12px;
       padding:10px 12px;
       border-radius: 16px;
       border:1px solid var(--line);
-      background: rgba(255,255,255,.03);
+      background: rgba(255,255,255,.86);
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:10px;
+      box-shadow: var(--shadow2);
     }
     .sectionTitle .left{
       display:flex; align-items:center; gap:10px;
@@ -402,7 +411,7 @@
     }
     .sectionTitle .note{
       font-size:12px;
-      color:rgba(234,240,255,.62);
+      color:rgba(11,16,32,.62);
       line-height:1.35;
     }
 
@@ -411,16 +420,18 @@
 
     .card{
       border:1px solid var(--line);
-      background: rgba(255,255,255,.03);
+      background: rgba(255,255,255,.86);
       border-radius: var(--r2);
       padding:14px;
       display:flex; flex-direction:column; gap:10px;
-      transition: background .15s ease, border-color .15s ease;
+      transition: background .15s ease, border-color .15s ease, transform .08s ease;
+      box-shadow: var(--shadow2);
     }
-    .card:hover{ background: rgba(255,255,255,.045); border-color: rgba(255,255,255,.14); }
+    .card:hover{ background: rgba(255,255,255,.98); border-color: rgba(20,24,40,.14); }
+    .card:active{ transform: translateY(1px); }
     .row{display:flex; align-items:flex-start; justify-content:space-between; gap:10px}
     .name{font-weight:950; letter-spacing:.2px; line-height:1.15}
-    .meta{font-size:12px; color:rgba(234,240,255,.62); line-height:1.45}
+    .meta{font-size:12px; color:rgba(11,16,32,.62); line-height:1.45}
 
     .tags{display:flex; gap:8px; flex-wrap:wrap}
     .tag{
@@ -428,15 +439,15 @@
       border:1px solid var(--line);
       padding:6px 10px;
       border-radius:999px;
-      color:rgba(234,240,255,.62);
-      background: rgba(255,255,255,.02);
+      color:rgba(11,16,32,.62);
+      background: rgba(255,255,255,.75);
     }
 
     .actions{display:flex; gap:8px; flex-wrap:wrap; margin-top:auto}
 
     .favBtn{
       border:1px solid var(--line);
-      background: rgba(255,255,255,.04);
+      background: rgba(255,255,255,.86);
       padding:10px 12px;
       border-radius:14px;
       cursor:pointer;
@@ -444,53 +455,53 @@
       user-select:none;
       transition: background .15s ease, transform .08s ease, border-color .15s ease;
     }
-    .favBtn:hover{ background: rgba(255,255,255,.07); }
+    .favBtn:hover{ background: rgba(255,255,255,.98); }
     .favBtn:active{ transform: translateY(1px); }
-    .favBtn.on{ border-color: rgba(77,163,255,.45); background: rgba(77,163,255,.14); }
+    .favBtn.on{ border-color: rgba(37,99,235,.22); background: rgba(37,99,235,.10); }
 
     .linkBtn{
       border:1px solid var(--line);
-      background: rgba(255,255,255,.04);
+      background: rgba(255,255,255,.86);
       padding:10px 12px;
       border-radius:14px;
       cursor:pointer;
-      font-weight:900;
+      font-weight:950;
       display:inline-flex;
       align-items:center;
       gap:8px;
       user-select:none;
       transition: background .15s ease, transform .08s ease, border-color .15s ease;
     }
-    .linkBtn:hover{ background: rgba(255,255,255,.07); }
+    .linkBtn:hover{ background: rgba(255,255,255,.98); }
     .linkBtn:active{ transform: translateY(1px); }
 
-    /* Sponsored / Featured */
+    /* Sponsored / Featured (light) */
     .card.sponsored{
-      border-color: rgba(255,176,32,.45);
-      background: linear-gradient(180deg, rgba(255,176,32,.08), rgba(255,255,255,.02));
+      border-color: rgba(245,158,11,.35);
+      background: linear-gradient(180deg, rgba(245,158,11,.10), rgba(255,255,255,.86));
     }
     .card.featured{
-      border-color: rgba(77,163,255,.45);
-      background: linear-gradient(180deg, rgba(77,163,255,.08), rgba(255,255,255,.02));
+      border-color: rgba(37,99,235,.30);
+      background: linear-gradient(180deg, rgba(37,99,235,.10), rgba(255,255,255,.86));
     }
     .pill{
       display:inline-flex; align-items:center; gap:8px;
       border:1px solid var(--line);
-      background: rgba(255,255,255,.02);
+      background: rgba(255,255,255,.80);
       padding:6px 10px;
       border-radius:999px;
       font-size:12px;
-      color: rgba(234,240,255,.70);
-      font-weight:900;
+      color: rgba(11,16,32,.70);
+      font-weight:950;
       letter-spacing:.2px;
       white-space:nowrap;
     }
-    .pill.sponsored{ border-color: rgba(255,176,32,.55); background: rgba(255,176,32,.10); color: rgba(255,235,200,.92); }
-    .pill.featured{ border-color: rgba(77,163,255,.55); background: rgba(77,163,255,.12); color: rgba(220,235,255,.92); }
+    .pill.sponsored{ border-color: rgba(245,158,11,.40); background: rgba(245,158,11,.10); color: rgba(120,62,0,.92); }
+    .pill.featured{ border-color: rgba(37,99,235,.35); background: rgba(37,99,235,.10); color: rgba(10,35,120,.92); }
 
     .toast{
       position:fixed; left:50%; bottom:16px; transform:translateX(-50%);
-      background: rgba(15,21,37,.92);
+      background: rgba(255,255,255,.95);
       border:1px solid var(--line);
       padding:10px 12px;
       border-radius:14px;
@@ -503,7 +514,7 @@
     .toast.show{display:block}
 
     footer{
-      color:rgba(234,240,255,.62);
+      color:rgba(11,16,32,.62);
       font-size:12px;
       text-align:center;
       padding:14px 0 2px;
@@ -516,15 +527,16 @@
     .footLink{
       display:inline-flex; align-items:center; gap:8px;
       border:1px solid var(--line);
-      background: rgba(255,255,255,.03);
+      background: rgba(255,255,255,.86);
       padding:9px 12px;
       border-radius:999px;
       cursor:pointer;
       user-select:none;
       color:inherit;
       transition: background .15s ease, transform .08s ease;
+      box-shadow: var(--shadow2);
     }
-    .footLink:hover{ background: rgba(255,255,255,.06); }
+    .footLink:hover{ background: rgba(255,255,255,.98); }
     .footLink:active{ transform: translateY(1px); }
   </style>
 </head>
@@ -544,10 +556,10 @@
         <div class="phonePills" aria-hidden="true">
           <div class="phonePill">🅿️ Parking</div>
           <div class="phonePill">🚕 Taxis</div>
+          <div class="phonePill">🛒 Food shopping</div>
           <div class="phonePill">🚻 Toilets</div>
           <div class="phonePill">💊 Pharmacies</div>
           <div class="phonePill">🚌 Buses</div>
-          <div class="phonePill">🌦️ Weather</div>
         </div>
         <button id="enterAppBtn" class="phoneCTA" type="button">Open JerseyGo</button>
         <div class="phoneHint">Tip: add to Home Screen to use like an app</div>
@@ -579,14 +591,13 @@
         <div class="pillBtns">
           <button class="pillBtn" data-lang="en" type="button">EN</button>
           <button class="pillBtn" data-lang="pt" type="button">PT</button>
-          <button class="pillBtn" data-lang="pl" type="button">PL</button>
           <button class="pillBtn" data-lang="fr" type="button">FR</button>
         </div>
       </div>
 
       <label class="search" aria-label="Search services">
         <span aria-hidden="true" style="opacity:.9">🔎</span>
-        <input id="q" placeholder="Search: parking, taxi, GP, toilets…" autocomplete="off" inputmode="search" />
+        <input id="q" placeholder="Search: parking, taxi, food, toilets…" autocomplete="off" inputmode="search" />
       </label>
 
       <button id="favToggle" class="btn good" type="button" aria-pressed="false">★ Favourites</button>
@@ -610,7 +621,7 @@
       <h2 id="tipTitle">Tip</h2>
       <span class="badge">PWA</span>
     </div>
-    <div id="tipText" style="padding:12px 14px; color:rgba(234,240,255,.62); font-size:12px; line-height:1.55;">
+    <div id="tipText" style="padding:12px 14px; color:rgba(11,16,32,.62); font-size:12px; line-height:1.55;">
       Tap “Install” or “Add to Home Screen” to use JerseyGo like an app.
     </div>
   </aside>
@@ -629,6 +640,7 @@
 
         <div class="quick" aria-label="Quick actions">
           <a id="quickParking" class="chip primary" target="_blank" rel="noopener">🅿️ Parking</a>
+          <a id="quickFoodNear" class="chip" target="_blank" rel="noopener">🛒 Food shopping near me</a>
           <a id="quickTaxiNear" class="chip" target="_blank" rel="noopener">🚕 Taxi near me</a>
           <a id="quickToiletsNear" class="chip" target="_blank" rel="noopener">🚻 Toilets near me</a>
           <a id="quickPharmacyNear" class="chip" target="_blank" rel="noopener">💊 Pharmacy near me</a>
@@ -654,7 +666,9 @@
 
 <script>
 /* ===========================================================
-   JerseyGo — premium clean single-file (drop-in)
+   JerseyGo — modern LIGHT single-file (drop-in)
+   Changes: light UI, removed PL, added Food shopping near me,
+   updated sponsor card (new service + new URL).
    =========================================================== */
 
 const $ = (id)=>document.getElementById(id);
@@ -671,7 +685,6 @@ const toast = (msg)=>{
 
 const mapsSearch = (query)=> `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
 
-// escape (if later you accept external suggestions)
 const esc = (s)=> String(s ?? "")
   .replace(/&/g,"&amp;")
   .replace(/</g,"&lt;")
@@ -679,7 +692,6 @@ const esc = (s)=> String(s ?? "")
   .replace(/"/g,"&quot;")
   .replace(/'/g,"&#39;");
 
-// hardening: block javascript:/data:
 function safeUrl(u){
   try{
     const s = String(u||"").trim();
@@ -737,11 +749,11 @@ const LINKS = {
 
 /* State */
 const url = new URL(location.href);
-const LS_LANG = "jerseygo:lang:v4";
-const LS_MODE = "jerseygo:mode:v4";
-const LS_FAVS = "jerseygo:favs:v4";
+const LS_LANG = "jerseygo:lang:v5";
+const LS_MODE = "jerseygo:mode:v5";
+const LS_FAVS = "jerseygo:favs:v5";
 
-const allowedLangs = ["en","pt","pl","fr"];
+const allowedLangs = ["en","pt","fr"]; // removed PL
 const initialLang = (url.searchParams.get("lang") || localStorage.getItem(LS_LANG) || "en").toLowerCase();
 const initialMode = (url.searchParams.get("mode") || localStorage.getItem(LS_MODE) || "residents").toLowerCase();
 const initialCat  = url.searchParams.get("cat") || "All";
@@ -776,7 +788,7 @@ const I18N = {
     all:"All services",
     desc:"Official links + one-tap actions for everyday life in Jersey.",
     no:"No results",
-    try:"Try: “parking”, “taxi”, “toilets”, “pharmacy”, “address”.",
+    try:"Try: “parking”, “taxi”, “food”, “toilets”, “pharmacy”, “address”.",
     copied:"Copied",
     copyFail:"Copy not supported",
     saved:"Saved to favourites",
@@ -813,7 +825,7 @@ const I18N = {
     all:"Todos os serviços",
     desc:"Links oficiais + ações rápidas para o dia-a-dia em Jersey.",
     no:"Sem resultados",
-    try:"Experimenta: “parking”, “taxi”, “toilets”, “pharmacy”, “morada”.",
+    try:"Experimenta: “parking”, “taxi”, “comida”, “WC”, “farmácia”, “morada”.",
     copied:"Copiado",
     copyFail:"Copiar não suportado",
     saved:"Guardado nos favoritos",
@@ -833,43 +845,6 @@ const I18N = {
     promoNoteShort:"Listagens marcadas.",
     openingMap:"A abrir mapa…"
   },
-  pl:{
-    sub:"Szybkie linki dla Jersey — mieszkańcy i turyści",
-    mode:"Tryb",
-    residents:"Mieszkańcy",
-    tourists:"Turyści",
-    lang:"Język",
-    cats:"Kategorie",
-    tipT:"Wskazówka",
-    tip:"Kliknij „Zainstaluj” lub „Dodaj do ekranu głównego”, aby używać JerseyGo jak aplikacji.",
-    fav:"★ Ulubione",
-    near:"📍 W pobliżu",
-    share:"🔗 Udostępnij",
-    install:"⬇ Zainstaluj",
-    reset:"Reset",
-    all:"Wszystkie usługi",
-    desc:"Oficjalne linki + szybkie akcje na co dzień w Jersey.",
-    no:"Brak wyników",
-    try:"Spróbuj: „parking”, „taxi”, „toilets”, „pharmacy”, „address”.",
-    copied:"Skopiowano",
-    copyFail:"Kopiowanie niedostępne",
-    saved:"Dodano do ulubionych",
-    removed:"Usunięto z ulubionych",
-    showing:(n)=>`Wyświetlono ${n}`,
-    emergencyFoot:"Nagłe: 999 / 112 • JerseyGo (nieoficjalny katalog; publiczne źródła)",
-    howInstall:"Jak zainstalować",
-    open:"Otwórz",
-    copy:"📋 Kopiuj",
-    allCat:"Wszystko",
-    suggest:"➕ Zasugeruj link",
-    action:"Akcja",
-    about:"JerseyGo to nieoficjalny katalog z linkami do publicznych/oficjalnych źródeł.",
-    sponsored:"Sponsorowane",
-    featured:"Wyróżnione",
-    promoNote:"Firmy mogą się tu wyróżnić. Ogłoszenia są oznaczone.",
-    promoNoteShort:"Oznaczone wpisy.",
-    openingMap:"Otwieranie mapy…"
-  },
   fr:{
     sub:"Liens rapides pour Jersey — résidents & touristes",
     mode:"Mode",
@@ -887,7 +862,7 @@ const I18N = {
     all:"Tous les services",
     desc:"Liens officiels + actions rapides pour la vie quotidienne à Jersey.",
     no:"Aucun résultat",
-    try:"Essayez : « parking », « taxi », « toilettes », « pharmacie », « adresse ».",
+    try:"Essayez : « parking », « taxi », « courses », « toilettes », « pharmacie », « adresse ».",
     copied:"Copié",
     copyFail:"Copie non prise en charge",
     saved:"Ajouté aux favoris",
@@ -917,7 +892,7 @@ function catIcon(cat){
     case "All": return "🧭";
     case "Essentials": return "⭐";
     case "Getting around": return "🚌";
-    case "Facilities": return "🚻";
+    case "Facilities": return "🏪";
     case "Things to do": return "🏛️";
     case "Help & safety": return "🚨";
     default: return "•";
@@ -925,11 +900,11 @@ function catIcon(cat){
 }
 function catHint(cat){
   const hints = {
-    "Essentials": { en:"weather, tides, bank holidays", pt:"tempo, marés, feriados", pl:"pogoda, pływy, święta", fr:"météo, marées, jours fériés" },
-    "Getting around": { en:"parking, buses, taxis, roadworks", pt:"parking, autocarros, táxis, estradas", pl:"parking, autobusy, taxi, drogi", fr:"parking, bus, taxis, routes" },
-    "Facilities": { en:"toilets, pharmacies, ATMs, baby changing, addresses", pt:"WC, farmácias, multibanco, fraldários, moradas", pl:"toalety, apteki, bankomaty, przewijaki, adresy", fr:"toilettes, pharmacies, distributeurs, table à langer, adresses" },
-    "Things to do": { en:"attractions, beaches, museums", pt:"atrações, praias, museus", pl:"atrakcje, plaże, muzea", fr:"attractions, plages, musées" },
-    "Help & safety": { en:"emergency, airport, harbour, police", pt:"emergência, aeroporto, porto, polícia", pl:"alarmowe, lotnisko, port, policja", fr:"urgence, aéroport, port, police" }
+    "Essentials": { en:"weather, tides, bank holidays", pt:"tempo, marés, feriados", fr:"météo, marées, jours fériés" },
+    "Getting around": { en:"parking, buses, taxis, roadworks", pt:"parking, autocarros, táxis, estradas", fr:"parking, bus, taxis, routes" },
+    "Facilities": { en:"toilets, pharmacies, food shopping, ATMs, addresses", pt:"WC, farmácias, compras, multibanco, moradas", fr:"toilettes, pharmacies, courses, distributeurs, adresses" },
+    "Things to do": { en:"attractions, beaches, museums", pt:"atrações, praias, museus", fr:"attractions, plages, musées" },
+    "Help & safety": { en:"emergency, airport, harbour, police", pt:"emergência, aeroporto, porto, polícia", fr:"urgence, aéroport, port, police" }
   };
   const obj = hints[cat];
   if(!obj) return "";
@@ -941,7 +916,6 @@ function findAddress(){
   const labels = {
     en: { title:"Find an address", hint:"Type an address, postcode or place (e.g., '1 King Street, St Helier')" },
     pt: { title:"Procurar morada", hint:"Escreve uma morada, código postal ou local (ex.: '1 King Street, St Helier')" },
-    pl: { title:"Znajdź adres", hint:"Wpisz adres, kod pocztowy lub miejsce (np. '1 King Street, St Helier')" },
     fr: { title:"Trouver une adresse", hint:"Tapez une adresse, code postal ou lieu (ex.: '1 King Street, St Helier')" }
   };
   const L = labels[state.lang] || labels.en;
@@ -962,29 +936,28 @@ function serviceText(s){
   return norm([name, desc, tags].join(" "));
 }
 
+/* ✅ UPDATED sponsor + ✅ NEW food shopping */
 const SERVICES = [
   {
-    id:"sponsor-antonio-pereira",
+    id:"sponsor-ap-digital",
     category:"Essentials",
     audience:["residents","tourists"],
     sponsored:true,
     name:{
-      en:"Antonio Pereira — Web Design & Automation",
-      pt:"Antonio Pereira — Web Design & Automação",
-      pl:"Antonio Pereira — Strony & Automatyzacja",
-      fr:"Antonio Pereira — Sites & Automatisation"
+      en:"AP Digital Solutions — Websites & Online Visibility",
+      pt:"AP Digital Solutions — Websites & Visibilidade Online",
+      fr:"AP Digital Solutions — Sites & Visibilité en ligne"
     },
     desc:{
-      en:"Premium websites, professional business email and AI automation for small & growing businesses.",
-      pt:"Sites premium, email profissional e automação com IA para pequenos negócios.",
-      pl:"Nowoczesne strony, email firmowy i automatyzacja AI dla firm.",
-      fr:"Sites premium, email pro et automatisation IA pour les entreprises."
+      en:"Modern websites, Google visibility and lead capture setup for small businesses. Fast, done-for-you.",
+      pt:"Websites modernos, visibilidade no Google e captação de leads para pequenos negócios. Feito por ti.",
+      fr:"Sites modernes, visibilité Google et capture de prospects pour petites entreprises."
     },
-    tags:["sponsored","web design","business email","ai","automation"],
+    tags:["sponsored","website","google","visibility","leads"],
     links:[
-      {label:{en:"Website",pt:"Website",pl:"Strona",fr:"Site"}, url:"https://antoniopereiraweb.co.uk/?utm_source=jerseygo&utm_medium=app&utm_campaign=sponsored"},
-      {label:{en:"WhatsApp (free demo)",pt:"WhatsApp (demo grátis)",pl:"WhatsApp (demo)",fr:"WhatsApp (démo)"}, url: waLink("Hi 👋 I saw Antonio Pereira on JerseyGo. I’d like a free demo / quote for a website + business email.")},
-      {label:{en:"Email",pt:"Email",pl:"Email",fr:"Email"}, url:"mailto:info@antoniopereiraweb.co.uk?subject=JerseyGo%20-%20Enquiry&body=Hi%20Antonio%2C%0A%0AI%20saw%20you%20on%20JerseyGo%20and%20I%E2%80%99d%20like%20to%20know%20more%20about%20a%20website%2C%20business%20email%20and%20automation.%0A%0AThanks%21"}
+      {label:{en:"Website",pt:"Website",fr:"Site"}, url:"https://apdigitalsolutions.digital/?utm_source=jerseygo&utm_medium=app&utm_campaign=sponsored"},
+      {label:{en:"WhatsApp (enquiry)",pt:"WhatsApp (pedido)",fr:"WhatsApp (demande)"}, url: waLink("Hi 👋 I saw AP Digital Solutions on JerseyGo. I’d like help with a website + Google visibility / leads.")},
+      {label:{en:"Email",pt:"Email",fr:"Email"}, url:"mailto:info@apdigitalsolutions.digital?subject=JerseyGo%20-%20Enquiry&body=Hi%2C%0A%0AI%20saw%20AP%20Digital%20Solutions%20on%20JerseyGo%20and%20I%E2%80%99d%20like%20help%20with%20a%20website%20and%20online%20visibility%2Fleads.%0A%0AThanks%21"}
     ]
   },
 
@@ -992,188 +965,192 @@ const SERVICES = [
     id:"ess-weather",
     category:"Essentials",
     audience:["residents","tourists"],
-    name:{en:"Weather + tides (official)",pt:"Tempo + marés (oficial)",pl:"Pogoda + pływy (oficjalnie)",fr:"Météo + marées (officiel)"},
-    desc:{en:"Forecast + tide times.",pt:"Previsão + horários de maré.",pl:"Prognoza + pływy.",fr:"Prévisions + marées."},
+    name:{en:"Weather + tides (official)",pt:"Tempo + marés (oficial)",fr:"Météo + marées (officiel)"},
+    desc:{en:"Forecast + tide times.",pt:"Previsão + horários de maré.",fr:"Prévisions + marées."},
     tags:["weather","tides"],
     links:[
-      {label:{en:"Open forecast",pt:"Abrir previsão",pl:"Otwórz prognozę",fr:"Ouvrir météo"}, url:LINKS.met},
-      {label:{en:"Tide times",pt:"Marés",pl:"Pływy",fr:"Marées"}, url:LINKS.tides}
+      {label:{en:"Open forecast",pt:"Abrir previsão",fr:"Ouvrir météo"}, url:LINKS.met},
+      {label:{en:"Tide times",pt:"Marés",fr:"Marées"}, url:LINKS.tides}
     ]
   },
   {
     id:"dates-bankholidays",
     category:"Essentials",
     audience:["residents","tourists"],
-    name:{en:"Bank holidays (official)",pt:"Feriados (oficial)",pl:"Dni wolne (oficjalnie)",fr:"Jours fériés (officiel)"},
-    desc:{en:"Official bank holiday dates (Gov.je).",pt:"Datas oficiais de feriados (Gov.je).",pl:"Oficjalne dni wolne (Gov.je).",fr:"Jours fériés officiels (Gov.je)."},
+    name:{en:"Bank holidays (official)",pt:"Feriados (oficial)",fr:"Jours fériés (officiel)"},
+    desc:{en:"Official bank holiday dates (Gov.je).",pt:"Datas oficiais de feriados (Gov.je).",fr:"Jours fériés officiels (Gov.je)."},
     tags:["bank","holidays","dates"],
-    links:[{label:{en:"Open official bank holidays",pt:"Abrir feriados oficiais",pl:"Oficjalne święta",fr:"Jours fériés officiels"}, url:LINKS.bankHolidays}]
+    links:[{label:{en:"Open official bank holidays",pt:"Abrir feriados oficiais",fr:"Jours fériés officiels"}, url:LINKS.bankHolidays}]
   },
   {
     id:"park-live",
     category:"Getting around",
     audience:["residents","tourists"],
-    name:{en:"Live parking (official)",pt:"Parking ao vivo (oficial)",pl:"Parking na żywo (oficjalnie)",fr:"Parkings en direct (officiel)"},
-    desc:{en:"Official live spaces + PayByPhone info.",pt:"Vagas ao vivo + PayByPhone.",pl:"Wolne miejsca + PayByPhone.",fr:"Places + PayByPhone."},
+    name:{en:"Live parking (official)",pt:"Parking ao vivo (oficial)",fr:"Parkings en direct (officiel)"},
+    desc:{en:"Official live spaces + PayByPhone info.",pt:"Vagas ao vivo + PayByPhone.",fr:"Places + PayByPhone."},
     tags:["parking","spaces"],
     links:[
-      {label:{en:"Open live parking",pt:"Abrir parking",pl:"Otwórz parking",fr:"Ouvrir parkings"}, url:LINKS.parkingLive},
-      {label:{en:"PayByPhone info",pt:"Info PayByPhone",pl:"PayByPhone info",fr:"Infos PayByPhone"}, url:LINKS.parkingPay}
+      {label:{en:"Open live parking",pt:"Abrir parking",fr:"Ouvrir parkings"}, url:LINKS.parkingLive},
+      {label:{en:"PayByPhone info",pt:"Info PayByPhone",fr:"Infos PayByPhone"}, url:LINKS.parkingPay}
     ]
   },
   {
     id:"transport-bus",
     category:"Getting around",
     audience:["residents","tourists"],
-    name:{en:"LibertyBus (official)",pt:"LibertyBus (oficial)",pl:"LibertyBus (oficjalnie)",fr:"LibertyBus (officiel)"},
-    desc:{en:"Routes, timetables and tickets.",pt:"Rotas, horários e bilhetes.",pl:"Trasy, rozkłady i bilety.",fr:"Lignes, horaires et billets."},
+    name:{en:"LibertyBus (official)",pt:"LibertyBus (oficial)",fr:"LibertyBus (officiel)"},
+    desc:{en:"Routes, timetables and tickets.",pt:"Rotas, horários e bilhetes.",fr:"Lignes, horaires et billets."},
     tags:["bus","timetable"],
     links:[
-      {label:{en:"Open LibertyBus",pt:"Abrir LibertyBus",pl:"Otwórz LibertyBus",fr:"Ouvrir LibertyBus"}, url:LINKS.libertyBus},
-      {label:{en:"Gov routes & timetables",pt:"Horários gov.je",pl:"Rozkłady gov.je",fr:"Horaires gov.je"}, url:LINKS.busesGov}
+      {label:{en:"Open LibertyBus",pt:"Abrir LibertyBus",fr:"Ouvrir LibertyBus"}, url:LINKS.libertyBus},
+      {label:{en:"Gov routes & timetables",pt:"Horários gov.je",fr:"Horaires gov.je"}, url:LINKS.busesGov}
     ]
   },
   {
     id:"transport-taxi",
     category:"Getting around",
     audience:["residents","tourists"],
-    name:{en:"Taxi (near me)",pt:"Táxi (perto de mim)",pl:"Taxi (w pobliżu)",fr:"Taxi (à proximité)"},
-    desc:{en:"Nearby taxis / taxi ranks on Maps.",pt:"Táxis e paragens no Maps.",pl:"Taxi i postoje.",fr:"Taxis et stations."},
+    name:{en:"Taxi (near me)",pt:"Táxi (perto de mim)",fr:"Taxi (à proximité)"},
+    desc:{en:"Nearby taxis / taxi ranks on Maps.",pt:"Táxis e paragens no Maps.",fr:"Taxis et stations."},
     tags:["taxi","near me"],
-    links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("taxi Jersey")}]
+    links:[{label:{en:"Open map",pt:"Abrir mapa",fr:"Ouvrir la carte"}, url: mapsSearch("taxi Jersey")}]
   },
   {
     id:"traffic-roadworks",
     category:"Getting around",
     audience:["residents","tourists"],
-    name:{en:"Roadworks / road closures (official)",pt:"Obras / estradas fechadas (oficial)",pl:"Roboty / zamknięcia dróg (oficjalnie)",fr:"Travaux / routes fermées (officiel)"},
-    desc:{en:"Official road closures + live map alternatives.",pt:"Estradas fechadas (oficial) + alternativas com mapa.",pl:"Oficjalne zamknięcia + mapa.",fr:"Fermetures officielles + carte."},
+    name:{en:"Roadworks / road closures (official)",pt:"Obras / estradas fechadas (oficial)",fr:"Travaux / routes fermées (officiel)"},
+    desc:{en:"Official road closures + live map alternatives.",pt:"Estradas fechadas (oficial) + alternativas com mapa.",fr:"Fermetures officielles + carte."},
     tags:["roadworks","traffic","closures"],
     links:[
-      {label:{en:"Road closures & delays",pt:"Estradas fechadas & atrasos",pl:"Zamknięcia i opóźnienia",fr:"Fermetures & retards"}, url:LINKS.roadClosures},
-      {label:{en:"Mobile view",pt:"Versão mobile",pl:"Wersja mobilna",fr:"Version mobile"}, url:LINKS.roadworksMobile},
-      {label:{en:"Live roadworks map",pt:"Mapa de obras",pl:"Mapa robót",fr:"Carte des travaux"}, url:LINKS.roadworksMap},
-      {label:{en:"Traffic report list",pt:"Lista (traffic report)",pl:"Lista (raport)",fr:"Liste (rapport)"}, url:LINKS.trafficReport}
+      {label:{en:"Road closures & delays",pt:"Estradas fechadas & atrasos",fr:"Fermetures & retards"}, url:LINKS.roadClosures},
+      {label:{en:"Mobile view",pt:"Versão mobile",fr:"Version mobile"}, url:LINKS.roadworksMobile},
+      {label:{en:"Live roadworks map",pt:"Mapa de obras",fr:"Carte des travaux"}, url:LINKS.roadworksMap},
+      {label:{en:"Traffic report list",pt:"Lista (traffic report)",fr:"Liste (rapport)"}, url:LINKS.trafficReport}
     ]
   },
+
+  /* ✅ NEW: food shopping near me */
+  {
+    id:"fac-food-shopping",
+    category:"Facilities",
+    audience:["residents","tourists"],
+    name:{en:"Food shopping (near me)",pt:"Compras de comida (perto de mim)",fr:"Courses alimentaires (à proximité)"},
+    desc:{
+      en:"Open Google Maps to find supermarkets & grocery stores near you.",
+      pt:"Abre o Google Maps para encontrar supermercados e mercearias perto de ti.",
+      fr:"Ouvrez Google Maps pour trouver des supermarchés près de vous."
+    },
+    tags:["food","shopping","supermarket","grocery","near me"],
+    links:[{label:{en:"Open map",pt:"Abrir mapa",fr:"Ouvrir la carte"}, url: mapsSearch("supermarket near me")}]
+  },
+
   {
     id:"fac-find-address",
     category:"Facilities",
     audience:["residents","tourists"],
-    name:{en:"Find an address",pt:"Procurar morada",pl:"Znajdź adres",fr:"Trouver une adresse"},
+    name:{en:"Find an address",pt:"Procurar morada",fr:"Trouver une adresse"},
     desc:{
       en:"Type an address/postcode and open it on Google Maps.",
       pt:"Escreve uma morada/código postal e abre no Google Maps.",
-      pl:"Wpisz adres/kod i otwórz w Mapach Google.",
       fr:"Tapez une adresse/code postal et ouvrez dans Google Maps."
     },
     tags:["address","postcode","map","find"],
     links:[
-      {label:{en:"Search address",pt:"Procurar morada",pl:"Szukaj adresu",fr:"Rechercher une adresse"}, action:"findAddress"},
-      {label:{en:"Copy instructions",pt:"Copiar instruções",pl:"Kopiuj instrukcje",fr:"Copier les instructions"}, copy_text:"Type an address/postcode → open in Google Maps"}
+      {label:{en:"Search address",pt:"Procurar morada",fr:"Rechercher une adresse"}, action:"findAddress"},
+      {label:{en:"Copy instructions",pt:"Copiar instruções",fr:"Copier les instructions"}, copy_text:"Type an address/postcode → open in Google Maps"}
     ]
   },
   {
     id:"fac-toilets",
     category:"Facilities",
     audience:["residents","tourists"],
-    name:{en:"Public toilets (near me)",pt:"WC públicos (perto de mim)",pl:"Toalety publiczne (w pobliżu)",fr:"Toilettes publiques (à proximité)"},
-    desc:{en:"Open Google Maps with nearby public toilets.",pt:"Abre o Google Maps com WC perto de ti.",pl:"Otwiera Mapy z toaletami.",fr:"Ouvre Maps avec toilettes proches."},
+    name:{en:"Public toilets (near me)",pt:"WC públicos (perto de mim)",fr:"Toilettes publiques (à proximité)"},
+    desc:{en:"Open Google Maps with nearby public toilets.",pt:"Abre o Google Maps com WC perto de ti.",fr:"Ouvre Maps avec toilettes proches."},
     tags:["toilets","wc","near me"],
-    links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("public toilets Jersey")}]
+    links:[{label:{en:"Open map",pt:"Abrir mapa",fr:"Ouvrir la carte"}, url: mapsSearch("public toilets near me")}]
   },
   {
     id:"fac-pharmacy",
     category:"Facilities",
     audience:["residents","tourists"],
-    name:{en:"Pharmacy (near me)",pt:"Farmácia (perto de mim)",pl:"Apteka (w pobliżu)",fr:"Pharmacie (à proximité)"},
-    desc:{en:"Find pharmacies nearby.",pt:"Encontra farmácias perto.",pl:"Znajdź apteki.",fr:"Trouvez des pharmacies."},
+    name:{en:"Pharmacy (near me)",pt:"Farmácia (perto de mim)",fr:"Pharmacie (à proximité)"},
+    desc:{en:"Find pharmacies nearby.",pt:"Encontra farmácias perto.",fr:"Trouvez des pharmacies."},
     tags:["pharmacy","near me"],
-    links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("pharmacy Jersey")}]
+    links:[{label:{en:"Open map",pt:"Abrir mapa",fr:"Ouvrir la carte"}, url: mapsSearch("pharmacy near me")}]
   },
   {
     id:"every-atm",
     category:"Facilities",
     audience:["residents","tourists"],
-    name:{en:"ATM / Cashpoint (near me)",pt:"ATM / Multibanco (perto de mim)",pl:"Bankomat (w pobliżu)",fr:"Distributeur (à proximité)"},
-    desc:{en:"Find the nearest cashpoint.",pt:"Encontra o multibanco mais perto.",pl:"Znajdź bankomat.",fr:"Trouvez un distributeur."},
+    name:{en:"ATM / Cashpoint (near me)",pt:"ATM / Multibanco (perto de mim)",fr:"Distributeur (à proximité)"},
+    desc:{en:"Find the nearest cashpoint.",pt:"Encontra o multibanco mais perto.",fr:"Trouvez un distributeur."},
     tags:["atm","cash","near me"],
-    links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("ATM Jersey")}]
+    links:[{label:{en:"Open map",pt:"Abrir mapa",fr:"Ouvrir la carte"}, url: mapsSearch("ATM near me")}]
   },
-  {
-    id:"fac-baby",
-    category:"Facilities",
-    audience:["residents","tourists"],
-    name:{en:"Baby changing (near me)",pt:"Fraldário (perto de mim)",pl:"Przewijak (w pobliżu)",fr:"Table à langer (à proximité)"},
-    desc:{en:"Find baby changing facilities nearby.",pt:"Encontra fraldários perto.",pl:"Znajdź przewijaki.",fr:"Trouvez des tables à langer."},
-    tags:["baby","changing","near me"],
-    links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("baby changing Jersey")}]
-  },
+
   {
     id:"sea-beaches",
     category:"Things to do",
     audience:["tourists","residents"],
-    name:{en:"Beaches (near me)",pt:"Praias (perto de mim)",pl:"Plaże (w pobliżu)",fr:"Plages (à proximité)"},
-    desc:{en:"Find beaches near your location.",pt:"Encontra praias perto de ti.",pl:"Znajdź plaże w pobliżu.",fr:"Trouvez des plages proches."},
+    name:{en:"Beaches (near me)",pt:"Praias (perto de mim)",fr:"Plages (à proximité)"},
+    desc:{en:"Find beaches near your location.",pt:"Encontra praias perto de ti.",fr:"Trouvez des plages proches."},
     tags:["beach","near me"],
-    links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("beach Jersey")}]
+    links:[{label:{en:"Open map",pt:"Abrir mapa",fr:"Ouvrir la carte"}, url: mapsSearch("beach near me")}]
   },
   {
     id:"todo-museums",
     category:"Things to do",
     audience:["tourists","residents"],
-    name:{en:"Museums (near me)",pt:"Museus (perto de mim)",pl:"Muzea (w pobliżu)",fr:"Musées (à proximité)"},
-    desc:{en:"Find museums nearby.",pt:"Encontra museus perto.",pl:"Znajdź muzea.",fr:"Trouvez des musées."},
+    name:{en:"Museums (near me)",pt:"Museus (perto de mim)",fr:"Musées (à proximité)"},
+    desc:{en:"Find museums nearby.",pt:"Encontra museus perto.",fr:"Trouvez des musées."},
     tags:["museum","near me"],
-    links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("museum Jersey")}]
+    links:[{label:{en:"Open map",pt:"Abrir mapa",fr:"Ouvrir la carte"}, url: mapsSearch("museum near me")}]
   },
   {
     id:"todo-attractions",
     category:"Things to do",
     audience:["tourists","residents"],
-    name:{en:"Attractions (near me)",pt:"Atrações (perto de mim)",pl:"Atrakcje (w pobliżu)",fr:"Attractions (à proximité)"},
-    desc:{en:"Find top attractions nearby.",pt:"Encontra atrações perto.",pl:"Znajdź atrakcje.",fr:"Trouvez des attractions."},
+    name:{en:"Attractions (near me)",pt:"Atrações (perto de mim)",fr:"Attractions (à proximité)"},
+    desc:{en:"Find top attractions nearby.",pt:"Encontra atrações perto.",fr:"Trouvez des attractions."},
     tags:["attraction","near me"],
-    links:[{label:{en:"Open map",pt:"Abrir mapa",pl:"Otwórz mapę",fr:"Ouvrir la carte"}, url: mapsSearch("tourist attraction Jersey")}]
+    links:[{label:{en:"Open map",pt:"Abrir mapa",fr:"Ouvrir la carte"}, url: mapsSearch("tourist attraction near me")}]
   },
+
   {
     id:"ports-contacts",
     category:"Help & safety",
     audience:["residents","tourists"],
-    name:{en:"Ports of Jersey — contact",pt:"Ports of Jersey — contacto",pl:"Ports of Jersey — kontakt",fr:"Ports of Jersey — contact"},
-    desc:{en:"Official ports contact page.",pt:"Página oficial de contacto.",pl:"Oficjalny kontakt.",fr:"Contact officiel."},
+    name:{en:"Ports of Jersey — contact",pt:"Ports of Jersey — contacto",fr:"Ports of Jersey — contact"},
+    desc:{en:"Official ports contact page.",pt:"Página oficial de contacto.",fr:"Contact officiel."},
     tags:["ports","harbour","contact"],
-    links:[{label:{en:"Open contact",pt:"Abrir contacto",pl:"Kontakt",fr:"Ouvrir contact"}, url:LINKS.portsContact}]
+    links:[{label:{en:"Open contact",pt:"Abrir contacto",fr:"Ouvrir contact"}, url:LINKS.portsContact}]
   },
   {
     id:"airport-contact",
     category:"Help & safety",
     audience:["residents","tourists"],
-    name:{en:"Jersey Airport — contact",pt:"Aeroporto — contacto",pl:"Lotnisko — kontakt",fr:"Aéroport — contact"},
-    desc:{en:"Official airport contact page.",pt:"Página oficial de contacto do aeroporto.",pl:"Oficjalny kontakt lotniska.",fr:"Contact officiel de l'aéroport."},
+    name:{en:"Jersey Airport — contact",pt:"Aeroporto — contacto",fr:"Aéroport — contact"},
+    desc:{en:"Official airport contact page.",pt:"Página oficial de contacto do aeroporto.",fr:"Contact officiel de l'aéroport."},
     tags:["airport","contact"],
-    links:[{label:{en:"Open contact",pt:"Abrir contacto",pl:"Otwórz kontakt",fr:"Ouvrir contact"}, url:LINKS.airportContact}]
+    links:[{label:{en:"Open contact",pt:"Abrir contacto",fr:"Ouvrir contact"}, url:LINKS.airportContact}]
   },
   {
     id:"emergency-main",
     category:"Help & safety",
     audience:["residents","tourists"],
-    name:{en:"Emergency numbers",pt:"Números de emergência",pl:"Numery alarmowe",fr:"Numéros d'urgence"},
+    name:{en:"Emergency numbers",pt:"Números de emergência",fr:"Numéros d'urgence"},
     desc:{
       en:"Emergency: 999 / 112. Non-emergency: Police, Fire, Ambulance, Coastguard.",
       pt:"Emergência: 999 / 112. Não-urgente: Polícia, Bombeiros, Ambulância, Guarda-costeira.",
-      pl:"Alarmowe: 999 / 112. Niealarmowe: Policja, Straż, Ambulans, Straż przybrzeżna.",
       fr:"Urgence : 999 / 112. Non-urgent : Police, Pompiers, Ambulance, Garde-côtes."
     },
     tags:["emergency","police","fire","ambulance","coastguard"],
     links:[
-      {label:{en:"Call 999",pt:"Ligar 999",pl:"Zadzwoń 999",fr:"Appeler 999"}, url:"tel:999"},
-      {label:{en:"Call 112",pt:"Ligar 112",pl:"Zadzwoń 112",fr:"Appeler 112"}, url:"tel:112"},
-      {label:{en:"Police (non-emergency)",pt:"Polícia (não-urgente)",pl:"Policja (niealarmowe)",fr:"Police (non urgent)"}, url:"tel:+441534612612"},
-      {label:{en:"Police contact page",pt:"Página da polícia",pl:"Strona policji",fr:"Page police"}, url:LINKS.policeContact},
-      {label:{en:"Fire (non-emergency)",pt:"Bombeiros (não-urgente)",pl:"Straż pożarna (niealarmowe)",fr:"Pompiers (non urgent)"}, url:"tel:+441534445906"},
-      {label:{en:"Ambulance (non-emergency)",pt:"Ambulância (não-urgente)",pl:"Ambulans (niealarmowe)",fr:"Ambulance (non urgent)"}, url:"tel:+441534444710"},
-      {label:{en:"Coastguard (non-emergency)",pt:"Guarda-costeira (não-urgente)",pl:"Straż przybrzeżna (niealarmowe)",fr:"Garde-côtes (non urgent)"}, url:"tel:+441534447705"}
+      {label:{en:"Call 999",pt:"Ligar 999",fr:"Appeler 999"}, url:"tel:999"},
+      {label:{en:"Call 112",pt:"Ligar 112",fr:"Appeler 112"}, url:"tel:112"},
+      {label:{en:"Police (non-emergency)",pt:"Polícia (não-urgente)",fr:"Police (non urgent)"}, url:"tel:+441534612612"},
+      {label:{en:"Police contact page",pt:"Página da polícia",fr:"Page police"}, url:LINKS.policeContact}
     ]
   }
 ];
@@ -1496,6 +1473,7 @@ function render(){
 /* Quick links + Near me */
 function setQuickLinks(){
   $("quickParking").href = LINKS.parkingLive;
+  $("quickFoodNear").href = mapsSearch("supermarket near me");
   $("quickTaxiNear").href = mapsSearch("taxi near me");
   $("quickToiletsNear").href = mapsSearch("public toilets near me");
   $("quickPharmacyNear").href = mapsSearch("pharmacy near me");
@@ -1503,7 +1481,7 @@ function setQuickLinks(){
 function nearMeQuery(){
   if(state.q) return `${state.q} near me`;
   switch(state.category){
-    case "Facilities": return "public toilets near me";
+    case "Facilities": return "supermarket near me";
     case "Getting around": return "taxi near me";
     case "Things to do": return "tourist attractions near me";
     case "Help & safety": return "police station near me";
@@ -1566,7 +1544,7 @@ $("shareBtn").addEventListener("click", async ()=>{
 $("suggestBtnFoot").addEventListener("click", ()=>{
   const msg =
     "Hi 👋 I want to suggest a link for JerseyGo.\n\n" +
-    "Title:\nCategory:\nLink (URL):\nWhy it’s useful:\nLanguage (EN/PT/PL/FR):\n";
+    "Title:\nCategory:\nLink (URL):\nWhy it’s useful:\nLanguage (EN/PT/FR):\n";
   window.open(waLink(msg), "_blank", "noopener");
 });
 
