@@ -13,7 +13,7 @@
 
   <!-- SEO -->
   <title>JerseyGo — Essential links for Jersey residents & visitors</title>
-  <meta name="description" content="JerseyGo is a fast, simple web app with essential links for Jersey residents and visitors: parking, taxis, public toilets, pharmacies, transport, weather, tides, bank holidays, roadworks and emergency numbers — all in one place." />
+  <meta name="description" content="JerseyGo is a fast, simple web app with essential links for Jersey residents and visitors: parking, taxis, food shopping, public toilets, pharmacies, transport, weather, tides, bank holidays, roadworks and emergency numbers — all in one place." />
   <meta name="robots" content="index,follow,max-image-preview:large" />
   <link rel="canonical" href="https://jerseygo.app/" />
 
@@ -25,7 +25,7 @@
 
   <!-- Open Graph -->
   <meta property="og:title" content="JerseyGo — Essential links for Jersey residents & visitors" />
-  <meta property="og:description" content="Parking, taxis, toilets, pharmacies, transport, emergency numbers and official local services — in one fast web app." />
+  <meta property="og:description" content="Parking, taxis, food shopping, toilets, pharmacies, transport, emergency numbers and official local services — in one fast web app." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://jerseygo.app/" />
   <meta property="og:locale" content="en_GB" />
@@ -34,7 +34,7 @@
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="JerseyGo — Essential links for Jersey residents & visitors" />
-  <meta name="twitter:description" content="Parking, taxis, toilets, pharmacies, transport, emergency numbers and official local services — in one fast web app." />
+  <meta name="twitter:description" content="Parking, taxis, food shopping, toilets, pharmacies, transport, emergency numbers and official local services — in one fast web app." />
   <meta name="twitter:image" content="https://jerseygo.app/icon.svg" />
 
   <!-- PWA -->
@@ -49,7 +49,7 @@
     "url":"https://jerseygo.app/",
     "applicationCategory":"TravelApplication",
     "operatingSystem":"Web",
-    "description":"JerseyGo is a web app with essential links for Jersey residents and visitors: parking, taxis, toilets, pharmacies, transport, weather, tides, bank holidays, roadworks, emergency numbers and official services.",
+    "description":"JerseyGo is a web app with essential links for Jersey residents and visitors: parking, taxis, food shopping, public toilets, pharmacies, transport, weather, tides, bank holidays, roadworks, emergency numbers and official services.",
     "inLanguage":["en-GB","pt-PT","fr"],
     "areaServed":{"@type":"AdministrativeArea","name":"Jersey, Channel Islands"}
   }
@@ -667,8 +667,10 @@
 <script>
 /* ===========================================================
    JerseyGo — modern LIGHT single-file (drop-in)
-   Changes: light UI, removed PL, added Food shopping near me,
-   updated sponsor card (new service + new URL).
+   - Light UI
+   - Languages: EN/PT/FR
+   - Added Food shopping near me
+   - Sponsor cards: AP Digital Solutions + AntonioPereiraWeb
    =========================================================== */
 
 const $ = (id)=>document.getElementById(id);
@@ -749,15 +751,14 @@ const LINKS = {
 
 /* State */
 const url = new URL(location.href);
-const LS_LANG = "jerseygo:lang:v5";
-const LS_MODE = "jerseygo:mode:v5";
-const LS_FAVS = "jerseygo:favs:v5";
+const LS_LANG = "jerseygo:lang:v6";
+const LS_MODE = "jerseygo:mode:v6";
+const LS_FAVS = "jerseygo:favs:v6";
 
-const allowedLangs = ["en","pt","fr"]; // removed PL
+const allowedLangs = ["en","pt","fr"];
 const initialLang = (url.searchParams.get("lang") || localStorage.getItem(LS_LANG) || "en").toLowerCase();
 const initialMode = (url.searchParams.get("mode") || localStorage.getItem(LS_MODE) || "residents").toLowerCase();
 const initialCat  = url.searchParams.get("cat") || "All";
-
 const PREVIEW_PROMO = url.searchParams.get("preview")==="1";
 
 const state = {
@@ -924,7 +925,7 @@ function findAddress(){
   window.open(mapsSearch(`${q} Jersey`), "_blank", "noopener");
 }
 
-/* Services */
+/* Services helpers */
 function getLabel(obj){
   if(!obj) return "";
   return obj[state.lang] || obj.en || "";
@@ -936,31 +937,57 @@ function serviceText(s){
   return norm([name, desc, tags].join(" "));
 }
 
-/* ✅ UPDATED sponsor + ✅ NEW food shopping */
+/* Services */
 const SERVICES = [
+  /* ✅ Sponsor 1 */
   {
     id:"sponsor-ap-digital",
     category:"Essentials",
     audience:["residents","tourists"],
     sponsored:true,
     name:{
-      en:"AP Digital Solutions — Websites & Online Visibility",
-      pt:"AP Digital Solutions — Websites & Visibilidade Online",
-      fr:"AP Digital Solutions — Sites & Visibilité en ligne"
+      en:"AP Digital Solutions — Websites & Google Visibility",
+      pt:"AP Digital Solutions — Websites & Visibilidade no Google",
+      fr:"AP Digital Solutions — Sites & Visibilité Google"
     },
     desc:{
-      en:"Modern websites, Google visibility and lead capture setup for small businesses. Fast, done-for-you.",
-      pt:"Websites modernos, visibilidade no Google e captação de leads para pequenos negócios. Feito por ti.",
-      fr:"Sites modernes, visibilité Google et capture de prospects pour petites entreprises."
+      en:"Modern websites, Google Business setup and lead capture — built for small businesses that want more enquiries.",
+      pt:"Websites modernos, Google Business e captação de leads — feito para pequenos negócios com mais pedidos.",
+      fr:"Sites modernes, fiche Google Business et capture de prospects — pour plus de demandes."
     },
-    tags:["sponsored","website","google","visibility","leads"],
+    tags:["sponsored","website","google business","local seo","leads"],
     links:[
       {label:{en:"Website",pt:"Website",fr:"Site"}, url:"https://apdigitalsolutions.digital/?utm_source=jerseygo&utm_medium=app&utm_campaign=sponsored"},
-      {label:{en:"WhatsApp (enquiry)",pt:"WhatsApp (pedido)",fr:"WhatsApp (demande)"}, url: waLink("Hi 👋 I saw AP Digital Solutions on JerseyGo. I’d like help with a website + Google visibility / leads.")},
-      {label:{en:"Email",pt:"Email",fr:"Email"}, url:"mailto:info@apdigitalsolutions.digital?subject=JerseyGo%20-%20Enquiry&body=Hi%2C%0A%0AI%20saw%20AP%20Digital%20Solutions%20on%20JerseyGo%20and%20I%E2%80%99d%20like%20help%20with%20a%20website%20and%20online%20visibility%2Fleads.%0A%0AThanks%21"}
+      {label:{en:"WhatsApp (enquiry)",pt:"WhatsApp (pedido)",fr:"WhatsApp (demande)"}, url: waLink("Hi 👋 I saw AP Digital Solutions on JerseyGo. I’d like help with a website + Google visibility / lead capture.")},
+      {label:{en:"Email",pt:"Email",fr:"Email"}, url:"mailto:info@apdigitalsolutions.digital?subject=JerseyGo%20-%20Enquiry&body=Hi%2C%0A%0AI%20saw%20AP%20Digital%20Solutions%20on%20JerseyGo%20and%20I%E2%80%99d%20like%20help%20with%20a%20website%20and%20Google%20visibility%2Fleads.%0A%0AThanks%21"}
     ]
   },
 
+  /* ✅ Sponsor 2 (requested) */
+  {
+    id:"sponsor-antonio-web",
+    category:"Essentials",
+    audience:["residents","tourists"],
+    sponsored:true,
+    name:{
+      en:"Antonio Pereira — Websites & Automation",
+      pt:"Antonio Pereira — Websites & Automação",
+      fr:"Antonio Pereira — Sites & Automatisation"
+    },
+    desc:{
+      en:"Fast, clean websites and simple automations to save time and reply to customers faster.",
+      pt:"Websites rápidos e automações simples para poupar tempo e responder clientes mais rápido.",
+      fr:"Sites rapides et automatisations simples pour gagner du temps et répondre plus vite."
+    },
+    tags:["sponsored","website","automation","business email","whatsapp"],
+    links:[
+      {label:{en:"Website",pt:"Website",fr:"Site"}, url:"https://antoniopereiraweb.co.uk/?utm_source=jerseygo&utm_medium=app&utm_campaign=sponsored"},
+      {label:{en:"WhatsApp (enquiry)",pt:"WhatsApp (pedido)",fr:"WhatsApp (demande)"}, url: waLink("Hi 👋 I saw Antonio Pereira on JerseyGo. I’d like a quick quote for a website / automation.")},
+      {label:{en:"Email",pt:"Email",fr:"Email"}, url:"mailto:info@antoniopereiraweb.co.uk?subject=JerseyGo%20-%20Enquiry&body=Hi%20Antonio%2C%0A%0AI%20saw%20you%20on%20JerseyGo%20and%20I%E2%80%99d%20like%20a%20quote%20for%20a%20website%20and%2For%20automation.%0A%0AThanks%21"}
+    ]
+  },
+
+  /* Essentials */
   {
     id:"ess-weather",
     category:"Essentials",
@@ -982,6 +1009,8 @@ const SERVICES = [
     tags:["bank","holidays","dates"],
     links:[{label:{en:"Open official bank holidays",pt:"Abrir feriados oficiais",fr:"Jours fériés officiels"}, url:LINKS.bankHolidays}]
   },
+
+  /* Getting around */
   {
     id:"park-live",
     category:"Getting around",
@@ -1013,7 +1042,7 @@ const SERVICES = [
     name:{en:"Taxi (near me)",pt:"Táxi (perto de mim)",fr:"Taxi (à proximité)"},
     desc:{en:"Nearby taxis / taxi ranks on Maps.",pt:"Táxis e paragens no Maps.",fr:"Taxis et stations."},
     tags:["taxi","near me"],
-    links:[{label:{en:"Open map",pt:"Abrir mapa",fr:"Ouvrir la carte"}, url: mapsSearch("taxi Jersey")}]
+    links:[{label:{en:"Open map",pt:"Abrir mapa",fr:"Ouvrir la carte"}, url: mapsSearch("taxi near me")}]
   },
   {
     id:"traffic-roadworks",
@@ -1030,7 +1059,7 @@ const SERVICES = [
     ]
   },
 
-  /* ✅ NEW: food shopping near me */
+  /* Facilities */
   {
     id:"fac-food-shopping",
     category:"Facilities",
@@ -1044,7 +1073,6 @@ const SERVICES = [
     tags:["food","shopping","supermarket","grocery","near me"],
     links:[{label:{en:"Open map",pt:"Abrir mapa",fr:"Ouvrir la carte"}, url: mapsSearch("supermarket near me")}]
   },
-
   {
     id:"fac-find-address",
     category:"Facilities",
@@ -1089,6 +1117,7 @@ const SERVICES = [
     links:[{label:{en:"Open map",pt:"Abrir mapa",fr:"Ouvrir la carte"}, url: mapsSearch("ATM near me")}]
   },
 
+  /* Things to do */
   {
     id:"sea-beaches",
     category:"Things to do",
@@ -1117,6 +1146,7 @@ const SERVICES = [
     links:[{label:{en:"Open map",pt:"Abrir mapa",fr:"Ouvrir la carte"}, url: mapsSearch("tourist attraction near me")}]
   },
 
+  /* Help & safety */
   {
     id:"ports-contacts",
     category:"Help & safety",
@@ -1141,11 +1171,11 @@ const SERVICES = [
     audience:["residents","tourists"],
     name:{en:"Emergency numbers",pt:"Números de emergência",fr:"Numéros d'urgence"},
     desc:{
-      en:"Emergency: 999 / 112. Non-emergency: Police, Fire, Ambulance, Coastguard.",
-      pt:"Emergência: 999 / 112. Não-urgente: Polícia, Bombeiros, Ambulância, Guarda-costeira.",
-      fr:"Urgence : 999 / 112. Non-urgent : Police, Pompiers, Ambulance, Garde-côtes."
+      en:"Emergency: 999 / 112. Police non-emergency + official contact page.",
+      pt:"Emergência: 999 / 112. Polícia (não-urgente) + página oficial.",
+      fr:"Urgence : 999 / 112. Police non urgente + page officielle."
     },
-    tags:["emergency","police","fire","ambulance","coastguard"],
+    tags:["emergency","police","fire","ambulance"],
     links:[
       {label:{en:"Call 999",pt:"Ligar 999",fr:"Appeler 999"}, url:"tel:999"},
       {label:{en:"Call 112",pt:"Ligar 112",fr:"Appeler 112"}, url:"tel:112"},
